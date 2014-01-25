@@ -8,9 +8,18 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
-
+    <Spinner
+	    android:id="@+id/tracked_item_spinner"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content" />
+	
+	<Button
+	    android:layout_below="@+id/tracked_item_spinner"
+	    android:id="@+id/display_button"
+        android:layout_centerInParent="true"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/display_button">
+	</Button>
+	
 </RelativeLayout>
