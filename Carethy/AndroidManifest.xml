@@ -23,7 +23,8 @@
             </intent-filter>
         </activity>       
          <activity
-            android:name="com.carethy.activity.DisplayResultActivity">
+            android:name="com.carethy.activity.DisplayResultActivity"
+            android:parentActivityName="com.carethy.activity.MainActivity"> 
          </activity>
     </application>
 

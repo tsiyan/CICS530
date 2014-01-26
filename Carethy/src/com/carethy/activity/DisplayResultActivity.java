@@ -1,5 +1,6 @@
 package com.carethy.activity;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,9 @@ public class DisplayResultActivity extends Activity {
 }
 
 	private void initView(){
+		//Up navigation 
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
 		
 		Intent intent=getIntent();
 		String message=intent.getStringExtra("From");
