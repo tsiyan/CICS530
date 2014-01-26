@@ -32,7 +32,8 @@ public class ProfileFragment extends Fragment{
 				@Override
 				public void onClick(View v) {
 					Intent intent=new Intent(getActivity().getBaseContext(),DisplayResultActivity.class);
-					intent.putExtra("From",spinner.getSelectedItem().toString());
+					intent.putExtra("category",spinner.getSelectedItem().toString());
+					intent.putExtra("type","bar");
 					startActivity(intent);
 				}
 			});	
