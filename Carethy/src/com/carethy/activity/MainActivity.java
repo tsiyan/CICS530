@@ -1,31 +1,33 @@
 package com.carethy.activity;
 
 import android.app.ActionBar;
-import android.app.Activity;
-import android.content.Intent;
+import android.app.ActionBar.Tab;
+import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
 
 import com.carethy.R;
+import com.carethy.adapter.TabsPagerAdapter;
 
 
-public class MainActivity extends Activity implements ActionBar.OnNavigationListener{
-    // Refresh menu item
-    private MenuItem refreshMenuItem;
-    
+public class MainActivity extends FragmentActivity implements ActionBar.OnNavigationListener,ActionBar.TabListener{
+
+	private MenuItem refreshMenuItem;
+	private ViewPager mViewPager;
+	private TabsPagerAdapter mAdapter;
+	private ActionBar mActionBar;
+	private String[] tabs = { "Profile", "Activity", "Social" };
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		initView();
 	}
 	
@@ -51,22 +53,34 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
 	    }
 	  
 	private void initView(){
-		final Spinner spinner = (Spinner)findViewById(R.id.tracked_item_spinner);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-		        R.array.tracked_item_array, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(adapter);
-		
-		
-		Button button=(Button) findViewById(R.id.display_button);
-		button.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View v) {
-				Intent intent=new Intent(getApplicationContext(),DisplayResultActivity.class);
-				intent.putExtra("From",spinner.getSelectedItem().toString());
-				startActivity(intent);
-			}
-		});	
+		mViewPager = (ViewPager) findViewById(R.id.pager);
+        mActionBar = getActionBar();
+        mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+ 
+        mViewPager.setAdapter(mAdapter);
+        mActionBar.setHomeButtonEnabled(false);
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);        
+ 
+        // Adding Tabs
+        for (String tab_name : tabs) {
+            mActionBar.addTab(mActionBar.newTab().setText(tab_name).setTabListener(this));
+        }
+
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() { 
+            @Override
+            public void onPageSelected(int position) {
+                mActionBar.setSelectedNavigationItem(position);
+            }
+ 
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+            }
+ 
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+            }
+        });
+    
 	}
 	
 	
@@ -103,7 +117,19 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void onTabReselected(Tab arg0, FragmentTransaction arg1) {		
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction arg1) {
+		mViewPager.setCurrentItem(tab.getPosition());
+	}
+
+	@Override
+	public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {		
 	}
 }
