@@ -3,6 +3,7 @@ package com.carethy.activity;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -17,6 +18,7 @@ import com.carethy.adapter.TabsPagerAdapter;
 
 public class MainActivity extends FragmentActivity implements ActionBar.OnNavigationListener,ActionBar.TabListener{
 
+	private boolean loggedIn = false;
 	private MenuItem refreshMenuItem;
 	private ViewPager mViewPager;
 	private TabsPagerAdapter mAdapter;
@@ -25,6 +27,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		if (!loggedIn) {
+			Intent intent = new Intent(this, LoginActivity.class);
+		    startActivity(intent);
+		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
