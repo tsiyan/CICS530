@@ -34,10 +34,7 @@
         <activity
             android:name="com.carethy.activity.RegisterActivity"
             android:label="@string/title_activity_register"
-            android:parentActivityName="com.example.loginapp.LoginActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.loginapp.LoginActivity" />
+            android:parentActivityName="com.carethy.activity.LoginActivity" >
         </activity>
     </application>
 
