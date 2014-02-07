@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -14,11 +14,11 @@ import android.widget.Spinner;
 import com.carethy.R;
 import com.carethy.activity.DisplayResultActivity;
 
-public class ProfileFragment extends Fragment{
-	  @Override
+public class GraphFragment extends Fragment{
+	 @Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 	 
-	        View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+	        View rootView = inflater.inflate(R.layout.fragment_graph, container, false);
 	        
 	        final Spinner spinner = (Spinner)rootView.findViewById(R.id.tracked_item_spinner);
 			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity().getBaseContext(),
@@ -40,5 +40,4 @@ public class ProfileFragment extends Fragment{
 			
 	        return rootView;
 	    }
-	 
 }

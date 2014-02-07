@@ -2,6 +2,7 @@
     
 <resources>
  <color name="actionbar_text">#FFFFFF</color>
- <color name="actionbar_background">#3085C2</color>
+ <color name="actionbar_background">#E91304</color>
+ <color name="actionbar_tab_indicator">#E91304</color>
 </resources>
 

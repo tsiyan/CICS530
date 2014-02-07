@@ -1,13 +1,41 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity" >
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:columnCount="2"
+  android:rowCount="2" 
+  android:orientation="horizontal" >
+ 
+ <ImageButton
+		      android:id="@+id/activityButton"
+		      android:src="@drawable/ic_carethy"
+		      android:contentDescription="@null"
+		      android:layout_width="wrap_content"
+		      android:layout_height="wrap_content"
+		      android:onClick="activityInput"/>
 
-    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-    	android:id="@+id/pager"
-    	android:layout_width="match_parent"
-    	android:layout_height="match_parent">
-	</android.support.v4.view.ViewPager>
+		  <ImageButton
+		      android:id="@+id/sleepButton"
+		      android:src="@drawable/ic_sleep" 
+		      android:contentDescription="@null"
+		      android:layout_width="wrap_content"
+		      android:layout_height="wrap_content"
+		      android:onClick="activityInput"/>
 
-</RelativeLayout>
+		        		 
+         <ImageButton
+		      android:id="@+id/heartRateButton"
+		      android:src="@drawable/ic_heart"
+		      android:contentDescription="@null" 
+		      android:layout_width="wrap_content"
+		      android:layout_height="wrap_content"
+		      android:onClick="activityInput"/>
+		  
+		  <ImageButton
+		      android:id="@+id/bloodPressureButton"
+		      android:src="@drawable/ic_carethy" 
+		      android:contentDescription="@null"
+		      android:layout_width="wrap_content"
+		      android:layout_height="wrap_content"
+		      android:onClick="activityInput"/>
+</GridLayout>

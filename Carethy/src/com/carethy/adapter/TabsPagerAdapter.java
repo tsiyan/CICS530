@@ -1,12 +1,11 @@
 package com.carethy.adapter;
 
-import com.carethy.fragment.ActivityFragment;
-import com.carethy.fragment.ProfileFragment;
-import com.carethy.fragment.SocialFragment;
-
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.carethy.fragment.GraphFragment;
+import com.carethy.fragment.SummaryFragment;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 	public TabsPagerAdapter(FragmentManager fm) {
@@ -18,11 +17,9 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
         switch (index) {
         case 0:
-            return new ProfileFragment();
+            return new SummaryFragment();
         case 1:
-            return new ActivityFragment();
-        case 2:
-            return new SocialFragment();
+            return new GraphFragment();
         }
  
         return null;
@@ -31,7 +28,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 	@Override
 	public int getCount() {
 		 // get item count - equal to number of tabs
-        return 3;
+        return 2;
 	}
 
 }

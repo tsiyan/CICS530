@@ -8,13 +8,13 @@ import android.view.ViewGroup;
 
 import com.carethy.R;
 
-public class ActivityFragment extends Fragment{
+public class SummaryFragment extends Fragment{
 	 @Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	            Bundle savedInstanceState) {
-	 
-	        View rootView = inflater.inflate(R.layout.fragment_activity, container, false);
-	         
+
+	        View rootView = inflater.inflate(R.layout.fragment_summary, container, false);
+
 	        return rootView;
 	    }
 }

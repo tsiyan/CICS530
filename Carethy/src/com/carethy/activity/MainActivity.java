@@ -1,31 +1,25 @@
 package com.carethy.activity;
 
 import android.app.ActionBar;
-import android.app.ActionBar.Tab;
-import android.app.FragmentTransaction;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.carethy.R;
-import com.carethy.adapter.TabsPagerAdapter;
+import com.carethy.activity.input.InputActivity;
 
 
-public class MainActivity extends FragmentActivity implements ActionBar.OnNavigationListener,ActionBar.TabListener{
+public class MainActivity extends Activity implements ActionBar.OnNavigationListener{
 
 	private boolean loggedIn = false;
 	private MenuItem refreshMenuItem;
-	private ViewPager mViewPager;
-	private TabsPagerAdapter mAdapter;
-	private ActionBar mActionBar;
-	private String[] tabs = { "Profile", "Activity", "Social" };
 	
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		if (!loggedIn) {
 			Intent intent = new Intent(this, LoginActivity.class);
@@ -59,36 +53,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 	    }
 	  
 	private void initView(){
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-        mActionBar = getActionBar();
-        mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
- 
-        mViewPager.setAdapter(mAdapter);
-        mActionBar.setHomeButtonEnabled(false);
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);        
- 
-        // Adding Tabs
-        for (String tab_name : tabs) {
-            mActionBar.addTab(mActionBar.newTab().setText(tab_name).setTabListener(this));
-        }
-
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() { 
-            @Override
-            public void onPageSelected(int position) {
-                mActionBar.setSelectedNavigationItem(position);
-            }
- 
-            @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {
-            }
- 
-            @Override
-            public void onPageScrollStateChanged(int arg0) {
-            }
-        });
-    
+		
 	}
 	
+	public void activityInput(View v){
+		Intent intent = new Intent(this, InputActivity.class);
+	    startActivity(intent);
+	}
 	
 	 /**
      * Async task to load the data from server
@@ -123,19 +94,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public void onTabReselected(Tab arg0, FragmentTransaction arg1) {		
-	}
-
-	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction arg1) {
-		mViewPager.setCurrentItem(tab.getPosition());
-	}
-
-	@Override
-	public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {		
 	}
 }
