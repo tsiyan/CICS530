@@ -31,9 +31,10 @@ public class InputActivity extends FragmentActivity implements ActionBar.OnNavig
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
  
         mViewPager.setAdapter(mAdapter);
-        mActionBar.setHomeButtonEnabled(false);
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);        
- 
+        //Up navigation 
+		mActionBar.setDisplayHomeAsUpEnabled(true);
+		
         // Adding Tabs
         for (String tab_name : tabs) {
             mActionBar.addTab(mActionBar.newTab().setText(tab_name).setTabListener(this));
