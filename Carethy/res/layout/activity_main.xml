@@ -22,4 +22,29 @@
 	    android:text="@string/display_button">
 	</Button>
 	
+    <LinearLayout 
+        android:layout_centerInParent="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    
+       <Button 
+           android:id="@+id/button1"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:onClick="sendNotification"
+           android:text="Notification"
+           />
+       
+       <Button 
+           android:id="@+id/button2"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:onClick="showWarningDialog"
+           android:text="Warning"
+           />
+    </LinearLayout>
+	
 </RelativeLayout>
