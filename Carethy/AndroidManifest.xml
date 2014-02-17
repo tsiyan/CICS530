@@ -37,31 +37,6 @@
             android:parentActivityName="com.carethy.activity.LoginActivity" >
         </activity>
         
-        <activity
-            android:name="com.carethy.activity.input.ActivityInputActivity"
-            android:parentActivityName="com.carethy.activity.MainActivity" >
-        </activity>
-        
-        <activity
-            android:name="com.carethy.activity.input.SleepInputActivity"
-            android:parentActivityName="com.carethy.activity.MainActivity" >
-        </activity>
-        
-         <activity
-            android:name="com.carethy.activity.input.HeartRateInputActivity"
-            android:parentActivityName="com.carethy.activity.MainActivity" >
-        </activity>
-        
-         <activity
-            android:name="com.carethy.activity.input.BloodPressureInputActivity"
-            android:parentActivityName="com.carethy.activity.MainActivity" >
-        </activity>
-                
-        <activity
-            android:name="com.carethy.activity.input.InputActivity"
-            android:parentActivityName="com.carethy.activity.MainActivity" >
-        </activity>
-        
     </application>
 
 </manifest>
