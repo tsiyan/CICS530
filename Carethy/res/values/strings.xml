@@ -12,11 +12,12 @@
         <item>Bloody Pressure</item>
     </string-array>
 
-    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_terms">Terms and Conditions</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
 
-   <string-array name="drawer_menu_item_titles">
+    <string-array name="drawer_menu_item_titles">
         <item>Home</item>
         <item>Activity</item>
         <item>Sleep</item>
@@ -25,20 +26,22 @@
         <item>Devices</item>
         <item>Settings</item>
     </string-array>
-    
-   
-   <!-- Nav Drawer List Item Icons -->
-   <array name="nav_drawer_icons">
-       <item>@drawable/ic_launcher</item>
-       <item>@drawable/ic_launcher</item>
-       <item>@drawable/ic_launcher</item>
-       <item>@drawable/ic_launcher</item>
-       <item>@drawable/ic_launcher</item>
-       <item>@drawable/ic_launcher</item>
-       <item>@drawable/ic_launcher</item>
-   </array>
-   
-   <string name="desc_nav_drawer_item_icon">item icon</string>
-   <string name="drawer_open">open drawer</string>
-   <string name="drawer_close">close drawer</string>
+
+    <!-- Nav Drawer List Item Icons -->
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_launcher</item>
+        <item>@drawable/ic_launcher</item>
+        <item>@drawable/ic_launcher</item>
+        <item>@drawable/ic_launcher</item>
+        <item>@drawable/ic_launcher</item>
+        <item>@drawable/ic_launcher</item>
+        <item>@drawable/ic_launcher</item>
+    </array>
+
+    <string name="desc_nav_drawer_item_icon">item icon</string>
+    <string name="desc_logo">logo</string>
+    <string name="drawer_open">open drawer</string>
+    <string name="drawer_close">close drawer</string>
+    <string name="terms_and_conditions">Carethy Terms and Conditions("Agreement")\nThis agreement was last modifited of February 18, 2014\n\nPlease read these Terms and conditions ("Agreement", "Terms and Conditions") carefully before using carethy.com ("the Site") operated by Carethy ("us", "we", or "our"). This Agreement sets forth the legally binding terms and conditions for you use of the Site at carethy.com.\n\nBy accessing orusing the Site in any manner, including, but not lmited to, visiting or browsing the Site or contribting content or other materials to the Site, you agree to be bound by these Terms and Conditions. Capitalized terms are defined in this Agreement.</string>
+
 </resources>

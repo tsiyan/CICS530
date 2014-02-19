@@ -1,28 +1,23 @@
 package com.carethy.activity;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carethy.R;
@@ -40,6 +35,7 @@ public class RegisterActivity extends Activity {
 	private EditText mEmailView;
 	private EditText mPasswordView;
 	private EditText mPasswordRepeatView;
+	private TextView mTermsTextView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +57,17 @@ public class RegisterActivity extends Activity {
 						register();
 					}
 				});
+		
+		mTermsTextView = (TextView)findViewById(R.id.register_terms);
+		mTermsTextView.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(getApplication(), TermsConditionsActivity.class);
+			    startActivity(intent);	
+			}
+			
+		});
 	}
 
 	/**

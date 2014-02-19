@@ -37,6 +37,11 @@
             android:parentActivityName="com.carethy.activity.LoginActivity" >
         </activity>
         
+        <activity
+            android:name="com.carethy.activity.TermsConditionsActivity"
+            android:label="@string/title_activity_terms"
+            android:parentActivityName="com.carethy.activity.RegisterActivity" >
+        </activity>
     </application>
 
 </manifest>

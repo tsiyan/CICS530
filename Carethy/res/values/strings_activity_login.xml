@@ -8,6 +8,8 @@
     <string name="prompt_password_repeat">Repeat password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_register">Register</string>
+    <string name="action_register_notice">By signing up, you agree to our</string>
+    <string name="action_register_terms">Terms and Conditions</string>
     <string name="action_forgot_password">Recover lost password</string>
     <string name="login_progress_signing_in">Signing in&#8230;</string>
     <string name="error_invalid_email">This email address is invalid</string>
