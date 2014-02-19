@@ -16,7 +16,7 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
 
-   <string-array name="drawer_menu_array">
+   <string-array name="drawer_menu_item_titles">
         <item>Home</item>
         <item>Activity</item>
         <item>Sleep</item>
@@ -26,6 +26,19 @@
         <item>Settings</item>
     </string-array>
     
+   
+   <!-- Nav Drawer List Item Icons -->
+   <array name="nav_drawer_icons">
+       <item>@drawable/ic_launcher</item>
+       <item>@drawable/ic_launcher</item>
+       <item>@drawable/ic_launcher</item>
+       <item>@drawable/ic_launcher</item>
+       <item>@drawable/ic_launcher</item>
+       <item>@drawable/ic_launcher</item>
+       <item>@drawable/ic_launcher</item>
+   </array>
+   
+   <string name="desc_nav_drawer_item_icon">item icon</string>
    <string name="drawer_open">open drawer</string>
    <string name="drawer_close">close drawer</string>
 </resources>

@@ -2,7 +2,13 @@
     
 <resources>
  <color name="actionbar_text">#FFFFFF</color>
- <color name="actionbar_background">#E91304</color>
- <color name="actionbar_tab_indicator">#E91304</color>
+ <color name="actionbar_background">#99CC99</color>
+ <color name="nav_drawer_background">#FFFFFF</color>
+ <color name="nav_drawer_background_pressed">#99CC99</color>
+ <color name="nav_drawer_item_title">#000000</color>
+ <color name="nav_drawer_item_title_rev">#FFFFFF</color>
+ <color name="nav_drawer_counter_text">#FFFFFF</color>
+ <color name="nav_drawer_counter_background">#FF0000</color>
+ <color name="button">#003366</color>
 </resources>
 
