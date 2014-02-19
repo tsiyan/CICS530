@@ -22,7 +22,7 @@
         android:layout_toRightOf="@id/icon"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:textColor="@color/nav_drawer_item_title"
+        android:textColor="@drawable/nav_drawer_item_text_color"
         android:gravity="center_vertical"
         android:paddingRight="40dp"
         android:typeface="sans"/>
