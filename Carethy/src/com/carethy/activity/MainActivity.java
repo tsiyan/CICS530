@@ -29,7 +29,7 @@ import com.carethy.model.NavDrawerItem;
 
 public class MainActivity extends FragmentActivity implements ActionBar.OnNavigationListener{
 
-	private boolean loggedIn = true;
+	private boolean loggedIn = false;
 	private MenuItem refreshMenuItem;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;

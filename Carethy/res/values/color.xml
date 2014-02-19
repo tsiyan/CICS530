@@ -8,5 +8,7 @@
  <color name="nav_drawer_counter_text">#FFFFFF</color>
  <color name="nav_drawer_counter_background">#FF0000</color>
  <color name="button">#003366</color>
+ <color name="button_pressed">#C0C0C0</color>
+ <color name="button_selected">#C0C0C0</color>
 </resources>
 
