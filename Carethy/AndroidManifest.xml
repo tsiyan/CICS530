@@ -42,6 +42,12 @@
             android:label="@string/title_activity_terms"
             android:parentActivityName="com.carethy.activity.RegisterActivity" >
         </activity>
+        
+        <activity
+			android:name="com.carethy.activity.PasswordRecoveryActivity"
+			android:label="@string/title_activity_password_recovery"
+			android:parentActivityName="com.carethy.activity.LoginActivity">
+        </activity>
     </application>
 
 </manifest>
