@@ -22,7 +22,7 @@ public class ContentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_content, container, false);
         int i = getArguments().getInt(ARG_MENU_ITEM_INDEX);
-        String title = getResources().getStringArray(R.array.drawer_menu_array)[i];
+        String title = getResources().getStringArray(R.array.drawer_menu_item_titles)[i];
         getActivity().setTitle(title);   
 
     

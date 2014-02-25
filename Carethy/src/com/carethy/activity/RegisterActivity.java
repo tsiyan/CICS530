@@ -1,28 +1,28 @@
 package com.carethy.activity;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
+import java.util.Calendar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carethy.R;
@@ -30,30 +30,38 @@ import com.carethy.R;
 public class RegisterActivity extends Activity {
 
 	private View focusView = null;
-	
+
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
 	private String mPassword;
 	private String mPasswordRepeat;
 
 	// UI references.
+	private EditText birthdayEditText;
+	private ImageButton selectBirthdayImageButton;
 	private EditText mEmailView;
 	private EditText mPasswordView;
 	private EditText mPasswordRepeatView;
-	
+	private TextView mTermsTextView;
+
+	private int year;
+	private int month;
+	private int day;
+	static final int DATE_DIALOG_ID = 999;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
 		// Show the Up button in the action bar.
 		setupActionBar();
-		
+
 		mEmailView = (EditText) findViewById(R.id.email);
 		mEmailView.setText(mEmail);
 
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mPasswordRepeatView = (EditText) findViewById(R.id.password_repeat);
-		
+
 		findViewById(R.id.register_button2).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -61,6 +69,20 @@ public class RegisterActivity extends Activity {
 						register();
 					}
 				});
+
+		mTermsTextView = (TextView) findViewById(R.id.register_terms);
+		mTermsTextView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(getApplication(),
+						TermsConditionsActivity.class);
+				startActivity(intent);
+			}
+
+		});
+
+		addDatePickerListener();
 	}
 
 	/**
@@ -116,14 +138,15 @@ public class RegisterActivity extends Activity {
 			mPasswordView.setError(getString(R.string.error_invalid_password));
 			focusView = mPasswordView;
 			cancel = true;
-		}
-		else if (TextUtils.isEmpty(mPasswordRepeat)) {
-			mPasswordRepeatView.setError(getString(R.string.error_field_required));
+		} else if (TextUtils.isEmpty(mPasswordRepeat)) {
+			mPasswordRepeatView
+					.setError(getString(R.string.error_field_required));
 			focusView = mPasswordRepeatView;
 			cancel = true;
-		// Check if passwords match
+			// Check if passwords match
 		} else if (!mPassword.equals(mPasswordRepeat)) {
-			mPasswordRepeatView.setError(getString(R.string.error_no_match_password));
+			mPasswordRepeatView
+					.setError(getString(R.string.error_no_match_password));
 			focusView = mPasswordRepeatView;
 			cancel = true;
 		}
@@ -137,23 +160,24 @@ public class RegisterActivity extends Activity {
 			mEmailView.setError(getString(R.string.error_invalid_email));
 			focusView = mEmailView;
 			cancel = true;
-		}	
+		}
 		return cancel;
 	}
-	
+
 	public void register() {
 		if (inputError()) {
 			focusView.requestFocus();
 		} else {
-			
+
 			// TODO this should add to the DB
 			String json = createJSON();
-			
-			Toast.makeText(RegisterActivity.this, "User successfully created", Toast.LENGTH_LONG).show();
+
+			Toast.makeText(RegisterActivity.this, "User successfully created",
+					Toast.LENGTH_LONG).show();
 			finish();
 		}
 	}
-	
+
 	public String createJSON() {
 		String json = null;
 		JSONObject user = new JSONObject();
@@ -173,7 +197,7 @@ public class RegisterActivity extends Activity {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
-		
+
 		try {
 			JSONArray arr = new JSONArray(json);
 			arr.put(user);
@@ -181,8 +205,57 @@ public class RegisterActivity extends Activity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
-		//TODO can't write to assets folder, so can't write the file here; obsolete anyway when the DB is up 
+
+		// TODO can't write to assets folder, so can't write the file here;
+		// obsolete anyway when the DB is up
 		return json;
 	}
+
+
+	private void addDatePickerListener() {
+		birthdayEditText = (EditText) findViewById(R.id.birthday);
+		selectBirthdayImageButton = (ImageButton) findViewById(R.id.birthday_image_button);
+		
+		final Calendar c = Calendar.getInstance();
+		year = c.get(Calendar.YEAR);
+		month = c.get(Calendar.MONTH);
+		day = c.get(Calendar.DAY_OF_MONTH);
+ 
+		selectBirthdayImageButton.setOnClickListener(new View.OnClickListener() {
+
+			@SuppressWarnings("deprecation")
+			@Override
+			public void onClick(View v) {
+				showDialog(DATE_DIALOG_ID);
+
+			}
+		});
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DATE_DIALOG_ID:
+			// set date picker as current date
+			return new DatePickerDialog(this, datePickerListener, year, month,
+					day);
+		}
+		return null;
+	}
+
+	private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
+
+		// when dialog box is closed, below method will be called.
+		public void onDateSet(DatePicker view, int selectedYear,
+				int selectedMonth, int selectedDay) {
+			year = selectedYear;
+			month = selectedMonth;
+			day = selectedDay;
+
+			birthdayEditText.setText(new StringBuilder().append(month + 1)
+					.append("-").append(day).append("-").append(year)
+					.append(" "));
+		}
+	};
+
 }

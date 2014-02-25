@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="16"
         android:targetSdkVersion="19" />
 
     <application
@@ -37,6 +37,17 @@
             android:parentActivityName="com.carethy.activity.LoginActivity" >
         </activity>
         
+        <activity
+            android:name="com.carethy.activity.TermsConditionsActivity"
+            android:label="@string/title_activity_terms"
+            android:parentActivityName="com.carethy.activity.RegisterActivity" >
+        </activity>
+        
+        <activity
+			android:name="com.carethy.activity.PasswordRecoveryActivity"
+			android:label="@string/title_activity_password_recovery"
+			android:parentActivityName="com.carethy.activity.LoginActivity">
+        </activity>
     </application>
 
 </manifest>

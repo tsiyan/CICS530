@@ -1,10 +1,13 @@
 package com.carethy.activity;
 
+import java.util.ArrayList;
+
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -16,24 +19,29 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.carethy.R;
+import com.carethy.adapter.NavDrawerListAdapter;
 import com.carethy.fragment.ContentFragment;
+import com.carethy.model.NavDrawerItem;
 
 
 public class MainActivity extends FragmentActivity implements ActionBar.OnNavigationListener{
 
-	private boolean loggedIn = true;
+	private boolean loggedIn = false;
 	private MenuItem refreshMenuItem;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-
-    private CharSequence mDrawerTitle;
+    
+    //Sliding menu items
     private CharSequence mTitle;
-    private String[] mMenuItemArray;
+    private CharSequence mDrawerTitle;
+    private String[] navMenuItemTitles;
+    private TypedArray navMenuIcons;
+    private ArrayList<NavDrawerItem> navDrawerItems; 
+	private NavDrawerListAdapter mNavDrawerListAdapter;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		if (!loggedIn) {
@@ -84,14 +92,36 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 	  
 	private void initView(Bundle savedInstanceState){
 		mTitle = mDrawerTitle = getTitle();
-        mMenuItemArray = getResources().getStringArray(R.array.drawer_menu_array);
+		// load sliding menu items
+        navMenuItemTitles = getResources().getStringArray(R.array.drawer_menu_item_titles);
+        
+        // load nav drawer icons
+        navMenuIcons=getResources().obtainTypedArray(R.array.nav_drawer_icons);
+        
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
+        navDrawerItems=new ArrayList<NavDrawerItem>();
+        // add nav drawer items to array
+        navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[0],navMenuIcons.getResourceId(0,-1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[1],navMenuIcons.getResourceId(1,-1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[2],navMenuIcons.getResourceId(2,-1),true,"50"));
+        navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[3],navMenuIcons.getResourceId(3,-1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[4],navMenuIcons.getResourceId(4,-1),true,"22"));
+        navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[5],navMenuIcons.getResourceId(5,-1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[6],navMenuIcons.getResourceId(6,-1)));
+        
+        // recycle the typed array
+        navMenuIcons.recycle();
+        
+        // set the nav drawer list adapter
+        mNavDrawerListAdapter = new NavDrawerListAdapter(getApplicationContext(),navDrawerItems);
+       
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+       
         // set up the drawer's list view with items and click listener
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,R.layout.drawer_list_item, mMenuItemArray));
+        mDrawerList.setAdapter(mNavDrawerListAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
@@ -184,7 +214,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
-        setTitle(mMenuItemArray[position]);
+        setTitle(navMenuItemTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
