@@ -2,6 +2,7 @@ package com.carethy.activity;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.UnknownHostException;
 import java.util.Calendar;
 
 import org.json.JSONArray;
@@ -12,6 +13,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
@@ -26,6 +28,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carethy.R;
+import com.carethy.activity.LoginActivity.UserLoginTask;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
 
 public class RegisterActivity extends Activity {
 
@@ -48,6 +57,7 @@ public class RegisterActivity extends Activity {
 	private int month;
 	private int day;
 	static final int DATE_DIALOG_ID = 999;
+	private RegisterTask mRegisterTask = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +126,16 @@ public class RegisterActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void register() {
+		mRegisterTask = new RegisterTask();
+		mRegisterTask.execute((Void) null);
+	}
+	
 	private boolean inputError() {
+		boolean cancel = false;
+
+		//TODO this has to be in a runOnUiThread(new Runnable() {... or whatever
+		/*
 		// Reset errors.
 		mEmailView.setError(null);
 		mPasswordView.setError(null);
@@ -126,8 +145,6 @@ public class RegisterActivity extends Activity {
 		mEmail = mEmailView.getText().toString();
 		mPassword = mPasswordView.getText().toString();
 		mPasswordRepeat = mPasswordRepeatView.getText().toString();
-
-		boolean cancel = false;
 
 		// Check for a valid password.
 		if (TextUtils.isEmpty(mPassword)) {
@@ -150,8 +167,9 @@ public class RegisterActivity extends Activity {
 			focusView = mPasswordRepeatView;
 			cancel = true;
 		}
-
-		// Check for a valid email address.
+		*/
+		//TODO change this to reasonable validations
+		/*
 		if (TextUtils.isEmpty(mEmail)) {
 			mEmailView.setError(getString(R.string.error_field_required));
 			focusView = mEmailView;
@@ -161,56 +179,9 @@ public class RegisterActivity extends Activity {
 			focusView = mEmailView;
 			cancel = true;
 		}
+		*/
 		return cancel;
 	}
-
-	public void register() {
-		if (inputError()) {
-			focusView.requestFocus();
-		} else {
-
-			// TODO this should add to the DB
-			String json = createJSON();
-
-			Toast.makeText(RegisterActivity.this, "User successfully created",
-					Toast.LENGTH_LONG).show();
-			finish();
-		}
-	}
-
-	public String createJSON() {
-		String json = null;
-		JSONObject user = new JSONObject();
-		try {
-			user.put("user_name", mEmail);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		try {
-			InputStream is = getAssets().open("sample_data.json");
-			int size = is.available();
-			byte[] buffer = new byte[size];
-			is.read(buffer);
-			is.close();
-			json = new String(buffer, "UTF-8");
-
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-
-		try {
-			JSONArray arr = new JSONArray(json);
-			arr.put(user);
-			json = arr.toString();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		// TODO can't write to assets folder, so can't write the file here;
-		// obsolete anyway when the DB is up
-		return json;
-	}
-
 
 	private void addDatePickerListener() {
 		birthdayEditText = (EditText) findViewById(R.id.birthday);
@@ -258,4 +229,42 @@ public class RegisterActivity extends Activity {
 		}
 	};
 
+	public class RegisterTask extends AsyncTask<Void, Void, Boolean> {
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			if (inputError()) {
+				focusView.requestFocus();
+			} else {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						MongoClient mongoClient;
+						try {
+							mongoClient = new MongoClient("troup.mongohq.com",
+									10037);
+
+							final DB db = mongoClient.getDB("Carethy");
+							boolean auth = db.authenticate("carethy",
+									"carethy".toCharArray());
+							if (auth) {
+
+								DBCollection coll = db.getCollection("user");
+								BasicDBObject doc = new BasicDBObject(
+										"username", mEmail).append("password",
+										mPassword);
+								coll.insert(doc);
+								Toast.makeText(RegisterActivity.this,
+										"User successfully created",
+										Toast.LENGTH_LONG).show();
+							}
+						} catch (UnknownHostException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				finish();
+			}
+			return true;
+		}
+	}
 }

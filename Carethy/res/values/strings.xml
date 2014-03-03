@@ -45,5 +45,6 @@
     <string name="drawer_open">open drawer</string>
     <string name="drawer_close">close drawer</string>
     <string name="terms_and_conditions">Carethy Terms and Conditions("Agreement")\nThis agreement was last modifited of February 18, 2014\n\nPlease read these Terms and conditions ("Agreement", "Terms and Conditions") carefully before using carethy.com ("the Site") operated by Carethy ("us", "we", or "our"). This Agreement sets forth the legally binding terms and conditions for you use of the Site at carethy.com.\n\nBy accessing orusing the Site in any manner, including, but not lmited to, visiting or browsing the Site or contribting content or other materials to the Site, you agree to be bound by these Terms and Conditions. Capitalized terms are defined in this Agreement.</string>
+    <string name="title_activity_fitbit">Connect to Fitbit</string>
 
 </resources>

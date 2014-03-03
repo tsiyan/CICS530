@@ -7,6 +7,7 @@
     <string name="prompt_last_name">Last Name</string>
     <string name="prompt_weight">Weight (kg)</string>
     <string name="prompt_height">Height (cm)</string>
+    <string name="prompt_username">Username</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_password_repeat">Repeat password</string>
@@ -21,10 +22,11 @@
     <string name="login_progress_signing_in">Signing in&#8230;</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_incorrect_password">The Username or Password is incorrect</string>
     <string name="error_no_match_password">This passwords don\'t match</string>
     <string name="error_field_required">This field is required</string>
     <string name="radio_male">Male</string>
     <string name="radio_female">Female</string>
+    <string name="tempFitbit">Connect with Fitbit</string>
 
 </resources>

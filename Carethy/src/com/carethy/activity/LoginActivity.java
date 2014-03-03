@@ -1,12 +1,5 @@
 package com.carethy.activity;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -15,7 +8,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -24,6 +16,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.carethy.R;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -39,11 +37,11 @@ public class LoginActivity extends Activity {
 	private UserLoginTask mAuthTask = null;
 
 	// Values for email and password at the time of the login attempt.
-	private String mEmail;
+	private String mUsername;
 	private String mPassword;
 
 	// UI references.
-	private EditText mEmailView;
+	private EditText mUsernameView;
 	private EditText mPasswordView;
 	private View mLoginFormView;
 	private View mLoginStatusView;
@@ -56,8 +54,8 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_login);
 
 		// Set up the login form.
-		mEmailView = (EditText) findViewById(R.id.email);
-		mEmailView.setText(mEmail);
+		mUsernameView = (EditText) findViewById(R.id.username);
+		mUsernameView.setText(mUsername);
 
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mPasswordView
@@ -103,6 +101,14 @@ public class LoginActivity extends Activity {
 						register();
 					}
 				});
+		
+		findViewById(R.id.tmpButton).setOnClickListener(
+				new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						connectToFitbit();
+					}
+				});
 	}
 
 	@Override
@@ -114,15 +120,16 @@ public class LoginActivity extends Activity {
 
 	private boolean inputError() {
 		// Reset errors.
-		mEmailView.setError(null);
+		mUsernameView.setError(null);
 		mPasswordView.setError(null);
 
 		// Store values at the time of the login attempt.
-		mEmail = mEmailView.getText().toString();
+		mUsername = mUsernameView.getText().toString();
 		mPassword = mPasswordView.getText().toString();
 
 		boolean cancel = false;
-
+		//TODO change this to reasonable validations
+/*
 		// Check for a valid password.
 		if (TextUtils.isEmpty(mPassword)) {
 			mPasswordView.setError(getString(R.string.error_field_required));
@@ -135,20 +142,26 @@ public class LoginActivity extends Activity {
 		}
 
 		// Check for a valid email address.
-		if (TextUtils.isEmpty(mEmail)) {
-			mEmailView.setError(getString(R.string.error_field_required));
-			focusView = mEmailView;
+		if (TextUtils.isEmpty(mUsername)) {
+			mUsernameView.setError(getString(R.string.error_field_required));
+			focusView = mUsernameView;
 			cancel = true;
-		} else if (!mEmail.contains("@")) {
-			mEmailView.setError(getString(R.string.error_invalid_email));
-			focusView = mEmailView;
+		} else if (!mUsername.contains("@")) {
+			mUsernameView.setError(getString(R.string.error_invalid_email));
+			focusView = mUsernameView;
 			cancel = true;
 		}	
+*/		
 		return cancel;
 	}
 	
 	public void register() {
 		Intent intent = new Intent(this, RegisterActivity.class);
+	    startActivity(intent);
+	}
+	
+	public void connectToFitbit() {
+		Intent intent = new Intent(this, FitbitActivity.class);
 	    startActivity(intent);
 	}
 	
@@ -224,46 +237,48 @@ public class LoginActivity extends Activity {
 		@Override
 		protected Boolean doInBackground(Void... params) {
 
-			String json = null;
-			
+			boolean loggedIn = false;
 			try {
-				InputStream is = getAssets().open("sample_data.json");
-				int size = is.available();
-				byte[] buffer = new byte[size];
-				is.read(buffer);
-				is.close();
-				json = new String(buffer, "UTF-8");
+				MongoClient mongoClient = new MongoClient("troup.mongohq.com",
+						10037);
 
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-			
-				JSONObject obj;
-				try {
-					obj = new JSONObject(json);
-					JSONArray carethy = obj.getJSONArray("Carethy");
-					for (int i = 0; i < carethy.length(); i++) {
-						JSONObject user = carethy.getJSONObject(i);
-						if (user.get("user_name").equals(mEmail)) {
-							if (user.get("password").equals(mPassword)) {
-								return true;
-							}
-							else {
-								return false;
+				DB db = mongoClient.getDB("Carethy");
+				boolean auth = db.authenticate("carethy",
+						"carethy".toCharArray());
+				if (auth) {
+					DBCollection coll = db.getCollection("user");
+					DBCursor cursor = coll.find();
+					BasicDBObject query = new BasicDBObject("username", mUsername);
+					cursor = coll.find(query);
+
+					try {
+						while (cursor.hasNext()) {
+							DBObject user = cursor.next();
+							if (user.get("password").toString()
+									.equals(mPassword)) {
+								loggedIn = true;
+							} else {
+								loggedIn = false;
 							}
 						}
+					} finally {
+						cursor.close();
 					}
-				} catch (JSONException e) {
-					e.printStackTrace();
+				} else {
+					loggedIn = false;
 				}
-			return false;
+			} catch (Exception e) {
+				e.printStackTrace();
+				loggedIn = false;
+			}
+			return loggedIn;
 		}
 
 		@Override
 		protected void onPostExecute(final Boolean success) {
 			mAuthTask = null;
 			showProgress(false);
-
+			
 			if (success) {
 				finish();
 			} else {
