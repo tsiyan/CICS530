@@ -10,20 +10,18 @@ public class ContentFragmentFactory {
 		switch (position) {
 		case 0:// "Home"
 			return new HomeContentFragment();
-		case 1:// "sleep"
+		case 1:// "Activity"
+			return new ActivityContentFragment();
+		case 2:// "Sleep"
 			return new SleepContentFragment();
-		case 2:// "heart rate"
-			return new Heart
-			break;
-		case 3:// "blood pressure"
-
-			break;
-		case 4:// "devices"
-
-			break;
-		case 5:// "settings"
-
-			break;
+		case 3:// "Heart Rate"
+			return new HeartContentFragment();
+		case 4:// "Blood Pressure"
+			return new BloodPressureContentFragment();
+		case 5:// "Devices"
+			return new DevicesContentFragment();
+		case 6:// "Settings"
+			return new SettingsContentFragment();
 		default:
 			break;
 		}

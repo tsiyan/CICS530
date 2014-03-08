@@ -27,6 +27,10 @@
         <item>Devices</item>
         <item>Settings</item>
     </string-array>
+    <string-array name="device_list">
+        <item>Fitbit</item>
+        <item>Jawbone</item>
+    </string-array>
 
     <!-- Nav Drawer List Item Icons -->
     <array name="nav_drawer_icons">

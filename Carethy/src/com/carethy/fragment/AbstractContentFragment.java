@@ -24,10 +24,8 @@ public abstract class AbstractContentFragment extends Fragment {
         title = getResources().getStringArray(R.array.drawer_menu_item_titles)[i];
         getActivity().setTitle(title);   
         
-        initView();
     
         return rootView;
     }
     
-    public abstract void initView();
 }
