@@ -23,7 +23,8 @@ import android.widget.ListView;
 
 import com.carethy.R;
 import com.carethy.adapter.NavDrawerListAdapter;
-import com.carethy.fragment.ContentFragment;
+import com.carethy.fragment.AbstractContentFragment;
+import com.carethy.fragment.ContentFragmentFactory;
 import com.carethy.model.NavDrawerItem;
 
 
@@ -204,11 +205,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 
     private void selectItem(int position) {
         // update the main content by replacing fragments
-        Fragment fragment = new ContentFragment();
+        Fragment fragment = ContentFragmentFactory.buildContentFragment(position);
         Bundle args = new Bundle();
-        args.putInt(ContentFragment.ARG_MENU_ITEM_INDEX, position);
+        args.putInt(AbstractContentFragment.ARG_MENU_ITEM_INDEX, position);
         fragment.setArguments(args);
-
+        
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
