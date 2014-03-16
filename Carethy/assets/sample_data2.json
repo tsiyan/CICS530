@@ -1,0 +1,103 @@
+{ 
+   "User" :
+            [
+				{
+					"email":"siyanfaisal@yahoo.com",
+					"first_name":"Olingo",
+					"last_name":"Olinguito",
+					"date_of_birth":"22/2/1965",
+					"gender":"male",
+					"height":"165",
+					"health"		:[
+										{
+											"condition":"hypertension"
+										},
+										{
+											"condition":"insomnia"
+										},
+										{
+											"condition":"diabetes"
+										}
+									],
+					"weight"		:[
+										{
+											"bmi":23.57,
+											"date":"2012-03-05",
+											"time":"23:59:59",
+											"weight":73
+										},
+										{
+											"bmi":22.57,
+											"date":"2012-03-05",
+											"time":"21:10:59",
+											"weight":72.5
+										}
+									],
+					"heart_rate"	:[
+										{
+											"heartRate":70,
+											"date":"2012-03-05",
+											"time":"21:10:59",
+											"tracker":"Normal Heart Rate"
+										},
+										{
+											"heartRate":70,
+											"date":"2012-04-05",
+											"time":"21:10:59",
+											"tracker":"Normal Heart Rate"
+										}
+									],
+					"blood_pressure":[
+										{
+											"date":"2012-03-05",
+											"time":"23:59:59",
+											"diastolic":85,
+											"systolic":115
+										},
+										{
+											"date":"2012-04-05",
+											"time":"23:59:59",
+											"diastolic":85,
+											"systolic":115
+										}
+										
+									],
+					"sleep"			:[
+										{
+											"date": "2012-03-05",
+											"efficiency":10,
+											"time":"23:59:59",
+											"minutesAsleep":480,
+											"minutesAwake":0,
+											"awakeningsCount":0,
+											"timeInBed":480
+										},
+										{
+											"date": "2012-03-04",
+											"efficiency":9,
+											"time":"23:59:59",
+											"minutesAsleep":420,
+											"minutesAwake":0,
+											"awakeningsCount":0,
+											"timeInBed":420
+										}
+									],
+					"activity"		:[
+										{
+											"date":"2012-03-05",
+											"time":"02:59:59",
+											"distance": 2.04,
+											"duration": 1097053,
+											"steps":3783
+										},
+										{
+											"date":"2012-04-05",
+											"time":"02:59:59",
+											"distance": 2.04,
+											"duration": 1097053,
+											"steps":5789
+										}
+									]
+				}
+             ] 
+}
