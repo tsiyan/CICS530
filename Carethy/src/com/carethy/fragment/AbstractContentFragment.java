@@ -18,7 +18,7 @@ public abstract class AbstractContentFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_content, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_graph, container, false);
         int i = getArguments().getInt(ARG_MENU_ITEM_INDEX);
         
         title = getResources().getStringArray(R.array.drawer_menu_item_titles)[i];
