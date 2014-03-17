@@ -24,6 +24,7 @@
         <item>Sleep</item>
         <item>Heart Rate</item>
         <item>Blood Pressure</item>
+        <item>Recommendations</item>
         <item>Devices</item>
         <item>Settings</item>
     </string-array>
@@ -31,16 +32,17 @@
         <item>Fitbit</item>
         <item>Jawbone</item>
     </string-array>
-
+	
     <!-- Nav Drawer List Item Icons -->
     <array name="nav_drawer_icons">
-        <item>@drawable/ic_launcher</item>
-        <item>@drawable/ic_launcher</item>
-        <item>@drawable/ic_launcher</item>
-        <item>@drawable/ic_launcher</item>
-        <item>@drawable/ic_launcher</item>
-        <item>@drawable/ic_launcher</item>
-        <item>@drawable/ic_launcher</item>
+        <item>@drawable/ic_home</item>
+        <item>@drawable/ic_activity</item>
+        <item>@drawable/ic_sleep</item>
+        <item>@drawable/ic_heart_rate</item>
+        <item>@drawable/ic_blood_pressure</item>
+        <item>@drawable/ic_recommendations</item>
+        <item>@drawable/ic_devices</item>
+        <item>@drawable/ic_settings</item>
     </array>
 
     <string name="desc_nav_drawer_item_icon">item icon</string>
