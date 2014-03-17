@@ -18,9 +18,11 @@ public class ContentFragmentFactory {
 			return new HeartContentFragment();
 		case 4:// "Blood Pressure"
 			return new BloodPressureContentFragment();
-		case 5:// "Devices"
+		case 5:// "Recommendations"
+			return new RecommendationsContentFragment();
+		case 6:// "Devices"
 			return new DevicesContentFragment();
-		case 6:// "Settings"
+		case 7:// "Settings"
 			return new SettingsContentFragment();
 		default:
 			break;

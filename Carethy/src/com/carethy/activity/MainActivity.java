@@ -112,15 +112,17 @@ public class MainActivity extends FragmentActivity implements
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[1], navMenuIcons
 				.getResourceId(1, -1)));
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[2], navMenuIcons
-				.getResourceId(2, -1), true, "50"));
+				.getResourceId(2, -1)));
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[3], navMenuIcons
 				.getResourceId(3, -1)));
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[4], navMenuIcons
-				.getResourceId(4, -1), true, "22"));
+				.getResourceId(4, -1)));
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[5], navMenuIcons
-				.getResourceId(5, -1)));
+				.getResourceId(5, -1), true, "1"));
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[6], navMenuIcons
 				.getResourceId(6, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[7], navMenuIcons
+				.getResourceId(7, -1)));
 
 		// recycle the typed array
 		navMenuIcons.recycle();
@@ -189,14 +191,16 @@ public class MainActivity extends FragmentActivity implements
 			try {
 				Thread.sleep(1000);
 
-				android.app.Fragment fragment = ContentFragmentFactory.buildContentFragment(0);
+				android.app.Fragment fragment = ContentFragmentFactory
+						.buildContentFragment(0);
 				Bundle args = new Bundle();
-				Random rand=new Random();
-				
-				int count=30;
-				double[] values=new double[count];
-				for(int i=0;i<values.length;i++){
-					values[i]=Math.sin(i * (rand.nextDouble() * 0.1 + 0.3) + 2);
+				Random rand = new Random();
+
+				int count = 30;
+				double[] values = new double[count];
+				for (int i = 0; i < values.length; i++) {
+					values[i] = Math.sin(i * (rand.nextDouble() * 0.1 + 0.3)
+							+ 2);
 				}
 				args.putDoubleArray("test", values);
 				fragment.setArguments(args);
