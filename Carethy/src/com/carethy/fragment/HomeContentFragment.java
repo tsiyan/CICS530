@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.carethy.R;
 import com.jjoe64.graphview.BarGraphView;
@@ -26,8 +25,7 @@ public class HomeContentFragment extends AbstractContentFragment {
 
 		Bundle bundle = this.getArguments();
 		if (bundle != null) {
-			values=bundle.getDoubleArray("test");
-			Toast.makeText(getActivity(), "test", Toast.LENGTH_LONG).show();
+			values=bundle.getDoubleArray("values");
 			if(values!=null){
 				initView(rootView);
 			}

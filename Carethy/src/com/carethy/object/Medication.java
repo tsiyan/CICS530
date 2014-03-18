@@ -7,6 +7,6 @@ public class Medication {
 	public Timer timer;
 
 	public Medication(String medicine){
-
+		this.medicine=medicine;
 	}
 }

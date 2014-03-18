@@ -30,7 +30,7 @@ import com.carethy.model.NavDrawerItem;
 public class MainActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
 
-	private boolean loggedIn = false;
+	private boolean loggedIn = true;
 	private MenuItem refreshMenuItem;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
@@ -43,7 +43,9 @@ public class MainActivity extends FragmentActivity implements
 	private TypedArray navMenuIcons;
 	private ArrayList<NavDrawerItem> navDrawerItems;
 	private NavDrawerListAdapter mNavDrawerListAdapter;
+	private static int mPosition = 0;
 
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		if (!loggedIn) {
 			Intent intent = new Intent(this, LoginActivity.class);
@@ -65,10 +67,7 @@ public class MainActivity extends FragmentActivity implements
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// If the nav drawer is open, hide action items related to the content
-		// view
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-		menu.findItem(R.id.action_refresh).setVisible(!drawerOpen);
+
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -169,9 +168,12 @@ public class MainActivity extends FragmentActivity implements
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-		if (savedInstanceState == null) {
-			selectItem(0);
-		}
+//		if (savedInstanceState == null) {
+//			selectItem(0);
+//		} else {
+//			selectItem(savedInstanceState.getInt("position"));
+//		}
+		selectItem(mPosition);
 	}
 
 	/**
@@ -191,23 +193,7 @@ public class MainActivity extends FragmentActivity implements
 			try {
 				Thread.sleep(1000);
 
-				android.app.Fragment fragment = ContentFragmentFactory
-						.buildContentFragment(0);
-				Bundle args = new Bundle();
-				Random rand = new Random();
-
-				int count = 30;
-				double[] values = new double[count];
-				for (int i = 0; i < values.length; i++) {
-					values[i] = Math.sin(i * (rand.nextDouble() * 0.1 + 0.3)
-							+ 2);
-				}
-				args.putDoubleArray("test", values);
-				fragment.setArguments(args);
-
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, fragment).commit();
+				replaceFragment(0);
 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -236,22 +222,36 @@ public class MainActivity extends FragmentActivity implements
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
+			mPosition = position;
 			selectItem(position);
 		}
 	}
 
-	private void selectItem(int position) {
+	private void replaceFragment(int position) {
 		// update the main content by replacing fragments
 		android.app.Fragment fragment = ContentFragmentFactory
 				.buildContentFragment(position);
 		Bundle args = new Bundle();
+		Random rand = new Random();
+
+		int count = 30;
+		double[] values = new double[count];
+		for (int i = 0; i < values.length; i++) {
+			values[i] = Math.sin(i * (rand.nextDouble() * 0.1 + 0.3) + 2);
+		}
+		args.putDoubleArray("values", values);
 		args.putInt(AbstractContentFragment.ARG_MENU_ITEM_INDEX, position);
 		fragment.setArguments(args);
 
 		FragmentManager fragmentManager = getFragmentManager();
+
 		fragmentManager.beginTransaction()
 				.replace(R.id.content_frame, fragment).commit();
 
+	}
+
+	private void selectItem(int position) {
+		replaceFragment(position);
 		// update selected item and title, then close the drawer
 		mDrawerList.setItemChecked(position, true);
 		setTitle(navMenuItemTitles[position]);

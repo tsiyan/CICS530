@@ -18,28 +18,28 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_weight"
+            android:drawableTop="@drawable/ic_activity"
             android:text="This text will not scroll1" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_heart_rate"
+            android:drawableTop="@drawable/ic_sleep"
             android:text="This text will not scroll2" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_blood_pressure"
+            android:drawableTop="@drawable/ic_heart_rate"
             android:text="This text will not scroll3" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_activity"
+            android:drawableTop="@drawable/ic_blood_pressure"
             android:text="This text will not scroll4" />
     </LinearLayout>
 
