@@ -25,13 +25,10 @@
         <item>Heart Rate</item>
         <item>Blood Pressure</item>
         <item>Recommendations</item>
-        <item>Devices</item>
+        <item>Medication</item>
         <item>Settings</item>
     </string-array>
-    <string-array name="device_list">
-        <item>Fitbit</item>
-        <item>Jawbone</item>
-    </string-array>
+
 	
     <!-- Nav Drawer List Item Icons -->
     <array name="nav_drawer_icons">
@@ -41,7 +38,7 @@
         <item>@drawable/ic_heart_rate</item>
         <item>@drawable/ic_blood_pressure</item>
         <item>@drawable/ic_recommendations</item>
-        <item>@drawable/ic_devices</item>
+        <item>@drawable/ic_medication</item>
         <item>@drawable/ic_settings</item>
     </array>
 
