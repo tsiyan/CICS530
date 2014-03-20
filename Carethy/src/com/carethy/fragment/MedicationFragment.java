@@ -3,6 +3,7 @@ package com.carethy.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,7 +21,7 @@ import com.carethy.activity.CreateMedicationActivity;
 import com.carethy.adapter.CustomArrayAdapter;
 import com.carethy.object.Medication;
 
-public class MedicationContentFragment extends AbstractContentFragment {
+public class MedicationFragment extends Fragment {
 	private ListView mListView;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

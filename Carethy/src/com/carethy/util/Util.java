@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -48,8 +49,20 @@ public class Util {
 
 	public static String getTimestamp() {
 		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss",Locale.US);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss",Locale.CANADA);
 		return sdf.format(date);
 	}
 
+	public static double[] fetchData(){
+		Random rand = new Random();
+
+		int count = 30;
+		double[] values = new double[count];
+		for (int i = 0; i < values.length; i++) {
+			values[i] = Math.sin(i * (rand.nextDouble() * 0.1 + 0.3) + 2);
+		}
+		
+		return values;
+		
+	}
 }

@@ -1,10 +1,9 @@
 package com.carethy.activity;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import android.app.ActionBar;
-import android.app.FragmentManager;
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -23,7 +22,6 @@ import android.widget.ListView;
 
 import com.carethy.R;
 import com.carethy.adapter.NavDrawerListAdapter;
-import com.carethy.fragment.AbstractContentFragment;
 import com.carethy.fragment.ContentFragmentFactory;
 import com.carethy.model.NavDrawerItem;
 
@@ -168,11 +166,11 @@ public class MainActivity extends FragmentActivity implements
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-//		if (savedInstanceState == null) {
-//			selectItem(0);
-//		} else {
-//			selectItem(savedInstanceState.getInt("position"));
-//		}
+		// if (savedInstanceState == null) {
+		// selectItem(0);
+		// } else {
+		// selectItem(savedInstanceState.getInt("position"));
+		// }
 		selectItem(mPosition);
 	}
 
@@ -193,7 +191,7 @@ public class MainActivity extends FragmentActivity implements
 			try {
 				Thread.sleep(1000);
 
-				replaceFragment(0);
+				replaceFragment(mPosition);// current fragment
 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -229,25 +227,11 @@ public class MainActivity extends FragmentActivity implements
 
 	private void replaceFragment(int position) {
 		// update the main content by replacing fragments
-		android.app.Fragment fragment = ContentFragmentFactory
+		Fragment fragment = ContentFragmentFactory
 				.buildContentFragment(position);
-		Bundle args = new Bundle();
-		Random rand = new Random();
 
-		int count = 30;
-		double[] values = new double[count];
-		for (int i = 0; i < values.length; i++) {
-			values[i] = Math.sin(i * (rand.nextDouble() * 0.1 + 0.3) + 2);
-		}
-		args.putDoubleArray("values", values);
-		args.putInt(AbstractContentFragment.ARG_MENU_ITEM_INDEX, position);
-		fragment.setArguments(args);
-
-		FragmentManager fragmentManager = getFragmentManager();
-
-		fragmentManager.beginTransaction()
+		getFragmentManager().beginTransaction()
 				.replace(R.id.content_frame, fragment).commit();
-
 	}
 
 	private void selectItem(int position) {
