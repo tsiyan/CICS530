@@ -78,7 +78,7 @@ public abstract class GraphBaseFragment extends Fragment {
 			@Override
 			protected Void doInBackground(Void... arg0) {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(500);
 					values = Util.fetchData();
 
 				} catch (InterruptedException e) {
