@@ -4,6 +4,8 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="19" />
@@ -36,17 +38,20 @@
             android:label="@string/title_activity_register"
             android:parentActivityName="com.carethy.activity.LoginActivity" >
         </activity>
-        
         <activity
             android:name="com.carethy.activity.TermsConditionsActivity"
             android:label="@string/title_activity_terms"
             android:parentActivityName="com.carethy.activity.RegisterActivity" >
         </activity>
-        
         <activity
-			android:name="com.carethy.activity.PasswordRecoveryActivity"
-			android:label="@string/title_activity_password_recovery"
-			android:parentActivityName="com.carethy.activity.LoginActivity">
+            android:name="com.carethy.activity.PasswordRecoveryActivity"
+            android:label="@string/title_activity_password_recovery"
+            android:parentActivityName="com.carethy.activity.LoginActivity" >
+        </activity>
+        <activity
+            android:name="com.carethy.activity.CreateMedicationActivity"
+            android:label="@string/title_activity_create_medication"
+            android:parentActivityName="com.carethy.activity.MainActivity" >
         </activity>
     </application>
 
