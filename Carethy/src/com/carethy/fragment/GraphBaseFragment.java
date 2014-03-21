@@ -1,21 +1,23 @@
 package com.carethy.fragment;
 
+import java.io.File;
+
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.carethy.R;
 import com.carethy.util.Util;
@@ -34,7 +36,6 @@ import com.jjoe64.graphview.LineGraphView;
 public abstract class GraphBaseFragment extends Fragment {
 	private LinearLayout linearLayout;
 	private LineGraphView graphView;
-	private Button captureButton;
 	private View rootView;
 	private ProgressDialog mProgressDialog = null;
 	private double[] values;
@@ -62,9 +63,38 @@ public abstract class GraphBaseFragment extends Fragment {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		super.onOptionsItemSelected(item);
-		loadData();
-		return true;
+
+		switch (item.getItemId()) {
+		case R.id.action_share:
+			shareData();
+			return true;
+		case R.id.action_refresh:
+			loadData();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	public void shareData() {
+		linearLayout.setDrawingCacheEnabled(true);// enable cache
+		linearLayout.buildDrawingCache(true);
+
+		Bitmap imageData = Bitmap.createBitmap(linearLayout.getDrawingCache());
+
+		linearLayout.setDrawingCacheEnabled(false); // clear cache
+
+		String fileName = Util.getTimestamp() + ".png";
+		if (Util.saveImage(imageData, fileName)) {
+			Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+			intent.setType("image/*");
+			String imagePath = Environment.getExternalStorageDirectory()
+					+ File.separator + "Carethy" + File.separator + fileName;
+			File imageFileToShare = new File(imagePath);
+			Uri uri = Uri.fromFile(imageFileToShare);
+			intent.putExtra(Intent.EXTRA_STREAM, uri);
+			startActivity(Intent.createChooser(intent, "Share to..."));
+		}
 	}
 
 	public void loadData() {
@@ -144,28 +174,6 @@ public abstract class GraphBaseFragment extends Fragment {
 		li.addLine(l);
 		li.setRangeY(0, 5);
 		li.setLineToFill(0);
-
-		// Capture button
-		captureButton = (Button) rootView.findViewById(R.id.capture);
-		captureButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				linearLayout.setDrawingCacheEnabled(true);// enable cache
-				linearLayout.buildDrawingCache(true);
-
-				Bitmap imageData = Bitmap.createBitmap(linearLayout
-						.getDrawingCache());
-
-				linearLayout.setDrawingCacheEnabled(false); // clear cache
-
-				String fileName = Util.getTimestamp() + ".png";
-				if (Util.saveImage(imageData, fileName)) {
-					Toast.makeText(getActivity(), "Saved in Carethy folder.",
-							Toast.LENGTH_SHORT).show();
-				}
-			}
-
-		});
 	}
 
 }
