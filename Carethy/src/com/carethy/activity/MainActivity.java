@@ -7,7 +7,6 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
@@ -82,7 +81,7 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.action_refresh:
 			refreshMenuItem = item;
 			// load the data from server
-			new SyncData().execute();
+			replaceFragment(mPosition);// current fragment
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -174,39 +173,6 @@ public class MainActivity extends FragmentActivity implements
 		selectItem(mPosition);
 	}
 
-	/**
-	 * Async task to load the data from server
-	 * **/
-	private class SyncData extends AsyncTask<String, Void, String> {
-
-		@Override
-		protected void onPreExecute() {
-			// set the progress bar view
-			refreshMenuItem.setActionView(R.layout.action_progressbar);
-			refreshMenuItem.expandActionView();
-		}
-
-		@Override
-		protected String doInBackground(String... params) {
-			try {
-				Thread.sleep(1000);
-
-				replaceFragment(mPosition);// current fragment
-
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			refreshMenuItem.collapseActionView();
-			// remove the progress bar view
-			refreshMenuItem.setActionView(null);
-		}
-	}
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {

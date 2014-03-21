@@ -1,13 +1,15 @@
 package com.carethy.fragment;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -17,10 +19,10 @@ import com.carethy.util.Util;
 import com.echo.holographlibrary.Line;
 import com.echo.holographlibrary.LineGraph;
 import com.echo.holographlibrary.LinePoint;
-import com.jjoe64.graphview.GraphViewSeries;
-import com.jjoe64.graphview.LineGraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.LegendAlign;
+import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.LineGraphView;
 
 /**
  * Abstract Fragment that appears in the "content_frame". ContentFragmentFactory
@@ -31,18 +33,50 @@ public abstract class GraphBaseFragment extends Fragment {
 	private LineGraphView graphView;
 	private Button captureButton;
 	private View rootView;
+	private double[] values;
+	private ProgressDialog mProgressDialog = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.fragment_graph, container, false);
-		initView();
+
+		loadData();
 
 		return rootView;
 	}
 
+	public void loadData() {
+		AsyncTask<Void, Integer, Void> task = new AsyncTask<Void, Integer, Void>() {
+			@Override
+			protected void onPreExecute() {
+				mProgressDialog = ProgressDialog.show(getActivity(),
+						"Loading data...", "Please be patient.", true);
+			}
+
+			@Override
+			protected Void doInBackground(Void... arg0) {
+				try {
+					Thread.sleep(1000);
+					values = Util.fetchData();
+
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				mProgressDialog.dismiss();
+				initView();
+			}
+		};
+		task.execute((Void[]) null);
+	}
+
 	public void initView() {
-		double[] values=Util.fetchData();
 		GraphViewData[] graphViewData = new GraphViewData[values.length];
 		for (int i = 0; i < graphViewData.length; i++) {
 			GraphViewData v = new GraphViewData(i, values[i]);// TODO mock data
