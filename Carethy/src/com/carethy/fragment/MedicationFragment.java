@@ -40,9 +40,8 @@ public class MedicationFragment extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-		// hide the refresh button and add "+" button
+		// add "+" button
 		inflater.inflate(R.menu.fragment_medication_actions, menu);
-		menu.findItem(R.id.action_refresh).setVisible(false);
 	}
 
 	@Override

@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,7 +27,6 @@ public class MainActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
 
 	private boolean loggedIn = true;
-	private MenuItem refreshMenuItem;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -54,13 +52,6 @@ public class MainActivity extends FragmentActivity implements
 		initView(savedInstanceState);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.activity_main_actions, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
@@ -76,16 +67,7 @@ public class MainActivity extends FragmentActivity implements
 			return true;
 		}
 
-		// Take appropriate action for each action item click
-		switch (item.getItemId()) {
-		case R.id.action_refresh:
-			refreshMenuItem = item;
-			// load the data from server
-			replaceFragment(mPosition);// current fragment
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private void initView(Bundle savedInstanceState) {
@@ -165,14 +147,8 @@ public class MainActivity extends FragmentActivity implements
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-		// if (savedInstanceState == null) {
-		// selectItem(0);
-		// } else {
-		// selectItem(savedInstanceState.getInt("position"));
-		// }
 		selectItem(mPosition);
 	}
-
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {

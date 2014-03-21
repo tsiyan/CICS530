@@ -7,6 +7,9 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -33,17 +36,35 @@ public abstract class GraphBaseFragment extends Fragment {
 	private LineGraphView graphView;
 	private Button captureButton;
 	private View rootView;
-	private double[] values;
 	private ProgressDialog mProgressDialog = null;
+	private double[] values;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.fragment_graph, container, false);
 
+		// add refresh icon to the action bar
+		setHasOptionsMenu(true);
+
 		loadData();
 
 		return rootView;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+
+		// add refresh button
+		inflater.inflate(R.menu.fragment_graph_actions, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+		loadData();
+		return true;
 	}
 
 	public void loadData() {
@@ -69,8 +90,9 @@ public abstract class GraphBaseFragment extends Fragment {
 
 			@Override
 			protected void onPostExecute(Void result) {
-				mProgressDialog.dismiss();
 				initView();
+
+				mProgressDialog.dismiss();
 			}
 		};
 		task.execute((Void[]) null);
@@ -79,7 +101,7 @@ public abstract class GraphBaseFragment extends Fragment {
 	public void initView() {
 		GraphViewData[] graphViewData = new GraphViewData[values.length];
 		for (int i = 0; i < graphViewData.length; i++) {
-			GraphViewData v = new GraphViewData(i, values[i]);// TODO mock data
+			GraphViewData v = new GraphViewData(i, values[i]);
 			graphViewData[i] = v;
 		}
 		GraphViewSeries series = new GraphViewSeries(graphViewData);
@@ -103,6 +125,7 @@ public abstract class GraphBaseFragment extends Fragment {
 
 		// Create GraphView
 		linearLayout = (LinearLayout) rootView.findViewById(R.id.graph);
+		linearLayout.removeAllViews();
 		linearLayout.addView(graphView);
 
 		// Create HoloGraph
@@ -117,7 +140,7 @@ public abstract class GraphBaseFragment extends Fragment {
 		}
 
 		LineGraph li = (LineGraph) rootView.findViewById(R.id.holograph);
-
+		li.removeAllLines();
 		li.addLine(l);
 		li.setRangeY(0, 5);
 		li.setLineToFill(0);
