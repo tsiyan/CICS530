@@ -1,4 +1,4 @@
-package com.carethy.object;
+package com.carethy.model;
 
 import java.util.ArrayList;
 

@@ -5,12 +5,15 @@
     android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="19" />
 
     <application
+        android:name="com.carethy.application.Carethy"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -53,6 +56,9 @@
             android:label="@string/title_activity_create_medication"
             android:parentActivityName="com.carethy.activity.MainActivity" >
         </activity>
+
+        <receiver android:name="com.carethy.receiver.AlarmReceiver" >
+        </receiver>
     </application>
 
 </manifest>

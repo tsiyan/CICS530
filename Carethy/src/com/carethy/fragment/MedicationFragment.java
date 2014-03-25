@@ -1,9 +1,13 @@
 package com.carethy.fragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import android.app.AlarmManager;
 import android.app.Fragment;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,16 +23,18 @@ import android.widget.ListView;
 import com.carethy.R;
 import com.carethy.activity.CreateMedicationActivity;
 import com.carethy.adapter.CustomArrayAdapter;
-import com.carethy.object.Medication;
+import com.carethy.model.Medication;
+import com.carethy.receiver.AlarmReceiver;
 
 public class MedicationFragment extends Fragment {
+	private View rootView;
 	private ListView mListView;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		View rootView = inflater.inflate(R.layout.fragment_medication,
-				container, false);
+		rootView = inflater.inflate(R.layout.fragment_medication, container,
+				false);
 
 		// add "+" icon to the action bar
 		setHasOptionsMenu(true);
@@ -75,5 +81,22 @@ public class MedicationFragment extends Fragment {
 				startActivity(i);
 			}
 		});
+		
+		setupAlarm(5);
+	}
+
+	private void setupAlarm(int seconds) {
+		AlarmManager alarmManager = (AlarmManager) getActivity()
+				.getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(getActivity(), AlarmReceiver.class);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(),
+				0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		// Getting current time and add the seconds in it
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.SECOND, seconds);
+
+		alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+				pendingIntent);
 	}
 }
