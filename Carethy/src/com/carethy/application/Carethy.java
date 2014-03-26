@@ -6,10 +6,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
 import com.carethy.R;
-import com.carethy.util.DBHelper;
+import com.carethy.database.MedicationDatabaseHelper;
 
 public class Carethy extends Application {
-	public static DBHelper mDBHelper;
+	public static MedicationDatabaseHelper mMedicationDatabaseHelper;
 	public static SQLiteDatabase mSQLiteDatabase;
 	public static SharedPreferences mSharedPreferences;
 
@@ -20,8 +20,8 @@ public class Carethy extends Application {
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		mSharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		mDBHelper = new DBHelper(this);
-		mSQLiteDatabase = mDBHelper.getWritableDatabase();
+		mMedicationDatabaseHelper = new MedicationDatabaseHelper(this);
+		mSQLiteDatabase = mMedicationDatabaseHelper.getWritableDatabase();
 	}
 
 }

@@ -8,7 +8,6 @@
     <string name="action_share">Share</string>
     <string name="display_settings">Display Settings</string>
     <string name="notification_settings">Notification Settings</string>
-    
 
     <string-array name="tracked_item_array">
         <item>Activity</item>
@@ -35,7 +34,6 @@
         <item>Settings</item>
     </string-array>
 
-	
     <!-- Nav Drawer List Item Icons -->
     <array name="nav_drawer_icons">
         <item>@drawable/ic_home</item>
@@ -54,5 +52,10 @@
     <string name="drawer_open">open drawer</string>
     <string name="drawer_close">close drawer</string>
     <string name="terms_and_conditions">Carethy Terms and Conditions("Agreement")\nThis agreement was last modifited of February 18, 2014\n\nPlease read these Terms and conditions ("Agreement", "Terms and Conditions") carefully before using carethy.com ("the Site") operated by Carethy ("us", "we", or "our"). This Agreement sets forth the legally binding terms and conditions for you use of the Site at carethy.com.\n\nBy accessing orusing the Site in any manner, including, but not lmited to, visiting or browsing the Site or contribting content or other materials to the Site, you agree to be bound by these Terms and Conditions. Capitalized terms are defined in this Agreement.</string>
+    <string name="medication_no">Currently no medication</string>
+    <string name="medication_delete">Delete Medication</string>
+    <string name="medication_summary">Add new medicine</string>
+    <string name="medication_edit_confirm">Confirm</string>
+    <string name="medication_edit_delete">Delete</string>
 
 </resources>
