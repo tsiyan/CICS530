@@ -26,7 +26,7 @@ import com.carethy.model.NavDrawerItem;
 public class MainActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
 
-	private boolean loggedIn = false;
+	private boolean loggedIn = true;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
