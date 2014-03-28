@@ -1,9 +1,9 @@
 package com.carethy.adapter;
 
 import java.util.HashMap;
+import java.util.List;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +15,13 @@ import com.carethy.R;
 public class CustomArrayAdapter extends ArrayAdapter<String> {
 	private HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
 	private Context mContext;
-	private String[] values;
+	private List<String> values;
 
 	public CustomArrayAdapter(Context context, int textViewResourceId,
-			String[] objects) {
+			List<String> objects) {
 		super(context, textViewResourceId, objects);
-		for (int i = 0; i < objects.length; ++i) {
-			mIdMap.put(objects[i], i);
+		for (int i = 0; i < objects.size(); ++i) {
+			mIdMap.put(objects.get(i), i);
 		}
 		this.mContext = context;
 		this.values = objects;
@@ -43,25 +43,12 @@ public class CustomArrayAdapter extends ArrayAdapter<String> {
 		LayoutInflater inflater = (LayoutInflater) mContext
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
-		TextView mTextView = (TextView) rowView.findViewById(R.id.device);
+		TextView textViewMedication = (TextView) rowView
+				.findViewById(R.id.medication);
+		TextView textViewAlarm = (TextView) rowView.findViewById(R.id.alarm);
 
-		mTextView.setText(values[position]);
-
-		Context context = parent.getContext();
-		switch (position) {
-		case 0:
-			Drawable fitbit = context.getResources().getDrawable(
-					R.drawable.ic_fitbit);
-			fitbit.setBounds(0, 0, 100, 100);
-			mTextView.setCompoundDrawables(fitbit, null, null, null);
-			break;
-		case 1:
-			Drawable jawbone = context.getResources().getDrawable(
-					R.drawable.ic_jawbone);
-			jawbone.setBounds(0, 0, 100, 100);
-			mTextView.setCompoundDrawables(jawbone, null, null, null);
-		}
-
+		textViewMedication.setText(values.get(position));
+		textViewAlarm.setText("alarm");
 		return rowView;
 	}
 }

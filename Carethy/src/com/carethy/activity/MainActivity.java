@@ -1,21 +1,18 @@
 package com.carethy.activity;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import android.app.ActionBar;
-import android.app.FragmentManager;
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,15 +20,13 @@ import android.widget.ListView;
 
 import com.carethy.R;
 import com.carethy.adapter.NavDrawerListAdapter;
-import com.carethy.fragment.AbstractContentFragment;
 import com.carethy.fragment.ContentFragmentFactory;
 import com.carethy.model.NavDrawerItem;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
 
-	private boolean loggedIn = false;
-	private MenuItem refreshMenuItem;
+	private boolean loggedIn = true;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -43,7 +38,9 @@ public class MainActivity extends FragmentActivity implements
 	private TypedArray navMenuIcons;
 	private ArrayList<NavDrawerItem> navDrawerItems;
 	private NavDrawerListAdapter mNavDrawerListAdapter;
+	private static int mPosition = 0;
 
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		if (!loggedIn) {
 			Intent intent = new Intent(this, LoginActivity.class);
@@ -55,20 +52,10 @@ public class MainActivity extends FragmentActivity implements
 		initView(savedInstanceState);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.activity_main_actions, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// If the nav drawer is open, hide action items related to the content
-		// view
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-		menu.findItem(R.id.action_refresh).setVisible(!drawerOpen);
+
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -80,16 +67,7 @@ public class MainActivity extends FragmentActivity implements
 			return true;
 		}
 
-		// Take appropriate action for each action item click
-		switch (item.getItemId()) {
-		case R.id.action_refresh:
-			refreshMenuItem = item;
-			// load the data from server
-			new SyncData().execute();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private void initView(Bundle savedInstanceState) {
@@ -169,59 +147,7 @@ public class MainActivity extends FragmentActivity implements
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-		if (savedInstanceState == null) {
-			selectItem(0);
-		}
-	}
-
-	/**
-	 * Async task to load the data from server
-	 * **/
-	private class SyncData extends AsyncTask<String, Void, String> {
-
-		@Override
-		protected void onPreExecute() {
-			// set the progress bar view
-			refreshMenuItem.setActionView(R.layout.action_progressbar);
-			refreshMenuItem.expandActionView();
-		}
-
-		@Override
-		protected String doInBackground(String... params) {
-			try {
-				Thread.sleep(1000);
-
-				android.app.Fragment fragment = ContentFragmentFactory
-						.buildContentFragment(0);
-				Bundle args = new Bundle();
-				Random rand = new Random();
-
-				int count = 30;
-				double[] values = new double[count];
-				for (int i = 0; i < values.length; i++) {
-					values[i] = Math.sin(i * (rand.nextDouble() * 0.1 + 0.3)
-							+ 2);
-				}
-				args.putDoubleArray("test", values);
-				fragment.setArguments(args);
-
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, fragment).commit();
-
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			refreshMenuItem.collapseActionView();
-			// remove the progress bar view
-			refreshMenuItem.setActionView(null);
-		}
+		selectItem(mPosition);
 	}
 
 	@Override
@@ -236,22 +162,22 @@ public class MainActivity extends FragmentActivity implements
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
+			mPosition = position;
 			selectItem(position);
 		}
 	}
 
-	private void selectItem(int position) {
+	private void replaceFragment(int position) {
 		// update the main content by replacing fragments
-		android.app.Fragment fragment = ContentFragmentFactory
+		Fragment fragment = ContentFragmentFactory
 				.buildContentFragment(position);
-		Bundle args = new Bundle();
-		args.putInt(AbstractContentFragment.ARG_MENU_ITEM_INDEX, position);
-		fragment.setArguments(args);
 
-		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager.beginTransaction()
+		getFragmentManager().beginTransaction()
 				.replace(R.id.content_frame, fragment).commit();
+	}
 
+	private void selectItem(int position) {
+		replaceFragment(position);
 		// update selected item and title, then close the drawer
 		mDrawerList.setItemChecked(position, true);
 		setTitle(navMenuItemTitles[position]);

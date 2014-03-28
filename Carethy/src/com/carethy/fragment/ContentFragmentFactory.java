@@ -1,29 +1,36 @@
 package com.carethy.fragment;
 
-import android.os.Bundle;
+import android.app.Fragment;
+
 
 public class ContentFragmentFactory {
-	public static AbstractContentFragment buildContentFragment(int position) {
-		Bundle args = new Bundle();
-		args.putInt(AbstractContentFragment.ARG_MENU_ITEM_INDEX, position);
-
+	public static Fragment buildContentFragment(int position) {
+		Fragment homeFragment=new HomeFragment();
+		Fragment activityFragment=new ActivityFragment();
+		Fragment sleepFragment=new SleepFragment();
+		Fragment heartRateFragment=new HeartRateFragment();
+		Fragment bloodPressureFragment=new BloodPressureFragment();
+		Fragment recommendationsFragment=new RecommendationsFragment();
+		Fragment medicationFragment=new MedicationFragment();
+		Fragment settingsFragment=new SettingsFragment();
+		
 		switch (position) {
 		case 0:// "Home"
-			return new HomeContentFragment();
+			return homeFragment;
 		case 1:// "Activity"
-			return new ActivityContentFragment();
+			return activityFragment;
 		case 2:// "Sleep"
-			return new SleepContentFragment();
+			return sleepFragment;
 		case 3:// "Heart Rate"
-			return new HeartContentFragment();
+			return heartRateFragment;
 		case 4:// "Blood Pressure"
-			return new BloodPressureContentFragment();
+			return bloodPressureFragment;
 		case 5:// "Recommendations"
-			return new RecommendationsContentFragment();
-		case 6:// "Devices"
-			return new DevicesContentFragment();
+			return recommendationsFragment;
+		case 6:// "Medication"
+			return medicationFragment;
 		case 7:// "Settings"
-			return new SettingsContentFragment();
+			return settingsFragment;
 		default:
 			break;
 		}

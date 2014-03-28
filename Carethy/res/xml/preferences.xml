@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/display_settings" >
+        <ListPreference
+            android:entries="@array/drawer_menu_item_titles"
+            android:entryValues="@array/drawer_menu_item_titles"
+            android:key="date_format"
+            android:title="Date Format" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/notification_settings" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="vibrate_pref"
+            android:summary="Vibrate on notification"
+            android:title="Vibrate" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
