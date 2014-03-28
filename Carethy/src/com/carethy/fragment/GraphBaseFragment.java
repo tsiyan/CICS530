@@ -27,6 +27,7 @@ import com.echo.holographlibrary.LinePoint;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.LegendAlign;
 import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
 import com.jjoe64.graphview.LineGraphView;
 
 /**
@@ -134,7 +135,9 @@ public abstract class GraphBaseFragment extends Fragment {
 			GraphViewData v = new GraphViewData(i, values[i]);
 			graphViewData[i] = v;
 		}
-		GraphViewSeries series = new GraphViewSeries(graphViewData);
+		GraphViewSeries series = new GraphViewSeries("",
+				new GraphViewSeriesStyle(Color.rgb(51, 181, 229), 5),
+				graphViewData);// 255, 187, 51
 
 		// GraphView
 		graphView = new LineGraphView(getActivity(), "");
@@ -143,8 +146,8 @@ public abstract class GraphBaseFragment extends Fragment {
 		// set styles
 		graphView.getGraphViewStyle().setNumHorizontalLabels(0);
 		graphView.getGraphViewStyle().setNumVerticalLabels(0);
-		graphView.setDrawBackground(true);
-		graphView.setBackgroundColor(Color.rgb(153, 204, 153));
+//		graphView.setDrawBackground(true);
+		// graphView.setBackgroundColor(Color.rgb(153, 204, 153));
 		graphView.setViewPort(1, 10);
 		graphView.setScalable(true);
 
@@ -152,6 +155,8 @@ public abstract class GraphBaseFragment extends Fragment {
 		graphView.getGraphViewStyle().setLegendBorder(20);
 		graphView.getGraphViewStyle().setLegendSpacing(30);
 		graphView.getGraphViewStyle().setLegendWidth(200);
+		graphView.setDrawDataPoints(true);
+		graphView.setDataPointsRadius(10f);
 
 		// Create GraphView
 		linearLayout = (LinearLayout) rootView.findViewById(R.id.graph);
