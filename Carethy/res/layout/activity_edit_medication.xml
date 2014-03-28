@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/medication_edit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/medication_summary"
+        android:imeOptions="actionNext"
+        android:textSize="40sp" >
+    </EditText>
+
+    <Button
+        android:id="@+id/medication_confirm_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dip"
+        android:background="@drawable/button_shape"
+        android:text="@string/medication_edit_confirm"
+        android:textColor="#FFFFFF" >
+    </Button>
+
+    <Button
+        android:id="@+id/medication_delete_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dip"
+        android:background="@drawable/button_shape"
+        android:text="@string/medication_edit_delete"
+        android:textColor="#FFFFFF" >
+    </Button>
+
+</LinearLayout>
