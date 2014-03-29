@@ -5,13 +5,17 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -47,54 +51,43 @@ public class RecommendationsFragment extends Fragment {
 
 	public class RecommendationTask extends AsyncTask<Void, Void, Boolean> {
 		String recom = null;
+		String recommendation;
+		int id;
+		ProgressDialog jProgressDialog = null;
+		
+		protected void onPreExecute() {
+			jProgressDialog = ProgressDialog.show(getActivity(),
+					"Loading data...", "Please be patient.", true);
+		}
+		
+		//TODO : Send notification message according to id value
+		protected void onPostExecute(){
+			
+		}
 
+		
 		@Override
 		protected Boolean doInBackground(Void... params) {
-
-			// String tmpJson =
-			// "{ 		    'age': 25,		    'weight': 68,		    'height': 168,		    'sex': 'Male',		    'sleep': 		        [		            {'time': '2012-04-23T18:25:43.511Z', 'quantitity': 6, 'quality': 5},		            {'time': '2012-04-22T18:25:43.511Z', 'quantitity': 6, 'quality': 5},		            {'time': '2012-04-21T18:25:43.511Z', 'quantitity': 6, 'quality': 5},		            {'time':'2012-04-20T18:25:43.511Z', 'quantitity': 6, 'quality': 5}		        ],		    'activity': 		        [		            {'time': '2012-04-23T18:25:43.511Z', 'steps': 2500},		            {'time':'2012-04-22T18:25:43.511Z', 'steps': 3000},		            {'time': '2012-04-21T18:25:43.511Z', 'steps': 2000}		        ],		    'blood_pressure': 		        [		            {'time':'2012-04-23T18:25:43.511Z', 'systolic': 115, 'diastolic': 75}		        ]		    'pulse':		        [		            {'time': '2012-04-23T18:25:43.511Z', 'bpm': 75}		        ]		}";
-			String httpResponse = null;
-
-			String tmpJson = null;
-
+			
 			try {
-				InputStream is = getActivity().getAssets()
-						.open("jrequest.json");
-				int size = is.available();
-				byte[] buffer = new byte[size];
-				is.read(buffer);
-				is.close();
-				tmpJson = new String(buffer, "UTF-8");
 
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-
-			URL url;
-			try {
+				URL url;
 
 				url = new URL("http://health-engine.herokuapp.com/");
 				HttpURLConnection conn = (HttpURLConnection) url
 						.openConnection();
 
-				conn.setRequestMethod("POST");
-				conn.setRequestProperty("Content-Type", "application/json");
-				DataOutputStream wr = new DataOutputStream(
-						conn.getOutputStream());
-				wr.writeBytes(tmpJson);
-				wr.flush();
-				wr.close();
+				recom = getResponse(conn);
 
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						conn.getInputStream()));
-
-				while ((httpResponse = in.readLine()) != null)
-					recom += httpResponse;
-				in.close();
+				JSONObject jRecom = new JSONObject(recom);
+				id = jRecom.getInt("id");
+				recommendation = jRecom.getString("recommendation");
 
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 
@@ -103,11 +96,57 @@ public class RecommendationsFragment extends Fragment {
 				public void run() {
 					recommendation1 = (TextView) rootView
 							.findViewById(R.id.recommendation1);
-					recommendation1.setText(recom);
+					recommendation1.setText(recommendation);
+					jProgressDialog.dismiss();
 				}
 			});
 
 			return true;
+		}
+
+		/**
+		 * Sends json request to engine
+		 * 
+		 * @param conn
+		 *            connection with the engine
+		 * @return the string response
+		 * @throws IOException
+		 * @throws UnsupportedEncodingException
+		 * @throws ProtocolException
+		 * @author jaspreet
+		 */
+		private String getResponse(HttpURLConnection conn) throws IOException,
+				UnsupportedEncodingException, ProtocolException {
+
+			String httpResponse;
+			String tmpJson;
+
+			InputStream is = getActivity().getAssets().open("jrequest.json");
+			int size = is.available();
+			byte[] buffer = new byte[size];
+			is.read(buffer);
+			is.close();
+			tmpJson = new String(buffer, "UTF-8");
+
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+			DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+			wr.writeBytes(tmpJson);
+			wr.flush();
+			wr.close();
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					conn.getInputStream()));
+
+			while ((httpResponse = in.readLine()) != null)
+				recom += httpResponse;
+			in.close();
+
+			// TODO: Get the null removed from the engine team
+			// or find its significance
+			if (recom.startsWith("null"))
+				recom = recom.substring(5);
+			return recom;
 		}
 	}
 }
