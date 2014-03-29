@@ -33,4 +33,38 @@
         android:textColor="#FFFFFF" >
     </Button>
 
+    <Button
+        android:id="@+id/medication_timepicker_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dip"
+        android:background="@drawable/button_shape"
+        android:text="@string/medication_edit_timepicker"
+        android:textColor="#FFFFFF" >
+    </Button>
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/medication_datepicker_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dip"
+        android:background="@drawable/button_shape"
+        android:text="@string/medication_edit_datepicker"
+        android:textColor="#FFFFFF" >
+    </Button>
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
 </LinearLayout>

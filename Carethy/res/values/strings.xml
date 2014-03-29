@@ -57,5 +57,8 @@
     <string name="medication_summary">Add new medicine</string>
     <string name="medication_edit_confirm">Confirm</string>
     <string name="medication_edit_delete">Delete</string>
+    <string name="medication_edit_timepicker">Pick time</string>
+        <string name="medication_edit_datepicker">Pick date</string>
+    
 
 </resources>
