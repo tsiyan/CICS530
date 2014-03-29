@@ -64,10 +64,10 @@ public class MedicationFragment extends Fragment implements
 		int[] to = new int[] { R.id.medication };
 
 		getLoaderManager().initLoader(0, null, this);
-		adapter = new SimpleCursorAdapter(getActivity(), R.layout.rowlayout,
+		adapter = new SimpleCursorAdapter(getActivity(), R.layout.rowlayout_medication,
 				null, from, to, 0);
 
-		mListView = (ListView) rootView.findViewById(R.id.listView);
+		mListView = (ListView) rootView.findViewById(R.id.medication_listView);
 		mListView.setAdapter(adapter);
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, final View view,

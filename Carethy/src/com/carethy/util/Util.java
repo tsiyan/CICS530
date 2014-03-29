@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
@@ -14,6 +15,8 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Environment;
 import android.util.Log;
+
+import com.carethy.model.Recommendation;
 
 public class Util {
 	public static Random rand = new Random();
@@ -69,18 +72,36 @@ public class Util {
 	}
 
 	public static int getActivityData() {
-		return rand.nextInt()/1000000;
+		return Math.abs(rand.nextInt() / 1000000);
 	}
 
 	public static float getSleepData() {
-		return rand.nextFloat()*10;
+		return Math.abs(rand.nextFloat() * 10);
 	}
 
 	public static int getHeartRateData() {
-		return rand.nextInt()/1000000;
+		return Math.abs(rand.nextInt() / 1000000);
 	}
 
 	public static float getBloodPressureData() {
-		return rand.nextFloat()*1000;
+		return Math.abs(rand.nextFloat() * 1000);
+	}
+
+	public static ArrayList<Recommendation> getRecommendation() {
+		ArrayList<Recommendation> list = new ArrayList<Recommendation>();
+		Recommendation r0 = new Recommendation("title-0", "content-0", 0, false);
+		Recommendation r1 = new Recommendation("title-1", "content-1", 1, false);
+		Recommendation r2 = new Recommendation("title-2", "content-2", 2, false);
+		Recommendation r3 = new Recommendation("title-3", "content-3", 3, false);
+		Recommendation r4 = new Recommendation("title-4", "content-4", 4, false);
+		Recommendation r5 = new Recommendation("title-5", "content-5", 5, false);
+		list.add(r0);
+		list.add(r1);
+		list.add(r2);
+		list.add(r3);
+		list.add(r4);
+		list.add(r5);
+		
+		return list;
 	}
 }
