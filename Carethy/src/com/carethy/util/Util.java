@@ -89,19 +89,19 @@ public class Util {
 
 	public static ArrayList<Recommendation> getRecommendation() {
 		ArrayList<Recommendation> list = new ArrayList<Recommendation>();
-		Recommendation r0 = new Recommendation("title-0", "content-0", 0, false);
-		Recommendation r1 = new Recommendation("title-1", "content-1", 1, false);
-		Recommendation r2 = new Recommendation("title-2", "content-2", 2, false);
-		Recommendation r3 = new Recommendation("title-3", "content-3", 3, false);
-		Recommendation r4 = new Recommendation("title-4", "content-4", 4, false);
-		Recommendation r5 = new Recommendation("title-5", "content-5", 5, false);
+		Recommendation r0 = new Recommendation(0, 0, "recom0");
+		Recommendation r1 = new Recommendation(1, 1, "recom1");
+		Recommendation r2 = new Recommendation(2, 1, "recom2");
+		Recommendation r3 = new Recommendation(3, 0, "recom3");
+		Recommendation r4 = new Recommendation(4, 1, "recom4");
+		Recommendation r5 = new Recommendation(5, 0, "recom5");
 		list.add(r0);
 		list.add(r1);
 		list.add(r2);
 		list.add(r3);
 		list.add(r4);
 		list.add(r5);
-		
+
 		return list;
 	}
 }

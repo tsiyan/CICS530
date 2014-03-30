@@ -6,12 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
 import com.carethy.R;
-<<<<<<< HEAD
 import com.carethy.adapter.RecomDBDataSource;
-import com.carethy.util.DBHelper;
-=======
 import com.carethy.database.MedicationDatabaseHelper;
->>>>>>> origin/master
 
 public class Carethy extends Application {
 	public static MedicationDatabaseHelper mMedicationDatabaseHelper;
@@ -27,16 +23,14 @@ public class Carethy extends Application {
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		mSharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
-<<<<<<< HEAD
-		mDBHelper = new DBHelper(this);
-		mSQLiteDatabase = mDBHelper.getWritableDatabase();
 		
+		// Recommendation DB
 		datasource = new RecomDBDataSource(this);
 		datasource.open();
-=======
+		
+		// Medication DB
 		mMedicationDatabaseHelper = new MedicationDatabaseHelper(this);
 		mSQLiteDatabase = mMedicationDatabaseHelper.getWritableDatabase();
->>>>>>> origin/master
 	}
 
 }

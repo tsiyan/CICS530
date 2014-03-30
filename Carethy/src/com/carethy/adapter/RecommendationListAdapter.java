@@ -36,7 +36,7 @@ public class RecommendationListAdapter extends ArrayAdapter<Recommendation> {
 				.findViewById(R.id.recommendation_level);
 
 		Drawable drawable = null;
-		switch (list.get(position).getLevel() % 6) {
+		switch (list.get(position).getRecomId() % 2) {
 		case 0:
 			drawable = mContext.getResources().getDrawable(
 					R.drawable.ic_settings);
@@ -45,21 +45,21 @@ public class RecommendationListAdapter extends ArrayAdapter<Recommendation> {
 			drawable = mContext.getResources().getDrawable(
 					R.drawable.ic_action_email);
 			break;
-		case 2:
-			drawable = mContext.getResources().getDrawable(
-					R.drawable.ic_action_password);
-			break;
-		case 3:
-			drawable = mContext.getResources().getDrawable(R.drawable.ic_home);
-			break;
-		case 4:
-			drawable = mContext.getResources().getDrawable(
-					R.drawable.ic_action_time);
-			break;
-		case 5:
-			drawable = mContext.getResources().getDrawable(
-					R.drawable.ic_activity);
-			break;
+//		case 2:
+//			drawable = mContext.getResources().getDrawable(
+//					R.drawable.ic_action_password);
+//			break;
+//		case 3:
+//			drawable = mContext.getResources().getDrawable(R.drawable.ic_home);
+//			break;
+//		case 4:
+//			drawable = mContext.getResources().getDrawable(
+//					R.drawable.ic_action_time);
+//			break;
+//		case 5:
+//			drawable = mContext.getResources().getDrawable(
+//					R.drawable.ic_activity);
+//			break;
 		}
 
 		mImageView.setImageDrawable(drawable);
@@ -69,8 +69,8 @@ public class RecommendationListAdapter extends ArrayAdapter<Recommendation> {
 		TextView recommendationContent = (TextView) rowView
 				.findViewById(R.id.recommendation_content);
 
-		recommendationTitle.setText(list.get(position).getTitle());
-		recommendationContent.setText(list.get(position).getContent());
+		recommendationTitle.setText(list.get(position).getRecom());
+		recommendationContent.setText(list.get(position).getRecom());
 		return rowView;
 	}
 }

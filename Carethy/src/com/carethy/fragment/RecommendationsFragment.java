@@ -66,7 +66,7 @@ public class RecommendationsFragment extends Fragment {
 					.findViewById(R.id.recoLinearLayout);
 			tv = new TextView(this.getActivity());
 			tv.setLayoutParams(lparams);
-			tv.setBackgroundResource(drawable.recommendations_style);
+			tv.setBackgroundResource(drawable.recommendation_bg_style);
 			recoLinearLayout.addView(tv);
 		}
 	}

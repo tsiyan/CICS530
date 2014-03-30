@@ -2,21 +2,14 @@ package com.carethy.fragment;
 
 import java.io.File;
 import java.text.DecimalFormat;
-<<<<<<< HEAD
 import java.util.List;
-=======
-import java.util.ArrayList;
->>>>>>> origin/master
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-<<<<<<< HEAD
-=======
 import android.graphics.drawable.GradientDrawable;
->>>>>>> origin/master
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,26 +20,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-<<<<<<< HEAD
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
 import com.carethy.R;
 import com.carethy.R.drawable;
+import com.carethy.application.Carethy;
 import com.carethy.model.Recommendation;
 import com.carethy.util.HackUtils;
-=======
-import android.widget.ListView;
-import android.widget.TextView;
-
-import com.carethy.R;
-import com.carethy.adapter.RecommendationListAdapter;
-import com.carethy.model.Recommendation;
->>>>>>> origin/master
 import com.carethy.util.Util;
-import com.carethy.application.Carethy;
 
 public class HomeFragment extends Fragment {
 	private View rootView;
@@ -55,8 +38,8 @@ public class HomeFragment extends Fragment {
 	private TextView sleep;
 	private TextView heartRate;
 	private TextView bloodPressure;
-	private ListView mListView;
-	private RecommendationListAdapter adapter;
+//	private ListView mListView;
+//	private RecommendationListAdapter adapter;
 	private ProgressDialog mProgressDialog = null;
 	private int activityData;
 	private float sleepData;
@@ -187,7 +170,7 @@ public class HomeFragment extends Fragment {
 		((GradientDrawable) bloodPressure.getBackground()).setColor(Color
 				.parseColor("#00a876"));
 
-<<<<<<< HEAD
+//<<<<<<< HEAD
 		scrollInnerPanel = (LinearLayout) rootView
 				.findViewById(R.id.scrollInnerPanel);
 
@@ -220,36 +203,36 @@ public class HomeFragment extends Fragment {
 	private TextView getTextView() {
 		TextView tv = new TextView(this.getActivity());
 		tv.setLayoutParams(lparams);
-		tv.setBackgroundResource(drawable.recommendations_style);
+		tv.setBackgroundResource(drawable.recommendation_bg_style);
 		return tv;
-=======
-		mListView = (ListView) rootView.findViewById(R.id.home_listview);
-
-		final ArrayList<Recommendation> list = Util.getRecommendation();
-
-		adapter = new RecommendationListAdapter(getActivity(),
-				android.R.layout.simple_list_item_1, list);
-
-		mListView.setAdapter(adapter);
-		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, final View view,
-					int position, long id) {
-				final Recommendation item = (Recommendation) parent.getItemAtPosition(position);
-				view.animate().setDuration(100).alpha(0)
-						.withEndAction(new Runnable() {
-							@Override
-							public void run() {
-								list.remove(item);
-								adapter.notifyDataSetChanged();
-								view.setAlpha(1);
-							}
-						});
-			}
-
-		});
->>>>>>> origin/master
+//=======
+//		mListView = (ListView) rootView.findViewById(R.id.home_listview);
+//
+//		final ArrayList<Recommendation> list = Util.getRecommendation();
+//
+//		adapter = new RecommendationListAdapter(getActivity(),
+//				android.R.layout.simple_list_item_1, list);
+//
+//		mListView.setAdapter(adapter);
+//		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//			@Override
+//			public void onItemClick(AdapterView<?> parent, final View view,
+//					int position, long id) {
+//				final Recommendation item = (Recommendation) parent.getItemAtPosition(position);
+//				view.animate().setDuration(100).alpha(0)
+//						.withEndAction(new Runnable() {
+//							@Override
+//							public void run() {
+//								list.remove(item);
+//								adapter.notifyDataSetChanged();
+//								view.setAlpha(1);
+//							}
+//						});
+//			}
+//
+//		});
+//>>>>>>> origin/master
 	}
 
 }
