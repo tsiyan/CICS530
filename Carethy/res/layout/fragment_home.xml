@@ -11,45 +11,48 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dip"
-        android:background="@drawable/recommendations_style"
         android:orientation="horizontal" >
 
         <TextView
             android:id="@+id/activity"
+            style="@style/homePanel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_activity"
-            android:gravity="center" />
+            android:background="@drawable/home_panel_bg_style"
+            android:drawableTop="@drawable/ic_activity" />
 
         <TextView
             android:id="@+id/sleep"
+            style="@style/homePanel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_sleep"
-            android:gravity="center" />
+            android:background="@drawable/home_panel_bg_style"
+            android:drawableTop="@drawable/ic_sleep" />
 
         <TextView
             android:id="@+id/heart_rate"
+            style="@style/homePanel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_heart_rate"
-            android:gravity="center" />
+            android:background="@drawable/home_panel_bg_style"
+            android:drawableTop="@drawable/ic_heart_rate" />
 
         <TextView
             android:id="@+id/blood_pressure"
+            style="@style/homePanel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_blood_pressure"
-            android:gravity="center" />
+            android:background="@drawable/home_panel_bg_style"
+            android:drawableTop="@drawable/ic_blood_pressure" />
     </LinearLayout>
 
-    <!-- scrolling bottom pane -->
+    <!-- scrolling ListView bottom pane -->
 
+<<<<<<< HEAD
     <ScrollView
         android:id="@+id/scroll"
         android:layout_width="fill_parent"
@@ -171,5 +174,12 @@
             </LinearLayout-->
         </LinearLayout>
     </ScrollView>
+=======
+    <ListView
+        android:id="@+id/home_listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
+>>>>>>> origin/master
 
 </LinearLayout>
