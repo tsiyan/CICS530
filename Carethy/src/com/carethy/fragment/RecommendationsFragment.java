@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.carethy.R;
-import com.carethy.adapter.RecomDBDataSource;
 import com.carethy.application.Carethy;
 
 public class RecommendationsFragment extends Fragment {
@@ -33,15 +32,16 @@ public class RecommendationsFragment extends Fragment {
 	private TextView recommendation1;
 	private TextView recommendation2;
 	private RecommendationTask mRecommendationTask = null;
-	private RecomDBDataSource datasource;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+
 		super.onCreateView(inflater, container, savedInstanceState);
 		rootView = inflater.inflate(R.layout.fragment_recommendations,
 				container, false);
 
 		initView();
+
 		return rootView;
 	}
 
@@ -49,14 +49,21 @@ public class RecommendationsFragment extends Fragment {
 
 		mRecommendationTask = new RecommendationTask();
 		mRecommendationTask.execute((Void) null);
+		
+		recommendation1 = (TextView) rootView
+				.findViewById(R.id.recommendation1);
+		recommendation2 = (TextView) rootView
+				.findViewById(R.id.recommendation2);
 	}
 
 	public class RecommendationTask extends AsyncTask<Void, Void, Boolean> {
-		String recom = null;
+
+		ProgressDialog jProgressDialog = null;
+		String engineResponse = null;
 		String recommendation;
 		int id;
-		ProgressDialog jProgressDialog = null;
-
+		URL url;
+		
 		protected void onPreExecute() {
 			jProgressDialog = ProgressDialog.show(getActivity(),
 					"Loading data...", "Please be patient.", true);
@@ -66,16 +73,13 @@ public class RecommendationsFragment extends Fragment {
 		protected Boolean doInBackground(Void... params) {
 
 			try {
-
-				URL url;
-
 				url = new URL("http://health-engine.herokuapp.com/");
 				HttpURLConnection conn = (HttpURLConnection) url
 						.openConnection();
 
-				recom = getResponse(conn);
+				engineResponse = getResponse(conn);
 
-				JSONObject jRecom = new JSONObject(recom);
+				JSONObject jRecom = new JSONObject(engineResponse);
 				id = jRecom.getInt("id");
 				recommendation = jRecom.getString("recommendation");
 
@@ -90,20 +94,18 @@ public class RecommendationsFragment extends Fragment {
 			getActivity().runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					recommendation1 = (TextView) rootView
-							.findViewById(R.id.recommendation1);
-					recommendation2 = (TextView) rootView
-							.findViewById(R.id.recommendation2);
-
 					recommendation1.setText(recommendation);
 					jProgressDialog.dismiss();
 
-					recommendation2.setText("stored: "+ Carethy.datasource.createComment(id, recommendation).toString());
+					recommendation2.setText("stored: "
+							+ Carethy.datasource.insertIntoTable(id,
+									recommendation).toString());
 				}
 			});
 
 			return true;
 		}
+
 
 		/**
 		 * Sends json request to engine
@@ -135,16 +137,16 @@ public class RecommendationsFragment extends Fragment {
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					conn.getInputStream()));
-
 			while ((httpResponse = in.readLine()) != null)
-				recom += httpResponse;
+				engineResponse += httpResponse;
 			in.close();
-
+			conn.disconnect();
+			
 			// TODO: Get the null removed from the engine team
 			// or find its significance
-			if (recom.startsWith("null"))
-				recom = recom.substring(5);
-			return recom;
+			if (engineResponse.startsWith("null"))
+				engineResponse = engineResponse.substring(5);
+			return engineResponse;
 		}
 	}
 }

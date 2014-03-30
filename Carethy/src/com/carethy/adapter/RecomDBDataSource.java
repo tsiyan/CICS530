@@ -1,5 +1,8 @@
 package com.carethy.adapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.carethy.model.Recommendation;
 import com.carethy.util.DBRecomHelper;
 
@@ -28,7 +31,7 @@ public class RecomDBDataSource {
 		dbHelper.close();
 	}
 
-	public Recommendation createComment(int recom_id, String recom) {
+	public Recommendation insertIntoTable(int recom_id, String recom) {
 		ContentValues values = new ContentValues();
 		values.put(DBRecomHelper.COLUMN_RECOM_ID, recom_id);
 		values.put(DBRecomHelper.COLUMN_RECOM, recom);
@@ -39,16 +42,37 @@ public class RecomDBDataSource {
 				DBRecomHelper.COLUMN_ID + " = " + insertId, null, null, null,
 				null);
 		cursor.moveToFirst();
-		Recommendation newReco = cursorToComment(cursor);
+		Recommendation newReco = cursorToCurrentRow(cursor);
+		
 		cursor.close();
 		return newReco;
 	}
 
-	private Recommendation cursorToComment(Cursor cursor) {
+	private Recommendation cursorToCurrentRow(Cursor cursor) {
 		Recommendation recom = new Recommendation();
 		recom.setId(cursor.getLong(0));
 		recom.setRecomId(cursor.getInt(1));
 		recom.setRecom(cursor.getString(2));
 		return recom;
 	}
+	
+	public List<Recommendation> getAllRecommendations() {
+	    List<Recommendation> recommendations = new ArrayList<Recommendation>();
+
+	    Cursor cursor = database.query(DBRecomHelper.TABLE_RECOM,
+	        allColumns, null, null, null, null, null);
+
+	    cursor.moveToFirst();
+	    while (!cursor.isAfterLast()) {
+	      Recommendation recom = cursorToCurrentRow(cursor);
+	      recommendations.add(recom);
+	      cursor.moveToNext();
+	    }
+	    
+	    // make sure to close the cursor
+	    cursor.close();
+	    return recommendations;
+	  }
+
+	
 }

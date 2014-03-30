@@ -51,21 +51,27 @@
     <!-- scrolling bottom pane -->
 
     <ScrollView
+        android:id="@+id/scroll"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
 
         <LinearLayout
+            android:id="@+id/scrollPanel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="5dip"
             android:orientation="horizontal" >
 
             <LinearLayout
+                android:id="@+id/scrollInnerPanel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical" >
+                android:orientation="vertical" />
 
-                <TextView
+            <!--
+            TextView
+                    android:id="@+id/t1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dip"
@@ -162,7 +168,7 @@
                     android:layout_margin="5dip"
                     android:background="@drawable/recommendations_style"
                     android:text="This recommendation will scroll on right" />
-            </LinearLayout>
+            </LinearLayout-->
         </LinearLayout>
     </ScrollView>
 

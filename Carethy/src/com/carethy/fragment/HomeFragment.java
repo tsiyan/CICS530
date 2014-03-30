@@ -2,11 +2,14 @@ package com.carethy.fragment;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.List;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,10 +21,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
 import com.carethy.R;
+import com.carethy.R.drawable;
+import com.carethy.model.Recommendation;
 import com.carethy.util.Util;
+import com.carethy.application.Carethy;
 
 public class HomeFragment extends Fragment {
 	private View rootView;
@@ -37,6 +45,11 @@ public class HomeFragment extends Fragment {
 	private float bloodPressureData;
 	public static DecimalFormat df = new DecimalFormat("#.#");
 
+	private ScrollView scroll;
+	private LinearLayout scrollPanel;
+	private LinearLayout scrollInnerPanel;
+	private TextView leftpanel1;
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
@@ -47,7 +60,14 @@ public class HomeFragment extends Fragment {
 
 		loadData();
 
+		loadRecommendations();
+
 		return rootView;
+	}
+
+	private void loadRecommendations() {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
@@ -143,6 +163,30 @@ public class HomeFragment extends Fragment {
 		bloodPressure = (TextView) rootView.findViewById(R.id.blood_pressure);
 		bloodPressure.setText(df.format(bloodPressureData) + " mh");
 
+		scroll = (ScrollView) rootView.findViewById(R.id.scroll);
+		scrollPanel = (LinearLayout) rootView.findViewById(R.id.scrollPanel);
+		scrollInnerPanel = (LinearLayout) rootView
+				.findViewById(R.id.scrollInnerPanel);
+
+		fillRecommendations();
+	}
+
+	private void fillRecommendations() {
+		LayoutParams lparams = new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.WRAP_CONTENT);
+
+		List<Recommendation> recomms = Carethy.datasource
+				.getAllRecommendations();
+
+		if (!recomms.isEmpty()) {
+			for (Recommendation recom : recomms) {
+				TextView tv = new TextView(this.getActivity());
+				tv.setLayoutParams(lparams);
+				tv.setBackgroundResource(drawable.recommendations_style);
+				tv.setText(recom.getRecom());
+				this.scrollInnerPanel.addView(tv);
+			}
+		}
 	}
 
 }
