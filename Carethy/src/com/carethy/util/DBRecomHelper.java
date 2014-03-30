@@ -11,9 +11,11 @@ public class DBRecomHelper extends SQLiteOpenHelper {
 	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_RECOM = "recom";
 	public static final String COLUMN_RECOM_ID = "recom_id";
+	public static final String ORDER_RECOM_BY = "_id desc";
+	public static final String RECOM_LIMIT = "8";
 
 	private static final String DATABASE_NAME = "recommendation.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 3;
 
 	// recommendation table create sql statement
 	private static final String RECOMM_CREATE = "create table " + TABLE_RECOM

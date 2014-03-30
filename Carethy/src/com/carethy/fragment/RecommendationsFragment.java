@@ -21,17 +21,22 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
 import com.carethy.R;
+import com.carethy.R.drawable;
 import com.carethy.application.Carethy;
+import com.carethy.util.HackUtils;
 
 public class RecommendationsFragment extends Fragment {
 
 	private View rootView;
 	private TextView recommendation1;
-	private TextView recommendation2;
 	private RecommendationTask mRecommendationTask = null;
+	private String recoDBResponse;
+	private TextView tv; // test only
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -49,11 +54,21 @@ public class RecommendationsFragment extends Fragment {
 
 		mRecommendationTask = new RecommendationTask();
 		mRecommendationTask.execute((Void) null);
-		
+
 		recommendation1 = (TextView) rootView
 				.findViewById(R.id.recommendation1);
-		recommendation2 = (TextView) rootView
-				.findViewById(R.id.recommendation2);
+
+		// test code
+		if (HackUtils.test) {
+			LayoutParams lparams = new LayoutParams(LayoutParams.MATCH_PARENT,
+					LayoutParams.WRAP_CONTENT);
+			LinearLayout recoLinearLayout = (LinearLayout) rootView
+					.findViewById(R.id.recoLinearLayout);
+			tv = new TextView(this.getActivity());
+			tv.setLayoutParams(lparams);
+			tv.setBackgroundResource(drawable.recommendations_style);
+			recoLinearLayout.addView(tv);
+		}
 	}
 
 	public class RecommendationTask extends AsyncTask<Void, Void, Boolean> {
@@ -63,7 +78,7 @@ public class RecommendationsFragment extends Fragment {
 		String recommendation;
 		int id;
 		URL url;
-		
+
 		protected void onPreExecute() {
 			jProgressDialog = ProgressDialog.show(getActivity(),
 					"Loading data...", "Please be patient.", true);
@@ -97,15 +112,18 @@ public class RecommendationsFragment extends Fragment {
 					recommendation1.setText(recommendation);
 					jProgressDialog.dismiss();
 
-					recommendation2.setText("stored: "
-							+ Carethy.datasource.insertIntoTable(id,
-									recommendation).toString());
+					recoDBResponse = Carethy.datasource.insertIntoTable(id,
+							recommendation).toString();
+
+					// test only
+					if (HackUtils.test) {
+						tv.setText("stored: " + recoDBResponse);
+					}
 				}
 			});
 
 			return true;
 		}
-
 
 		/**
 		 * Sends json request to engine
@@ -141,7 +159,7 @@ public class RecommendationsFragment extends Fragment {
 				engineResponse += httpResponse;
 			in.close();
 			conn.disconnect();
-			
+
 			// TODO: Get the null removed from the engine team
 			// or find its significance
 			if (engineResponse.startsWith("null"))

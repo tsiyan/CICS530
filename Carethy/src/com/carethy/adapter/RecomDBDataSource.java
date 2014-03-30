@@ -43,7 +43,7 @@ public class RecomDBDataSource {
 				null);
 		cursor.moveToFirst();
 		Recommendation newReco = cursorToCurrentRow(cursor);
-		
+
 		cursor.close();
 		return newReco;
 	}
@@ -55,24 +55,31 @@ public class RecomDBDataSource {
 		recom.setRecom(cursor.getString(2));
 		return recom;
 	}
-	
-	public List<Recommendation> getAllRecommendations() {
-	    List<Recommendation> recommendations = new ArrayList<Recommendation>();
 
-	    Cursor cursor = database.query(DBRecomHelper.TABLE_RECOM,
-	        allColumns, null, null, null, null, null);
+	public List<Recommendation> getRecommendations(String limit) {
+		List<Recommendation> recommendations = new ArrayList<Recommendation>();
 
-	    cursor.moveToFirst();
-	    while (!cursor.isAfterLast()) {
-	      Recommendation recom = cursorToCurrentRow(cursor);
-	      recommendations.add(recom);
-	      cursor.moveToNext();
-	    }
-	    
-	    // make sure to close the cursor
-	    cursor.close();
-	    return recommendations;
-	  }
+		Cursor cursor;
 
-	
+		if (limit.isEmpty()) {
+			cursor = database.query(DBRecomHelper.TABLE_RECOM, allColumns,
+					null, null, null, null, DBRecomHelper.ORDER_RECOM_BY);
+		} else {
+			cursor = database
+					.query(DBRecomHelper.TABLE_RECOM, allColumns, null, null,
+							null, null, DBRecomHelper.ORDER_RECOM_BY, limit);
+		}
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			Recommendation recom = cursorToCurrentRow(cursor);
+			recommendations.add(recom);
+			cursor.moveToNext();
+		}
+
+		// make sure to close the cursor
+		cursor.close();
+		return recommendations;
+	}
+
 }

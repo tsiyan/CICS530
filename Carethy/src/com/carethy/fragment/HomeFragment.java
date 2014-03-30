@@ -6,10 +6,9 @@ import java.util.List;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,13 +20,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
 import com.carethy.R;
 import com.carethy.R.drawable;
 import com.carethy.model.Recommendation;
+import com.carethy.util.HackUtils;
 import com.carethy.util.Util;
 import com.carethy.application.Carethy;
 
@@ -45,14 +44,18 @@ public class HomeFragment extends Fragment {
 	private float bloodPressureData;
 	public static DecimalFormat df = new DecimalFormat("#.#");
 
-	private ScrollView scroll;
-	private LinearLayout scrollPanel;
 	private LinearLayout scrollInnerPanel;
-	private TextView leftpanel1;
+	LayoutParams lparams = new LayoutParams(LayoutParams.MATCH_PARENT,
+			LayoutParams.WRAP_CONTENT);
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
+		// test-code - For force data into recom table
+		if (HackUtils.test) {
+			HackUtils.hackIntoRecomDB(100, "High alert");
+		}
+		
 		rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
 		// add refresh icon to the action bar
@@ -60,14 +63,7 @@ public class HomeFragment extends Fragment {
 
 		loadData();
 
-		loadRecommendations();
-
 		return rootView;
-	}
-
-	private void loadRecommendations() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -163,8 +159,6 @@ public class HomeFragment extends Fragment {
 		bloodPressure = (TextView) rootView.findViewById(R.id.blood_pressure);
 		bloodPressure.setText(df.format(bloodPressureData) + " mh");
 
-		scroll = (ScrollView) rootView.findViewById(R.id.scroll);
-		scrollPanel = (LinearLayout) rootView.findViewById(R.id.scrollPanel);
 		scrollInnerPanel = (LinearLayout) rootView
 				.findViewById(R.id.scrollInnerPanel);
 
@@ -172,21 +166,33 @@ public class HomeFragment extends Fragment {
 	}
 
 	private void fillRecommendations() {
-		LayoutParams lparams = new LayoutParams(LayoutParams.MATCH_PARENT,
-				LayoutParams.WRAP_CONTENT);
-
 		List<Recommendation> recomms = Carethy.datasource
-				.getAllRecommendations();
+				.getRecommendations(""); // DBRecomHelper.RECOM_LIMIT);
 
 		if (!recomms.isEmpty()) {
 			for (Recommendation recom : recomms) {
-				TextView tv = new TextView(this.getActivity());
-				tv.setLayoutParams(lparams);
-				tv.setBackgroundResource(drawable.recommendations_style);
+
+				TextView tv = getTextView();
+				if (recom.getRecomId() <= 300) {
+					tv.setTextColor(Color.RED);
+				} else {
+					tv.setTextColor(Color.GREEN);
+				}
 				tv.setText(recom.getRecom());
 				this.scrollInnerPanel.addView(tv);
 			}
+		} else {
+			TextView tv = getTextView();
+			tv.setText("No Stored Recommendations");
+			this.scrollInnerPanel.addView(tv);
 		}
+	}
+
+	private TextView getTextView() {
+		TextView tv = new TextView(this.getActivity());
+		tv.setLayoutParams(lparams);
+		tv.setBackgroundResource(drawable.recommendations_style);
+		return tv;
 	}
 
 }
