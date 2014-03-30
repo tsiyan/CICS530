@@ -21,17 +21,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.carethy.R;
-import com.carethy.activity.RegisterActivity.RegisterTask;
+import com.carethy.adapter.RecomDBDataSource;
+import com.carethy.application.Carethy;
 
 public class RecommendationsFragment extends Fragment {
 
 	private View rootView;
 	private TextView recommendation1;
+	private TextView recommendation2;
 	private RecommendationTask mRecommendationTask = null;
+	private RecomDBDataSource datasource;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -54,21 +56,15 @@ public class RecommendationsFragment extends Fragment {
 		String recommendation;
 		int id;
 		ProgressDialog jProgressDialog = null;
-		
+
 		protected void onPreExecute() {
 			jProgressDialog = ProgressDialog.show(getActivity(),
 					"Loading data...", "Please be patient.", true);
 		}
-		
-		//TODO : Send notification message according to id value
-		protected void onPostExecute(){
-			
-		}
 
-		
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			
+
 			try {
 
 				URL url;
@@ -96,8 +92,13 @@ public class RecommendationsFragment extends Fragment {
 				public void run() {
 					recommendation1 = (TextView) rootView
 							.findViewById(R.id.recommendation1);
+					recommendation2 = (TextView) rootView
+							.findViewById(R.id.recommendation2);
+
 					recommendation1.setText(recommendation);
 					jProgressDialog.dismiss();
+
+					recommendation2.setText("stored: "+ Carethy.datasource.createComment(id, recommendation).toString());
 				}
 			});
 
@@ -110,9 +111,6 @@ public class RecommendationsFragment extends Fragment {
 		 * @param conn
 		 *            connection with the engine
 		 * @return the string response
-		 * @throws IOException
-		 * @throws UnsupportedEncodingException
-		 * @throws ProtocolException
 		 * @author jaspreet
 		 */
 		private String getResponse(HttpURLConnection conn) throws IOException,

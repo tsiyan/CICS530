@@ -6,9 +6,18 @@
 
     <TextView
         android:id="@+id/recommendation1"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_margin="5dip"
-		android:background="@drawable/recommendations_style"
-		android:text="Recommendation 1" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dip"
+        android:background="@drawable/recommendations_style"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/recommendation2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dip"
+        android:background="@drawable/recommendations_style"
+        android:text="" />
+
 </LinearLayout>

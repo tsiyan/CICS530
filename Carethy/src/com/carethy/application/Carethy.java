@@ -6,12 +6,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
 import com.carethy.R;
+import com.carethy.adapter.RecomDBDataSource;
 import com.carethy.util.DBHelper;
 
 public class Carethy extends Application {
 	public static DBHelper mDBHelper;
 	public static SQLiteDatabase mSQLiteDatabase;
 	public static SharedPreferences mSharedPreferences;
+	
+	public static RecomDBDataSource datasource;
 
 	@Override
 	public void onCreate() {
@@ -22,6 +25,9 @@ public class Carethy extends Application {
 				.getDefaultSharedPreferences(this);
 		mDBHelper = new DBHelper(this);
 		mSQLiteDatabase = mDBHelper.getWritableDatabase();
+		
+		datasource = new RecomDBDataSource(this);
+		datasource.open();
 	}
 
 }
