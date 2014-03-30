@@ -6,8 +6,10 @@
     <string name="action_refresh">Refresh</string>
     <string name="action_add">Add</string>
     <string name="action_share">Share</string>
-    <string name="display_settings">Display Settings</string>
-    <string name="notification_settings">Notification Settings</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_legal">Legal</string>
+    <string name="settings_account">Account</string>
+    <string name="settings_logout">Logout</string>
 
     <string-array name="tracked_item_array">
         <item>Activity</item>
@@ -32,6 +34,30 @@
         <item>Recommendations</item>
         <item>Medication</item>
         <item>Settings</item>
+    </string-array>
+    <string-array name="notification_times">
+        <item>0 to 6</item>
+        <item>6 to 12</item>
+        <item>12 to 18</item>
+        <item>18 to 24</item>
+    </string-array>
+    <string-array name="notification_times_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="recommendation_category">
+        <item>Activity</item>
+        <item>Sleep</item>
+        <item>Heart Rate</item>
+        <item>Bloody Pressure</item>
+    </string-array>
+    <string-array name="recommendation_category_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
     </string-array>
 
     <!-- Nav Drawer List Item Icons -->
@@ -58,7 +84,6 @@
     <string name="medication_edit_confirm">Confirm</string>
     <string name="medication_edit_delete">Delete</string>
     <string name="medication_edit_timepicker">Pick time</string>
-        <string name="medication_edit_datepicker">Pick date</string>
-    
+    <string name="medication_edit_datepicker">Pick date</string>
 
 </resources>
