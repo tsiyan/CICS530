@@ -4,6 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,9 +19,11 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +31,9 @@ import android.view.View.OnClickListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.carethy.R;
 
@@ -35,6 +45,13 @@ public class RegisterActivity extends Activity {
 	private String mEmail;
 	private String mPassword;
 	private String mPasswordRepeat;
+	private String mFirstName;
+	private String mLastName;
+	
+	private String mHeight;
+	private String mWeight;
+	
+	private String mRadioSex;
 
 	// UI references.
 	private EditText birthdayEditText;
@@ -42,13 +59,21 @@ public class RegisterActivity extends Activity {
 	private EditText mEmailView;
 	private EditText mPasswordView;
 	private EditText mPasswordRepeatView;
+	private EditText mFirstNameView;
+	private EditText mLastNameView;
 	private TextView mTermsTextView;
+	private EditText mHeightView;
+	private EditText mWeightView;	
+	private RadioGroup mRadioSexView;
+	private RadioButton mRadioSexSelectedView;
 
 	private int year;
 	private int month;
 	private int day;
 	static final int DATE_DIALOG_ID = 999;
 
+	private RegisterTask mRegisterTask = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,6 +87,14 @@ public class RegisterActivity extends Activity {
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mPasswordRepeatView = (EditText) findViewById(R.id.password_repeat);
 
+		mFirstNameView = (EditText) findViewById(R.id.first_name);
+		mLastNameView = (EditText) findViewById(R.id.last_name);
+		mHeightView = (EditText) findViewById(R.id.height);
+		mWeightView = (EditText) findViewById(R.id.weight);
+		mRadioSexView = (RadioGroup) findViewById(R.id.radioSex);
+		int selectedSex = mRadioSexView.getCheckedRadioButtonId();
+		mRadioSexSelectedView = (RadioButton) findViewById(selectedSex);
+		
 		findViewById(R.id.register_button2).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -116,66 +149,9 @@ public class RegisterActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	private boolean inputError() {
-		// Reset errors.
-		mEmailView.setError(null);
-		mPasswordView.setError(null);
-		mPasswordRepeatView.setError(null);
-
-		// Store values at the time of the login attempt.
-		mEmail = mEmailView.getText().toString();
-		mPassword = mPasswordView.getText().toString();
-		mPasswordRepeat = mPasswordRepeatView.getText().toString();
-
-		boolean cancel = false;
-
-		// Check for a valid password.
-		if (TextUtils.isEmpty(mPassword)) {
-			mPasswordView.setError(getString(R.string.error_field_required));
-			focusView = mPasswordView;
-			cancel = true;
-		} else if (mPassword.length() < 4) {
-			mPasswordView.setError(getString(R.string.error_invalid_password));
-			focusView = mPasswordView;
-			cancel = true;
-		} else if (TextUtils.isEmpty(mPasswordRepeat)) {
-			mPasswordRepeatView
-					.setError(getString(R.string.error_field_required));
-			focusView = mPasswordRepeatView;
-			cancel = true;
-			// Check if passwords match
-		} else if (!mPassword.equals(mPasswordRepeat)) {
-			mPasswordRepeatView
-					.setError(getString(R.string.error_no_match_password));
-			focusView = mPasswordRepeatView;
-			cancel = true;
-		}
-
-		// Check for a valid email address.
-		if (TextUtils.isEmpty(mEmail)) {
-			mEmailView.setError(getString(R.string.error_field_required));
-			focusView = mEmailView;
-			cancel = true;
-		} else if (!mEmail.contains("@")) {
-			mEmailView.setError(getString(R.string.error_invalid_email));
-			focusView = mEmailView;
-			cancel = true;
-		}
-		return cancel;
-	}
-
 	public void register() {
-		if (inputError()) {
-			focusView.requestFocus();
-		} else {
-
-			// TODO this should add to the DB
-			String json = createJSON();
-
-			Toast.makeText(RegisterActivity.this, "User successfully created",
-					Toast.LENGTH_LONG).show();
-			finish();
-		}
+		mRegisterTask = new RegisterTask();
+		mRegisterTask.execute((Void) null);
 	}
 
 	public String createJSON() {
@@ -257,5 +233,122 @@ public class RegisterActivity extends Activity {
 					.append(" "));
 		}
 	};
+	
+	private boolean inputError() {
+		// Reset errors.
+		mEmailView.setError(null);
+		mPasswordView.setError(null);
+		mPasswordRepeatView.setError(null);
+
+		// Store values at the time of the login attempt.
+		mEmail = mEmailView.getText().toString();
+		mPassword = mPasswordView.getText().toString();
+		mPasswordRepeat = mPasswordRepeatView.getText().toString();
+		mFirstName = mFirstNameView.getText().toString();
+		mLastName = mLastNameView.getText().toString();
+		mHeight = mHeightView.getText().toString();
+		mWeight = mWeightView.getText().toString();
+		mRadioSex = mRadioSexSelectedView.getText().toString();
+		
+		boolean cancel = false;
+
+		// Check for a valid password.
+		if (TextUtils.isEmpty(mPassword)) {
+			mPasswordView.setError(getString(R.string.error_field_required));
+			focusView = mPasswordView;
+			cancel = true;
+		} else if (mPassword.length() < 4) {
+			mPasswordView.setError(getString(R.string.error_invalid_password));
+			focusView = mPasswordView;
+			cancel = true;
+		} else if (TextUtils.isEmpty(mPasswordRepeat)) {
+			mPasswordRepeatView
+					.setError(getString(R.string.error_field_required));
+			focusView = mPasswordRepeatView;
+			cancel = true;
+			// Check if passwords match
+		} else if (!mPassword.equals(mPasswordRepeat)) {
+			mPasswordRepeatView
+					.setError(getString(R.string.error_no_match_password));
+			focusView = mPasswordRepeatView;
+			cancel = true;
+		}
+
+		// Check for a valid email address.
+		if (TextUtils.isEmpty(mEmail)) {
+			mEmailView.setError(getString(R.string.error_field_required));
+			focusView = mEmailView;
+			cancel = true;
+		} else if (!mEmail.contains("@")) {
+			mEmailView.setError(getString(R.string.error_invalid_email));
+			focusView = mEmailView;
+			cancel = true;
+		}
+		return cancel;
+	}
+	
+	//new
+	public class RegisterTask extends AsyncTask<Void, Void, Boolean> {
+		private boolean result = false;
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					if (inputError()) {
+						focusView.requestFocus();
+					} else {
+						result = true;
+						
+					}
+				}
+			});
+			if (result) {
+				result = false;
+				HttpClient httpClient = new DefaultHttpClient();
+				HttpContext localContext = new BasicHttpContext();
+				String message;
+
+				HttpPost httpPost = new HttpPost(
+						"https://dsp-carethy.cloud.dreamfactory.com/rest/user/register?app_name=carethy");
+				JSONObject object = new JSONObject();
+				try {
+
+					object.put("email", mEmail);
+					object.put("new_password", mPassword);
+					object.put("last_name", mLastName);
+					object.put("first_name", mFirstName);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+
+				try {
+					message = object.toString();
+					Log.d("message:>", "" + message);
+
+					httpPost.setEntity(new StringEntity(message, "UTF8"));
+					httpPost.setHeader("Content-type", "application/json");
+					HttpResponse resp = httpClient.execute(httpPost,
+							localContext);
+					if (resp != null) {
+						Log.d("message:>", "Status Code: "
+								+ resp.getStatusLine().getStatusCode());
+						if (resp.getStatusLine().getStatusCode() == 200)
+							result = true;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+
+				}
+				if (result) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+	}
 
 }

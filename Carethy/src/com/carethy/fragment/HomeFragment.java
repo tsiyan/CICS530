@@ -2,11 +2,14 @@ package com.carethy.fragment;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.List;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,18 +21,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
 import com.carethy.R;
+import com.carethy.R.drawable;
+import com.carethy.application.Carethy;
+import com.carethy.model.Recommendation;
+import com.carethy.util.HackUtils;
 import com.carethy.util.Util;
 
 public class HomeFragment extends Fragment {
 	private View rootView;
-	private LinearLayout linearLayout;
+	private LinearLayout panel;
 	private TextView activity;
 	private TextView sleep;
 	private TextView heartRate;
 	private TextView bloodPressure;
+//	private ListView mListView;
+//	private RecommendationListAdapter adapter;
 	private ProgressDialog mProgressDialog = null;
 	private int activityData;
 	private float sleepData;
@@ -37,9 +47,18 @@ public class HomeFragment extends Fragment {
 	private float bloodPressureData;
 	public static DecimalFormat df = new DecimalFormat("#.#");
 
+	private LinearLayout scrollInnerPanel;
+	LayoutParams lparams = new LayoutParams(LayoutParams.MATCH_PARENT,
+			LayoutParams.WRAP_CONTENT);
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
+		// test-code - For force data into recom table
+		if (HackUtils.test) {
+			HackUtils.hackIntoRecomDB(100, "High alert");
+		}
+		
 		rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
 		// add refresh icon to the action bar
@@ -73,12 +92,12 @@ public class HomeFragment extends Fragment {
 	}
 
 	public void shareData() {
-		linearLayout.setDrawingCacheEnabled(true);// enable cache
-		linearLayout.buildDrawingCache(true);
+		panel.setDrawingCacheEnabled(true);// enable cache
+		panel.buildDrawingCache(true);
 
-		Bitmap imageData = Bitmap.createBitmap(linearLayout.getDrawingCache());
+		Bitmap imageData = Bitmap.createBitmap(panel.getDrawingCache());
 
-		linearLayout.setDrawingCacheEnabled(false); // clear cache
+		panel.setDrawingCacheEnabled(false); // clear cache
 
 		String fileName = Util.getTimestamp() + ".png";
 		if (Util.saveImage(imageData, fileName)) {
@@ -129,20 +148,91 @@ public class HomeFragment extends Fragment {
 	}
 
 	private void initView() {
-		linearLayout = (LinearLayout) rootView.findViewById(R.id.panel);
+		panel = (LinearLayout) rootView.findViewById(R.id.panel);
 
 		activity = (TextView) rootView.findViewById(R.id.activity);
-		activity.setText(activityData + " steps");
+		activity.setText(activityData + "\nsteps");
+		((GradientDrawable) activity.getBackground()).setColor(Color
+				.parseColor("#ff5900"));
 
 		sleep = (TextView) rootView.findViewById(R.id.sleep);
-		sleep.setText(df.format(sleepData) + " hours");
+		sleep.setText(df.format(sleepData) + "\nhours");
+		((GradientDrawable) sleep.getBackground()).setColor(Color
+				.parseColor("#ff9a00"));
 
 		heartRate = (TextView) rootView.findViewById(R.id.heart_rate);
-		heartRate.setText(heartRateData + " beats");
+		heartRate.setText(heartRateData + "\nbeats");
+		((GradientDrawable) heartRate.getBackground()).setColor(Color
+				.parseColor("#0d56a6"));
 
 		bloodPressure = (TextView) rootView.findViewById(R.id.blood_pressure);
-		bloodPressure.setText(df.format(bloodPressureData) + " mh");
+		bloodPressure.setText(df.format(bloodPressureData) + "\nmh");
+		((GradientDrawable) bloodPressure.getBackground()).setColor(Color
+				.parseColor("#00a876"));
 
+//<<<<<<< HEAD
+		scrollInnerPanel = (LinearLayout) rootView
+				.findViewById(R.id.scrollInnerPanel);
+
+		fillRecommendations();
+	}
+
+	private void fillRecommendations() {
+		List<Recommendation> recomms = Carethy.datasource
+				.getRecommendations(""); // DBRecomHelper.RECOM_LIMIT);
+
+		if (!recomms.isEmpty()) {
+			for (Recommendation recom : recomms) {
+
+				TextView tv = getTextView();
+				if (recom.getRecomId() <= 300) {
+					tv.setTextColor(Color.RED);
+				} else {
+					tv.setTextColor(Color.GREEN);
+				}
+				tv.setText(recom.getRecom());
+				this.scrollInnerPanel.addView(tv);
+			}
+		} else {
+			TextView tv = getTextView();
+			tv.setText("No Stored Recommendations");
+			this.scrollInnerPanel.addView(tv);
+		}
+	}
+
+	private TextView getTextView() {
+		TextView tv = new TextView(this.getActivity());
+		tv.setLayoutParams(lparams);
+		tv.setBackgroundResource(drawable.recommendation_bg_style);
+		return tv;
+//=======
+//		mListView = (ListView) rootView.findViewById(R.id.home_listview);
+//
+//		final ArrayList<Recommendation> list = Util.getRecommendation();
+//
+//		adapter = new RecommendationListAdapter(getActivity(),
+//				android.R.layout.simple_list_item_1, list);
+//
+//		mListView.setAdapter(adapter);
+//		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//			@Override
+//			public void onItemClick(AdapterView<?> parent, final View view,
+//					int position, long id) {
+//				final Recommendation item = (Recommendation) parent.getItemAtPosition(position);
+//				view.animate().setDuration(100).alpha(0)
+//						.withEndAction(new Runnable() {
+//							@Override
+//							public void run() {
+//								list.remove(item);
+//								adapter.notifyDataSetChanged();
+//								view.setAlpha(1);
+//							}
+//						});
+//			}
+//
+//		});
+//>>>>>>> origin/master
 	}
 
 }

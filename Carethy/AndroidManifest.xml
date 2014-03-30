@@ -12,6 +12,8 @@
         android:minSdkVersion="16"
         android:targetSdkVersion="19" />
 
+    <uses-permission android:name="android.permission.INTERNET" /> 
+    
     <application
         android:name="com.carethy.application.Carethy"
         android:allowBackup="true"

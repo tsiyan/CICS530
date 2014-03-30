@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="@string/display_settings" >
-        <ListPreference
-            android:entries="@array/drawer_menu_item_titles"
-            android:entryValues="@array/drawer_menu_item_titles"
-            android:key="date_format"
-            android:title="Date Format" />
+    <PreferenceCategory android:title="@string/settings_notifications" >
+        <MultiSelectListPreference
+            android:entries="@array/notification_times"
+            android:entryValues="@array/notification_times_value"
+            android:key="notification_time"
+            android:title="Notification Time" />
+        <MultiSelectListPreference
+            android:entries="@array/recommendation_category"
+            android:entryValues="@array/recommendation_category_value"
+            android:key="recommendation_category"
+            android:title="Recommendation Category" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/notification_settings" >
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="vibrate_pref"
-            android:summary="Vibrate on notification"
-            android:title="Vibrate" />
+    <PreferenceCategory android:title="@string/settings_legal" >
+        <Preference
+            android:key="terms_conditions"
+            android:title="@string/title_activity_terms" >
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_account" >
+        <Preference
+            android:key="logout"
+            android:title="@string/settings_logout" >
+        </Preference>
     </PreferenceCategory>
 
 </PreferenceScreen>
