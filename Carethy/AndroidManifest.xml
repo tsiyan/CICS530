@@ -5,15 +5,18 @@
     android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="19" />
 
-    <uses-permission android:name="android.permission.INTERNET" /> 
-    
     <application
         android:name="com.carethy.application.Carethy"
         android:allowBackup="true"
@@ -60,7 +63,23 @@
             android:parentActivityName="com.carethy.activity.MainActivity" >
         </activity>
 
-        <receiver android:name="com.carethy.receiver.AlarmReceiver" >
+        <activity android:name="com.carethy.alarmclock.AlarmScreen" />
+        
+        <activity android:name="com.carethy.alarmclock.AlarmDetailsActivity" />
+
+        <service android:name="com.carethy.alarmclock.AlarmService" 
+            android:enabled="true"/>
+        
+        <receiver android:name="com.carethy.alarmclock.AlarmManagerHelper" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="AlarmReceiver">
+            <intent-filter>
+               <action android:name="com.carethy.alarmclock.ALARM_ALERT" />
+            </intent-filter>
         </receiver>
 
         <provider
@@ -68,6 +87,15 @@
             android:authorities="com.carethy.contentprovider"
             android:exported="false" >
         </provider>
+
+        <receiver android:name="AlarmInitReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
+        
     </application>
 
 </manifest>
