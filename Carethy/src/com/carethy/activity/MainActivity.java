@@ -26,6 +26,12 @@ import com.carethy.model.NavDrawerItem;
 public class MainActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
 
+    /** This must be false for production.  
+     *  If true, turns on logging,
+     *  
+     **/
+	public final static boolean DEBUG = false;
+
 	private boolean loggedIn = true;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
@@ -173,7 +179,7 @@ public class MainActivity extends FragmentActivity implements
 				.buildContentFragment(position);
 
 		getFragmentManager().beginTransaction()
-				.replace(R.id.content_frame, fragment).commit();
+				.replace(R.id.content_frame, fragment, "fragment_id_"+position).commit();
 	}
 
 	private void selectItem(int position) {

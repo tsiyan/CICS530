@@ -11,7 +11,8 @@ public class ContentFragmentFactory {
 		Fragment heartBeatsFragment=new HeartBeatsFragment();
 		Fragment bloodPressuresFragment=new BloodPressuresFragment();
 		Fragment recommendationsFragment=new RecommendationsFragment();
-		Fragment medicationFragment=new MedicationFragment();
+		Fragment medicationFragment=new AlarmListFragment();
+//		Fragment medicationFragment=new MedicationFragment();
 		Fragment settingsFragment=new SettingsFragment();
 		
 		switch (position) {
