@@ -1,10 +1,12 @@
 package com.carethy.activity;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONObject;
 
 import android.animation.Animator;
@@ -150,6 +152,8 @@ public class LoginActivity extends Activity {
 	public void register() {
 		Intent intent = new Intent(this, RegisterActivity.class);
 	    startActivity(intent);
+	    //TODO this is not pretty
+	    finish();
 	}
 	
 	/**
@@ -224,38 +228,29 @@ public class LoginActivity extends Activity {
 		@Override
 		protected Boolean doInBackground(Void... params) {
 
-			String json = null;
-			
-			try {
-				InputStream is = getAssets().open("sample_data.json");
-				int size = is.available();
-				byte[] buffer = new byte[size];
-				is.read(buffer);
-				is.close();
-				json = new String(buffer, "UTF-8");
+			HttpClient httpClient = new DefaultHttpClient();
+			HttpContext localContext = new BasicHttpContext();
 
-			} catch (IOException ex) {
+			HttpPost httpPost = new HttpPost(
+					"https://dsp-carethy.cloud.dreamfactory.com/rest/user/session?app_name=carethy");
+			JSONObject userData = new JSONObject();
+			try {
+				userData.put("email", mEmail);
+				userData.put("password", mPassword);
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			
-				JSONObject obj;
-				try {
-					obj = new JSONObject(json);
-					JSONArray carethy = obj.getJSONArray("Carethy");
-					for (int i = 0; i < carethy.length(); i++) {
-						JSONObject user = carethy.getJSONObject(i);
-						if (user.get("user_name").equals(mEmail)) {
-							if (user.get("password").equals(mPassword)) {
-								return true;
-							}
-							else {
-								return false;
-							}
-						}
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
+			try {
+				httpPost.setEntity(new StringEntity(userData.toString(), "UTF8"));
+				httpPost.setHeader("Content-type", "application/json");
+				HttpResponse resp = httpClient.execute(httpPost, localContext);
+				if (resp != null && resp.getStatusLine().getStatusCode() == 200) {
+					MainActivity.setLoggedIn(true);
+					return true;
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return false;
 		}
 

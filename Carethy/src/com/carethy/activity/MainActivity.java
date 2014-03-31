@@ -26,7 +26,24 @@ import com.carethy.model.NavDrawerItem;
 public class MainActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
 
-	private boolean loggedIn = true;
+	public static String DREAMFACTORYTOKEN = null;	
+	public static String getDREAMFACTORYTOKEN() {
+		return DREAMFACTORYTOKEN;
+	}
+
+	public static void setDREAMFACTORYTOKEN(String dREAMFACTORYTOKEN) {
+		DREAMFACTORYTOKEN = dREAMFACTORYTOKEN;
+	}
+
+	public static boolean LOGGEDIN = false;	
+	public static boolean isLoggedIn() {
+		return LOGGEDIN;
+	}
+
+	public static void setLoggedIn(boolean loggedIn) {
+		MainActivity.LOGGEDIN = loggedIn;
+	}
+
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -42,7 +59,7 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		if (!loggedIn) {
+		if (!LOGGEDIN) {
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
 		}
