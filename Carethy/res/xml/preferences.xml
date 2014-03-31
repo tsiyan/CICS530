@@ -8,7 +8,7 @@
             android:key="notification_time"
             android:title="Notification Time" />
         <MultiSelectListPreference
-            android:entries="@array/recommendation_category"
+            android:entries="@array/tracked_item_array"
             android:entryValues="@array/recommendation_category_value"
             android:key="recommendation_category"
             android:title="Recommendation Category" />
