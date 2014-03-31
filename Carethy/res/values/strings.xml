@@ -11,6 +11,20 @@
     <string name="settings_account">Account</string>
     <string name="settings_logout">Logout</string>
 
+    <string name="details_alarm_name">Medication Name</string>
+	<string name="details_repeat_weekly">Repeat Weekly</string>
+	<string name="details_sunday">Sunday</string>
+	<string name="details_monday">Monday</string>
+	<string name="details_tuesday">Tuesday</string>
+	<string name="details_wednesday">Wednesday</string>
+	<string name="details_thursday">Thursday</string>
+	<string name="details_friday">Friday</string>
+	<string name="details_saturday">Saturday</string>
+	<string name="details_alarm_tone">Alarm Tone</string>
+	<string name="details_alarm_tone_default">Please Select an Alarm Ringtone</string>
+    <string name="save_icon">Save</string>
+    <string name="discard_icon">Delete</string>
+
     <string-array name="tracked_item_array">
         <item>Activity</item>
         <item>Sleep</item>
