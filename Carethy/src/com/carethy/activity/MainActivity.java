@@ -26,10 +26,10 @@ import com.carethy.model.NavDrawerItem;
 public class MainActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
 
-    /** This must be false for production.  
-     *  If true, turns on logging,
-     *  
-     **/
+	/**
+	 * This must be false for production. If true, turns on logging,
+	 * 
+	 **/
 	public final static boolean DEBUG = false;
 
 	private boolean loggedIn = true;
@@ -54,14 +54,21 @@ public class MainActivity extends FragmentActivity implements
 		if (!loggedIn) {
 			Intent intent = new Intent(this, LoginActivity.class);
 			// Closing all the Activities
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            // Add new Flag to start new Activity
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			// Add new Flag to start new Activity
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(intent);
 			finish();
-		}else{
+		} else {
 			initView(savedInstanceState);
+			/*
+			 * *******************start the ServiceDomo which pops up
+			 * window***********************************
+			 */
+			startService(new Intent(this, ServiceDemo.class));
+
 		}
+
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -184,8 +191,10 @@ public class MainActivity extends FragmentActivity implements
 		Fragment fragment = ContentFragmentFactory
 				.buildContentFragment(position);
 
-		getFragmentManager().beginTransaction()
-				.replace(R.id.content_frame, fragment, "fragment_id_"+position).commit();
+		getFragmentManager()
+				.beginTransaction()
+				.replace(R.id.content_frame, fragment,
+						"fragment_id_" + position).commit();
 	}
 
 	private void selectItem(int position) {
@@ -220,10 +229,11 @@ public class MainActivity extends FragmentActivity implements
 		// Pass any configuration change to the drawer toggles
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
-	
+
 	public void onDestroy() {
-	    super.onDestroy();
-//	    Toast.makeText(this, "finish() -> onDestory()", Toast.LENGTH_SHORT).show();
-	    loggedIn=false;
+		super.onDestroy();
+		// Toast.makeText(this, "finish() -> onDestory()",
+		// Toast.LENGTH_SHORT).show();
+		loggedIn = false;
 	}
 }
