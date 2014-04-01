@@ -5,12 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
+    <!--
+         TextView
         android:id="@+id/recommendation1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dip"
         android:background="@drawable/recommendation_bg_style"
-        android:text="" />
+        android:text="" /
+    -->
 
 </LinearLayout>

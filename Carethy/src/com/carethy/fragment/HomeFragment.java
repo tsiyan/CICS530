@@ -1,8 +1,22 @@
 package com.carethy.fragment;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -23,11 +37,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.carethy.R;
 import com.carethy.R.drawable;
 import com.carethy.application.Carethy;
 import com.carethy.model.Recommendation;
+import com.carethy.util.DBRecomHelper;
 import com.carethy.util.HackUtils;
 import com.carethy.util.Util;
 
@@ -38,8 +54,6 @@ public class HomeFragment extends Fragment {
 	private TextView sleep;
 	private TextView heartBeats;
 	private TextView bloodPressures;
-	// private ListView mListView;
-	// private RecommendationListAdapter adapter;
 	private ProgressDialog mProgressDialog = null;
 	private int activitiesData;
 	private int sleepData;
@@ -48,8 +62,9 @@ public class HomeFragment extends Fragment {
 	public static DecimalFormat df = new DecimalFormat("#.#");
 
 	private LinearLayout scrollInnerPanel;
-	LayoutParams lparams = new LayoutParams(LayoutParams.MATCH_PARENT,
+	private LayoutParams lparams = new LayoutParams(LayoutParams.MATCH_PARENT,
 			LayoutParams.WRAP_CONTENT);
+	private static boolean firstLogin = true;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -114,7 +129,14 @@ public class HomeFragment extends Fragment {
 	}
 
 	public void loadData() {
+
 		AsyncTask<Void, Integer, Void> task = new AsyncTask<Void, Integer, Void>() {
+
+			String engineResponse = null;
+			String recommendation;
+			int id;
+			URL url;
+
 			@Override
 			protected void onPreExecute() {
 				mProgressDialog = ProgressDialog.show(getActivity(),
@@ -130,7 +152,25 @@ public class HomeFragment extends Fragment {
 					heartBeatsData = Util.getHeartBeatsData();
 					bloodPressuresData = Util.getBloodPressuresData();
 
+					// if (!Carethy.firstLogin) {
+					url = new URL("http://health-engine.herokuapp.com/");
+					HttpURLConnection conn = (HttpURLConnection) url
+							.openConnection();
+
+					engineResponse = getResponse(conn);
+
+					JSONObject jRecom = new JSONObject(engineResponse);
+					id = jRecom.getInt("id");
+					recommendation = jRecom.getString("recommendation");
+					// }
+
 				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 
@@ -139,9 +179,67 @@ public class HomeFragment extends Fragment {
 
 			@Override
 			protected void onPostExecute(Void result) {
-				initView();
 
+				// if (!Carethy.firstLogin) {
+				int topId = Carethy.datasource.getTopRecommendationId();
+				if (topId != id) {
+					Carethy.datasource.insertIntoTable(id, recommendation);
+				} else {
+					Toast.makeText(getActivity(), "No New Recommendations",
+							Toast.LENGTH_LONG).show();
+				}
+				// } else {
+				// Toast.makeText(getActivity(), "" + Carethy.firstLogin,
+				// Toast.LENGTH_LONG).show();
+				// }
+
+				initView();
 				mProgressDialog.dismiss();
+			}
+
+			/**
+			 * Sends json request to engine
+			 * 
+			 * @param conn
+			 *            connection with the engine
+			 * @return the string response
+			 * @author jaspreet
+			 */
+			private String getResponse(HttpURLConnection conn)
+					throws IOException, UnsupportedEncodingException,
+					ProtocolException {
+
+				String httpResponse;
+				String tmpJson;
+
+				InputStream is = getActivity().getAssets()
+						.open("jrequest.json");
+				int size = is.available();
+				byte[] buffer = new byte[size];
+				is.read(buffer);
+				is.close();
+				tmpJson = new String(buffer, "UTF-8");
+
+				conn.setRequestMethod("POST");
+				conn.setRequestProperty("Content-Type", "application/json");
+				DataOutputStream wr = new DataOutputStream(
+						conn.getOutputStream());
+				wr.writeBytes(tmpJson);
+				wr.flush();
+				wr.close();
+
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						conn.getInputStream()));
+				while ((httpResponse = in.readLine()) != null)
+					engineResponse += httpResponse;
+				in.close();
+				conn.disconnect();
+
+				// TODO: Get the null removed from the engine team
+				// or find its significance
+				if (engineResponse.startsWith("null"))
+					engineResponse = engineResponse.substring(5);
+				return engineResponse;
 			}
 		};
 		task.execute((Void[]) null);
@@ -171,18 +269,26 @@ public class HomeFragment extends Fragment {
 		((GradientDrawable) bloodPressures.getBackground()).setColor(Color
 				.parseColor("#00a876"));
 
-		// <<<<<<< HEAD
+		// get recommendations and fill
 		scrollInnerPanel = (LinearLayout) rootView
 				.findViewById(R.id.scrollInnerPanel);
-
+		scrollInnerPanel.removeAllViews();
 		fillRecommendations();
 	}
 
 	private void fillRecommendations() {
-		List<Recommendation> recomms = Carethy.datasource
-				.getRecommendations(""); // DBRecomHelper.RECOM_LIMIT);
+		List<Recommendation> recomms = new ArrayList<Recommendation>();
 
-		if (!recomms.isEmpty()) {
+		recomms = Carethy.datasource
+				.getRecommendations(DBRecomHelper.RECOM_LIMIT);
+
+		if (recomms.isEmpty() && firstLogin) {
+			TextView tv = getTextView();
+			tv.setText("No Stored Recommendations");
+			this.scrollInnerPanel.addView(tv);
+			firstLogin = false;
+		} else {
+
 			for (Recommendation recom : recomms) {
 
 				TextView tv = getTextView();
@@ -194,10 +300,6 @@ public class HomeFragment extends Fragment {
 				tv.setText(recom.getRecom());
 				this.scrollInnerPanel.addView(tv);
 			}
-		} else {
-			TextView tv = getTextView();
-			tv.setText("No Stored Recommendations");
-			this.scrollInnerPanel.addView(tv);
 		}
 	}
 
@@ -206,36 +308,5 @@ public class HomeFragment extends Fragment {
 		tv.setLayoutParams(lparams);
 		tv.setBackgroundResource(drawable.recommendation_bg_style);
 		return tv;
-		// =======
-		// mListView = (ListView) rootView.findViewById(R.id.home_listview);
-		//
-		// final ArrayList<Recommendation> list = Util.getRecommendation();
-		//
-		// adapter = new RecommendationListAdapter(getActivity(),
-		// android.R.layout.simple_list_item_1, list);
-		//
-		// mListView.setAdapter(adapter);
-		// mListView.setOnItemClickListener(new
-		// AdapterView.OnItemClickListener() {
-		//
-		// @Override
-		// public void onItemClick(AdapterView<?> parent, final View view,
-		// int position, long id) {
-		// final Recommendation item = (Recommendation)
-		// parent.getItemAtPosition(position);
-		// view.animate().setDuration(100).alpha(0)
-		// .withEndAction(new Runnable() {
-		// @Override
-		// public void run() {
-		// list.remove(item);
-		// adapter.notifyDataSetChanged();
-		// view.setAlpha(1);
-		// }
-		// });
-		// }
-		//
-		// });
-		// >>>>>>> origin/master
 	}
-
 }
