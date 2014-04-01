@@ -62,6 +62,9 @@
             android:label="@string/title_activity_create_medication"
             android:parentActivityName="com.carethy.activity.MainActivity" >
         </activity>
+        <activity
+            android:name="com.carethy.notification.DisplayMessageActivity">
+        </activity>
 
         <activity android:name="com.carethy.alarmclock.AlarmScreen" />
         
@@ -81,7 +84,9 @@
                <action android:name="com.carethy.alarmclock.ALARM_ALERT" />
             </intent-filter>
         </receiver>
-
+        <receiver android:name="com.carethy.receiver.RecomAlarmReceiver" >
+        </receiver>
+        
         <provider
             android:name=".contentprovider.MedicationContentProvider"
             android:authorities="com.carethy.contentprovider"
