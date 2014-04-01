@@ -22,6 +22,7 @@ import com.carethy.R;
 import com.carethy.adapter.NavDrawerListAdapter;
 import com.carethy.fragment.ContentFragmentFactory;
 import com.carethy.model.NavDrawerItem;
+import com.carethy.service.ServiceDemo;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
