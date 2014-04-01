@@ -15,7 +15,12 @@ import android.database.sqlite.SQLiteDatabase;
 public class RecomDBDataSource {
 
 	private SQLiteDatabase database;
+	private SQLiteDatabase writeDatabase;
 	private DBRecomHelper dbHelper;
+
+	private static long last_id = 0;
+	private static long latest_id = 0;
+
 	private String[] allColumns = { DBRecomHelper.COLUMN_ID,
 			DBRecomHelper.COLUMN_RECOM_ID, DBRecomHelper.COLUMN_RECOM };
 
@@ -24,7 +29,8 @@ public class RecomDBDataSource {
 	}
 
 	public void open() throws SQLException {
-		database = dbHelper.getWritableDatabase();
+		database = dbHelper.getReadableDatabase();
+		writeDatabase = dbHelper.getWritableDatabase();
 	}
 
 	public void close() {
@@ -36,13 +42,14 @@ public class RecomDBDataSource {
 		values.put(DBRecomHelper.COLUMN_RECOM_ID, recom_id);
 		values.put(DBRecomHelper.COLUMN_RECOM, recom);
 
-		long insertId = database
-				.insert(DBRecomHelper.TABLE_RECOM, null, values);
+		long insertId = writeDatabase.insert(DBRecomHelper.TABLE_RECOM, null,
+				values);
 		Cursor cursor = database.query(DBRecomHelper.TABLE_RECOM, allColumns,
 				DBRecomHelper.COLUMN_ID + " = " + insertId, null, null, null,
 				null);
 		cursor.moveToFirst();
 		Recommendation newReco = cursorToCurrentRow(cursor);
+		latest_id = newReco.getId();
 
 		cursor.close();
 		return newReco;
@@ -80,6 +87,31 @@ public class RecomDBDataSource {
 		// make sure to close the cursor
 		cursor.close();
 		return recommendations;
+	}
+
+	public List<Recommendation> getNewRecommendations() {
+
+		List<Recommendation> recommendations = new ArrayList<Recommendation>();
+
+		if (last_id < latest_id) {
+			int limit = (int) (latest_id - last_id);
+			recommendations = getRecommendations("" + limit);
+			last_id = latest_id;
+		}
+
+		return recommendations;
+	}
+
+	public int getTopRecommendationId() {
+
+		Cursor cursor = database.query(DBRecomHelper.TABLE_RECOM, allColumns,
+				null, null, null, null, DBRecomHelper.ORDER_RECOM_BY, "1");
+
+		if (cursor.moveToFirst()) {
+			return cursorToCurrentRow(cursor).getRecomId();
+		} else {
+			return 0;
+		}
 	}
 
 }
