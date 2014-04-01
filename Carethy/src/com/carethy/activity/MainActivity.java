@@ -22,6 +22,7 @@ import com.carethy.R;
 import com.carethy.adapter.NavDrawerListAdapter;
 import com.carethy.fragment.ContentFragmentFactory;
 import com.carethy.model.NavDrawerItem;
+import com.carethy.service.ServiceDemo;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
@@ -51,11 +52,18 @@ public class MainActivity extends FragmentActivity implements
 		if (!loggedIn) {
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
+
 		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
 		initView(savedInstanceState);
+		
+		/*
+		 ********************start the ServiceDomo which pops up window*********************************** 
+		 */
+		startService(new Intent(this, ServiceDemo.class));
+
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
