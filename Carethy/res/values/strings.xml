@@ -26,10 +26,10 @@
     <string name="discard_icon">Delete</string>
 
     <string-array name="tracked_item_array">
-        <item>Activity</item>
+        <item>Activities</item>
         <item>Sleep</item>
-        <item>Heart Rate</item>
-        <item>Bloody Pressure</item>
+        <item>Heart Beats</item>
+        <item>Bloody Pressures</item>
     </string-array>
 
     <string name="title_activity_register">Register</string>
@@ -41,10 +41,10 @@
 
     <string-array name="drawer_menu_item_titles">
         <item>Home</item>
-        <item>Activity</item>
+        <item>Activities</item>
         <item>Sleep</item>
-        <item>Heart Rate</item>
-        <item>Blood Pressure</item>
+        <item>Heart Beats</item>
+        <item>Blood Pressures</item>
         <item>Recommendations</item>
         <item>Medication</item>
         <item>Settings</item>
@@ -61,12 +61,7 @@
         <item>2</item>
         <item>3</item>
     </string-array>
-    <string-array name="recommendation_category">
-        <item>Activity</item>
-        <item>Sleep</item>
-        <item>Heart Rate</item>
-        <item>Bloody Pressure</item>
-    </string-array>
+
     <string-array name="recommendation_category_value">
         <item>0</item>
         <item>1</item>

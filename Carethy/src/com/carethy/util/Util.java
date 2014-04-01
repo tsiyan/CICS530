@@ -16,7 +16,10 @@ import android.graphics.Bitmap.CompressFormat;
 import android.os.Environment;
 import android.util.Log;
 
+import com.carethy.application.Carethy.BodyData;
+import com.carethy.model.CarethyGraphData;
 import com.carethy.model.Recommendation;
+import com.jjoe64.graphview.GraphView.GraphViewData;
 
 public class Util {
 	public static Random rand = new Random();
@@ -59,32 +62,63 @@ public class Util {
 		return sdf.format(date);
 	}
 
-	public static double[] fetchData() {
+	public static ArrayList<CarethyGraphData> fetchData(BodyData mBodyData) {
+		int count = 10;
+		long now =new Date().getTime();
+		ArrayList<CarethyGraphData> result = new ArrayList<CarethyGraphData>();
 
-		int count = 30;
-		double[] values = new double[count];
-		for (int i = 0; i < values.length; i++) {
-			values[i] = Math.sin(i * (rand.nextDouble() * 0.1 + 0.3) + 2);
+		GraphViewData[] timeSeries = new GraphViewData[count];
+		for (int i = 0; i < count; i++) {
+			timeSeries[i] = new GraphViewData(now + (i * 60 * 60 * 24 * 1000),
+					rand.nextInt(20));
 		}
 
-		return values;
+		switch (mBodyData) {
+		case activities:
+			result.add(new CarethyGraphData("Duration", timeSeries));
+			break;
 
+		case bloodPressure:
+			result.add(new CarethyGraphData("Systolic", timeSeries));
+
+			GraphViewData[] mGraphViewData1 = new GraphViewData[count];
+			for (int i = 0; i < count; i++) {
+				mGraphViewData1[i] = new GraphViewData(now
+						+ (i * 60 * 60 * 24 * 1000), rand.nextInt(20));
+
+			}
+			result.add(new CarethyGraphData("Diastolic", mGraphViewData1));
+			break;
+
+		case heartBeats:
+			result.add(new CarethyGraphData("Counts", timeSeries));
+			break;
+
+		case sleep:
+			result.add(new CarethyGraphData("minutesAsleep", timeSeries));
+			break;
+
+		default:
+			break;
+		}
+
+		return result;
 	}
 
-	public static int getActivityData() {
-		return Math.abs(rand.nextInt() / 1000000);
+	public static int getActivitiesData() {
+		return Math.abs(rand.nextInt(100));
 	}
 
-	public static float getSleepData() {
-		return Math.abs(rand.nextFloat() * 10);
+	public static int getSleepData() {
+		return Math.abs(rand.nextInt(500));
 	}
 
-	public static int getHeartRateData() {
-		return Math.abs(rand.nextInt() / 1000000);
+	public static int getHeartBeatsData() {
+		return Math.abs(rand.nextInt(150));
 	}
 
-	public static float getBloodPressureData() {
-		return Math.abs(rand.nextFloat() * 1000);
+	public static int[] getBloodPressuresData() {
+		return new int[] { rand.nextInt(200), rand.nextInt(100) };
 	}
 
 	public static ArrayList<Recommendation> getRecommendation() {
@@ -104,4 +138,5 @@ public class Util {
 
 		return list;
 	}
+
 }

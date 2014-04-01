@@ -12,13 +12,8 @@
             android:id="@+id/graph"
             android:layout_width="fill_parent"
             android:layout_height="250dip"
+            android:background="@android:color/white"
             android:orientation="vertical" />
-
-        <com.echo.holographlibrary.LineGraph
-            android:id="@+id/holograph"
-            android:layout_width="fill_parent"
-            android:layout_height="200dp" />
-
     </LinearLayout>
 
 </ScrollView>

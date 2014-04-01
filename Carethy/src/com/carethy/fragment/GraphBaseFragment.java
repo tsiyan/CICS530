@@ -1,6 +1,10 @@
 package com.carethy.fragment;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -20,11 +24,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.carethy.R;
+import com.carethy.application.Carethy.BodyData;
+import com.carethy.model.CarethyGraphData;
 import com.carethy.util.Util;
-import com.echo.holographlibrary.Line;
-import com.echo.holographlibrary.LineGraph;
-import com.echo.holographlibrary.LinePoint;
-import com.jjoe64.graphview.GraphView.GraphViewData;
+import com.jjoe64.graphview.CustomLabelFormatter;
 import com.jjoe64.graphview.GraphView.LegendAlign;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
@@ -34,12 +37,14 @@ import com.jjoe64.graphview.LineGraphView;
  * Abstract Fragment that appears in the "content_frame". ContentFragmentFactory
  * will return concrete subclasses.
  */
+
 public abstract class GraphBaseFragment extends Fragment {
 	private LinearLayout linearLayout;
 	private LineGraphView graphView;
-	private View rootView;
+	protected View rootView;
 	private ProgressDialog mProgressDialog = null;
-	private double[] values;
+	private ArrayList<CarethyGraphData> values = null;
+	protected BodyData mBodyData;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -110,7 +115,7 @@ public abstract class GraphBaseFragment extends Fragment {
 			protected Void doInBackground(Void... arg0) {
 				try {
 					Thread.sleep(500);
-					values = Util.fetchData();
+					values = Util.fetchData(mBodyData);
 
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -130,27 +135,39 @@ public abstract class GraphBaseFragment extends Fragment {
 	}
 
 	public void initView() {
-		GraphViewData[] graphViewData = new GraphViewData[values.length];
-		for (int i = 0; i < graphViewData.length; i++) {
-			GraphViewData v = new GraphViewData(i, values[i]);
-			graphViewData[i] = v;
-		}
-		GraphViewSeries series = new GraphViewSeries("",
-				new GraphViewSeriesStyle(Color.rgb(51, 181, 229), 5),
-				graphViewData);// 255, 187, 51
-
-		// GraphView
+		int count = 0;
 		graphView = new LineGraphView(getActivity(), "");
-		graphView.addSeries(series);
+
+		for (CarethyGraphData value : values) {
+			GraphViewSeries series = new GraphViewSeries(value.getUnit(),
+					new GraphViewSeriesStyle(((count == 0) ? Color.rgb(51, 181,
+							229) : Color.rgb(229, 99, 51)), 5),
+					value.getTimeSeries());
+
+			graphView.addSeries(series);
+			count++;
+		}
+
+		final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d",
+				Locale.CANADA);
+		graphView.setCustomLabelFormatter(new CustomLabelFormatter() {
+			@Override
+			public String formatLabel(double value, boolean isValueX) {
+				if (isValueX) {
+					Date d = new Date((long) value);
+					return dateFormat.format(d);
+				}
+				return null; // let graphview generate Y-axis label for us
+			}
+		});
 
 		// set styles
 		graphView.getGraphViewStyle().setNumHorizontalLabels(0);
 		graphView.getGraphViewStyle().setNumVerticalLabels(0);
 //		graphView.setDrawBackground(true);
-		// graphView.setBackgroundColor(Color.rgb(153, 204, 153));
-		graphView.setViewPort(1, 10);
 		graphView.setScalable(true);
 
+		graphView.setShowLegend(true);
 		graphView.setLegendAlign(LegendAlign.BOTTOM);
 		graphView.getGraphViewStyle().setLegendBorder(20);
 		graphView.getGraphViewStyle().setLegendSpacing(30);
@@ -158,27 +175,12 @@ public abstract class GraphBaseFragment extends Fragment {
 		graphView.setDrawDataPoints(true);
 		graphView.setDataPointsRadius(10f);
 
-		// Create GraphView
+		// add GraphView to LinearLayout
 		linearLayout = (LinearLayout) rootView.findViewById(R.id.graph);
 		linearLayout.removeAllViews();
 		linearLayout.addView(graphView);
 
-		// Create HoloGraph
-		Line l = new Line();
-		l.setColor(Color.parseColor("#FFBB33"));
+		
 
-		for (int i = 0; i < values.length; i++) {
-			LinePoint p = new LinePoint();
-			p.setX(i);
-			p.setY(values[i] > 0 ? values[i] : -3 * values[i]);
-			l.addPoint(p);
-		}
-
-		LineGraph li = (LineGraph) rootView.findViewById(R.id.holograph);
-		li.removeAllLines();
-		li.addLine(l);
-		li.setRangeY(0, 5);
-		li.setLineToFill(0);
 	}
-
 }

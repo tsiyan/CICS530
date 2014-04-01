@@ -10,12 +10,16 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Calendar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlarmManager;
 import android.app.Fragment;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,6 +32,7 @@ import android.widget.TextView;
 import com.carethy.R;
 import com.carethy.R.drawable;
 import com.carethy.application.Carethy;
+import com.carethy.receiver.RecomAlarmReceiver;
 import com.carethy.util.HackUtils;
 
 public class RecommendationsFragment extends Fragment {
@@ -38,6 +43,9 @@ public class RecommendationsFragment extends Fragment {
 	private String recoDBResponse;
 	private TextView tv; // test only
 
+	private AlarmManager alarmMgr;
+	private PendingIntent alarmIntent;
+	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
@@ -51,6 +59,24 @@ public class RecommendationsFragment extends Fragment {
 	}
 
 	private void initView() {
+
+		alarmMgr = (AlarmManager)getActivity().getSystemService(getActivity().ALARM_SERVICE);
+		Intent intent = new Intent(getActivity(), RecomAlarmReceiver.class);
+		alarmIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
+		
+		System.out.println("started");
+		// Set the alarm to start at 8:30 a.m.
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		calendar.set(Calendar.HOUR_OF_DAY, 13);
+		calendar.set(Calendar.MINUTE, 35);
+
+		// setRepeating() lets you specify a precise custom interval--in this case,
+		// 20 minutes.
+		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+		        1000 * 60 * 5, alarmIntent);
+		System.out.println("finished");
+		
 
 		mRecommendationTask = new RecommendationTask();
 		mRecommendationTask.execute((Void) null);
@@ -70,7 +96,8 @@ public class RecommendationsFragment extends Fragment {
 			recoLinearLayout.addView(tv);
 		}
 	}
-
+	
+	
 	public class RecommendationTask extends AsyncTask<Void, Void, Boolean> {
 
 		ProgressDialog jProgressDialog = null;

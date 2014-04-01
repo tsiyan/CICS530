@@ -6,10 +6,10 @@ import android.app.Fragment;
 public class ContentFragmentFactory {
 	public static Fragment buildContentFragment(int position) {
 		Fragment homeFragment=new HomeFragment();
-		Fragment activityFragment=new ActivityFragment();
+		Fragment activitiesFragment=new ActivitiesFragment();
 		Fragment sleepFragment=new SleepFragment();
-		Fragment heartRateFragment=new HeartRateFragment();
-		Fragment bloodPressureFragment=new BloodPressureFragment();
+		Fragment heartBeatsFragment=new HeartBeatsFragment();
+		Fragment bloodPressuresFragment=new BloodPressuresFragment();
 		Fragment recommendationsFragment=new RecommendationsFragment();
 		Fragment medicationFragment=new AlarmListFragment();
 //		Fragment medicationFragment=new MedicationFragment();
@@ -19,13 +19,13 @@ public class ContentFragmentFactory {
 		case 0:// "Home"
 			return homeFragment;
 		case 1:// "Activity"
-			return activityFragment;
+			return activitiesFragment;
 		case 2:// "Sleep"
 			return sleepFragment;
 		case 3:// "Heart Rate"
-			return heartRateFragment;
+			return heartBeatsFragment;
 		case 4:// "Blood Pressure"
-			return bloodPressureFragment;
+			return bloodPressuresFragment;
 		case 5:// "Recommendations"
 			return recommendationsFragment;
 		case 6:// "Medication"

@@ -34,17 +34,17 @@ import com.carethy.util.Util;
 public class HomeFragment extends Fragment {
 	private View rootView;
 	private LinearLayout panel;
-	private TextView activity;
+	private TextView activities;
 	private TextView sleep;
-	private TextView heartRate;
-	private TextView bloodPressure;
-//	private ListView mListView;
-//	private RecommendationListAdapter adapter;
+	private TextView heartBeats;
+	private TextView bloodPressures;
+	// private ListView mListView;
+	// private RecommendationListAdapter adapter;
 	private ProgressDialog mProgressDialog = null;
-	private int activityData;
-	private float sleepData;
-	private int heartRateData;
-	private float bloodPressureData;
+	private int activitiesData;
+	private int sleepData;
+	private int heartBeatsData;
+	private int[] bloodPressuresData;
 	public static DecimalFormat df = new DecimalFormat("#.#");
 
 	private LinearLayout scrollInnerPanel;
@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment {
 		if (HackUtils.test) {
 			HackUtils.hackIntoRecomDB(100, "High alert");
 		}
-		
+
 		rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
 		// add refresh icon to the action bar
@@ -125,10 +125,10 @@ public class HomeFragment extends Fragment {
 			protected Void doInBackground(Void... arg0) {
 				try {
 					Thread.sleep(500);
-					activityData = Util.getActivityData();
+					activitiesData = Util.getActivitiesData();
 					sleepData = Util.getSleepData();
-					heartRateData = Util.getHeartRateData();
-					bloodPressureData = Util.getBloodPressureData();
+					heartBeatsData = Util.getHeartBeatsData();
+					bloodPressuresData = Util.getBloodPressuresData();
 
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -150,27 +150,28 @@ public class HomeFragment extends Fragment {
 	private void initView() {
 		panel = (LinearLayout) rootView.findViewById(R.id.panel);
 
-		activity = (TextView) rootView.findViewById(R.id.activity);
-		activity.setText(activityData + "\nsteps");
-		((GradientDrawable) activity.getBackground()).setColor(Color
+		activities = (TextView) rootView.findViewById(R.id.activity);
+		activities.setText(activitiesData + "\nmins");
+		((GradientDrawable) activities.getBackground()).setColor(Color
 				.parseColor("#ff5900"));
 
 		sleep = (TextView) rootView.findViewById(R.id.sleep);
-		sleep.setText(df.format(sleepData) + "\nhours");
+		sleep.setText(df.format(sleepData) + "\nmins");
 		((GradientDrawable) sleep.getBackground()).setColor(Color
 				.parseColor("#ff9a00"));
 
-		heartRate = (TextView) rootView.findViewById(R.id.heart_rate);
-		heartRate.setText(heartRateData + "\nbeats");
-		((GradientDrawable) heartRate.getBackground()).setColor(Color
+		heartBeats = (TextView) rootView.findViewById(R.id.heart_rate);
+		heartBeats.setText(heartBeatsData + "\ncount");
+		((GradientDrawable) heartBeats.getBackground()).setColor(Color
 				.parseColor("#0d56a6"));
 
-		bloodPressure = (TextView) rootView.findViewById(R.id.blood_pressure);
-		bloodPressure.setText(df.format(bloodPressureData) + "\nmh");
-		((GradientDrawable) bloodPressure.getBackground()).setColor(Color
+		bloodPressures = (TextView) rootView.findViewById(R.id.blood_pressure);
+		bloodPressures.setText(bloodPressuresData[0] + "\n"
+				+ bloodPressuresData[1]);
+		((GradientDrawable) bloodPressures.getBackground()).setColor(Color
 				.parseColor("#00a876"));
 
-//<<<<<<< HEAD
+		// <<<<<<< HEAD
 		scrollInnerPanel = (LinearLayout) rootView
 				.findViewById(R.id.scrollInnerPanel);
 
@@ -205,34 +206,36 @@ public class HomeFragment extends Fragment {
 		tv.setLayoutParams(lparams);
 		tv.setBackgroundResource(drawable.recommendation_bg_style);
 		return tv;
-//=======
-//		mListView = (ListView) rootView.findViewById(R.id.home_listview);
-//
-//		final ArrayList<Recommendation> list = Util.getRecommendation();
-//
-//		adapter = new RecommendationListAdapter(getActivity(),
-//				android.R.layout.simple_list_item_1, list);
-//
-//		mListView.setAdapter(adapter);
-//		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//			@Override
-//			public void onItemClick(AdapterView<?> parent, final View view,
-//					int position, long id) {
-//				final Recommendation item = (Recommendation) parent.getItemAtPosition(position);
-//				view.animate().setDuration(100).alpha(0)
-//						.withEndAction(new Runnable() {
-//							@Override
-//							public void run() {
-//								list.remove(item);
-//								adapter.notifyDataSetChanged();
-//								view.setAlpha(1);
-//							}
-//						});
-//			}
-//
-//		});
-//>>>>>>> origin/master
+		// =======
+		// mListView = (ListView) rootView.findViewById(R.id.home_listview);
+		//
+		// final ArrayList<Recommendation> list = Util.getRecommendation();
+		//
+		// adapter = new RecommendationListAdapter(getActivity(),
+		// android.R.layout.simple_list_item_1, list);
+		//
+		// mListView.setAdapter(adapter);
+		// mListView.setOnItemClickListener(new
+		// AdapterView.OnItemClickListener() {
+		//
+		// @Override
+		// public void onItemClick(AdapterView<?> parent, final View view,
+		// int position, long id) {
+		// final Recommendation item = (Recommendation)
+		// parent.getItemAtPosition(position);
+		// view.animate().setDuration(100).alpha(0)
+		// .withEndAction(new Runnable() {
+		// @Override
+		// public void run() {
+		// list.remove(item);
+		// adapter.notifyDataSetChanged();
+		// view.setAlpha(1);
+		// }
+		// });
+		// }
+		//
+		// });
+		// >>>>>>> origin/master
 	}
 
 }

@@ -13,8 +13,12 @@ public class Carethy extends Application {
 	public static MedicationDatabaseHelper mMedicationDatabaseHelper;
 	public static SQLiteDatabase mSQLiteDatabase;
 	public static SharedPreferences mSharedPreferences;
-	
+
 	public static RecomDBDataSource datasource;
+
+	public enum BodyData {
+		activities, sleep, heartBeats, bloodPressure
+	};
 
 	@Override
 	public void onCreate() {
@@ -23,11 +27,11 @@ public class Carethy extends Application {
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		mSharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		
+
 		// Recommendation DB
 		datasource = new RecomDBDataSource(this);
 		datasource.open();
-		
+
 		// Medication DB
 		mMedicationDatabaseHelper = new MedicationDatabaseHelper(this);
 		mSQLiteDatabase = mMedicationDatabaseHelper.getWritableDatabase();
