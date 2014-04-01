@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <PreferenceCategory android:title="@string/settings_profile" >
+        <ListPreference
+            android:entries="@array/settings_sex"
+            android:entryValues="@array/settings_sex_value"
+            android:key="sex"
+            android:title="@string/settings_sex" />
+
+        <EditTextPreference
+            android:inputType="numberDecimal"
+            android:key="age"
+            android:summary=""
+            android:title="@string/settings_age" />
+        <EditTextPreference
+            android:inputType="numberDecimal"
+            android:key="weight"
+            android:summary=""
+            android:title="@string/settings_weight" />
+        <EditTextPreference
+            android:inputType="numberDecimal"
+            android:key="height"
+            android:summary=""
+            android:title="@string/settings_height" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_notifications" >
-        <MultiSelectListPreference
+        <ListPreference
             android:entries="@array/notification_times"
             android:entryValues="@array/notification_times_value"
             android:key="notification_time"
             android:title="Notification Time" />
+
         <MultiSelectListPreference
             android:entries="@array/tracked_item_array"
             android:entryValues="@array/recommendation_category_value"
@@ -20,6 +44,13 @@
         </Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_account" >
+        <EditTextPreference
+            android:inputType="textPassword"
+            android:key="change_password"
+            android:summary=""
+            android:title="@string/settings_password" >
+        </EditTextPreference>
+
         <Preference
             android:key="logout"
             android:title="@string/settings_logout" >

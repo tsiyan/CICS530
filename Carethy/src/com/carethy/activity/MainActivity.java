@@ -48,14 +48,20 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		if (!loggedIn) {
-			Intent intent = new Intent(this, LoginActivity.class);
-			startActivity(intent);
-		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		initView(savedInstanceState);
+		if (!loggedIn) {
+			Intent intent = new Intent(this, LoginActivity.class);
+			// Closing all the Activities
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            // Add new Flag to start new Activity
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(intent);
+			finish();
+		}else{
+			initView(savedInstanceState);
+		}
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -213,5 +219,11 @@ public class MainActivity extends FragmentActivity implements
 		super.onConfigurationChanged(newConfig);
 		// Pass any configuration change to the drawer toggles
 		mDrawerToggle.onConfigurationChanged(newConfig);
+	}
+	
+	public void onDestroy() {
+	    super.onDestroy();
+//	    Toast.makeText(this, "finish() -> onDestory()", Toast.LENGTH_SHORT).show();
+	    loggedIn=false;
 	}
 }
