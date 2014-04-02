@@ -26,16 +26,26 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_notifications" >
         <ListPreference
+            android:defaultValue="0"
             android:entries="@array/notification_times"
             android:entryValues="@array/notification_times_value"
             android:key="notification_time"
+            android:summary="Select the time to push notification"
             android:title="Notification Time" />
 
         <MultiSelectListPreference
+            android:defaultValue="@array/recommendation_category_value"
             android:entries="@array/tracked_item_array"
             android:entryValues="@array/recommendation_category_value"
             android:key="recommendation_category"
+            android:summary="Select the category of recommendation"
             android:title="Recommendation Category" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="uploadSettings"
+            android:summary="Upload all settings to cloud."
+            android:title="Upload Settings" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_legal" >
         <Preference

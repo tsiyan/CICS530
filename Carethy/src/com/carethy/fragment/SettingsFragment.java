@@ -22,21 +22,30 @@ public class SettingsFragment extends PreferenceFragment implements
 		addPreferencesFromResource(R.xml.preferences);
 
 		ListPreference pref_profile_sex = (ListPreference) findPreference("sex");
-		pref_profile_sex
-				.setSummary((getPreferenceScreen().getSharedPreferences()
-						.getString("sex", "").equals("0") ? "Male" : "Female"));
+		String sex = getPreferenceScreen().getSharedPreferences().getString(
+				"sex", "");
+		if (!sex.equals("")) {
+			pref_profile_sex.setSummary((sex));
+		}
 
 		Preference pref_profile_age = findPreference("age");
 		pref_profile_age.setSummary(getPreferenceScreen()
 				.getSharedPreferences().getString("age", ""));// TODO:json
 
 		Preference pref_profile_weight = findPreference("weight");
-		pref_profile_weight.setSummary(getPreferenceScreen()
-				.getSharedPreferences().getString("weight", "") + " Kg");// TODO:json
+		String weight = getPreferenceScreen().getSharedPreferences().getString(
+				"weight", "");
+		if (!weight.equals("")) {
+			pref_profile_weight.setSummary(weight + " Kg");// TODO:json
+		}
 
 		Preference pref_profile_height = findPreference("height");
-		pref_profile_height.setSummary(getPreferenceScreen()
-				.getSharedPreferences().getString("height", "") + " Cm");// TODO:json
+		String height = getPreferenceScreen().getSharedPreferences().getString(
+				"height", "");
+		if (!height.equals("")) {
+			pref_profile_height.setSummary(height + " Cm");// TODO:json
+		}
+
 
 		Preference pref_terms_conditions = findPreference("terms_conditions");
 		pref_terms_conditions
