@@ -18,11 +18,15 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -65,6 +69,7 @@ public class HomeFragment extends Fragment {
 	private LayoutParams lparams = new LayoutParams(LayoutParams.MATCH_PARENT,
 			LayoutParams.WRAP_CONTENT);
 	private static boolean firstLogin = true;
+	private int newRecoCount = 0;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -184,6 +189,8 @@ public class HomeFragment extends Fragment {
 				int topId = Carethy.datasource.getTopRecommendationId();
 				if (topId != id) {
 					Carethy.datasource.insertIntoTable(id, recommendation);
+					// Change count of new recomms
+					newRecoCount = 1;
 				} else {
 					Toast.makeText(getActivity(), "No New Recommendations",
 							Toast.LENGTH_LONG).show();
@@ -289,15 +296,48 @@ public class HomeFragment extends Fragment {
 			firstLogin = false;
 		} else {
 
-			for (Recommendation recom : recomms) {
+			for (final Recommendation recom : recomms) {
 
-				TextView tv = getTextView();
+				final TextView tv = getTextView();
+
 				if (recom.getRecomId() <= 300) {
 					tv.setTextColor(Color.RED);
 				} else {
 					tv.setTextColor(Color.GREEN);
 				}
+
 				tv.setText(recom.getRecom());
+
+				// would be much easier to store in db and work with it
+				if (newRecoCount != 0) {
+					tv.setBackgroundResource(drawable.recommendation_bg_style);
+					newRecoCount--;
+				}
+
+				tv.setOnClickListener(new View.OnClickListener() {
+					private boolean first = true;
+
+					public void onClick(View v) {
+
+						if (!first) {
+							Toast.makeText(getActivity(), "" + recom.getId(),
+									Toast.LENGTH_SHORT).show();
+							try {
+								Thread.sleep(500);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							String url = "http://www.google.ca";
+							Intent i = new Intent(Intent.ACTION_VIEW);
+							i.setData(Uri.parse(url));
+							startActivity(i);
+						} else {
+							first = !first;
+							tv.setBackgroundResource(drawable.recommendations_style);
+						}
+					}
+				});
 				this.scrollInnerPanel.addView(tv);
 			}
 		}
@@ -306,7 +346,7 @@ public class HomeFragment extends Fragment {
 	private TextView getTextView() {
 		TextView tv = new TextView(this.getActivity());
 		tv.setLayoutParams(lparams);
-		tv.setBackgroundResource(drawable.recommendation_bg_style);
+		tv.setBackgroundResource(drawable.recommendations_style);
 		return tv;
 	}
 }
