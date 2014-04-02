@@ -152,8 +152,6 @@ public class LoginActivity extends Activity {
 	public void register() {
 		Intent intent = new Intent(this, RegisterActivity.class);
 	    startActivity(intent);
-	    //TODO this is not pretty
-	    finish();
 	}
 	
 	/**

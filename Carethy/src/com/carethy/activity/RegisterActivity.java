@@ -1,6 +1,9 @@
 package com.carethy.activity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -274,15 +277,52 @@ public class RegisterActivity extends Activity {
 			focusView = mHeightView;
 			cancel = true;
 		}
+		else {
+			try {
+				if (Integer.valueOf(mHeight) < 50 || Integer.valueOf(mHeight) > 280) {
+					mHeightView.setError(getString(R.string.invalidValue));
+					focusView = mHeightView;
+					cancel = true;
+				}
+			} catch(NumberFormatException e) {
+				mHeightView.setError(getString(R.string.invalidValue));
+				focusView = mHeightView;
+				cancel = true;
+			}
+		}
 		if (TextUtils.isEmpty(mWeight)) {
 			mWeightView.setError(getString(R.string.error_field_required));
 			focusView = mWeightView;
 			cancel = true;
 		}
+		else {
+			try {
+				if (Integer.valueOf(mWeight) < 5 || Integer.valueOf(mWeight) > 650) {
+					mWeightView.setError(getString(R.string.invalidValue));
+					focusView = mWeightView;
+					cancel = true;
+				}
+			} catch(NumberFormatException e) {
+				mWeightView.setError(getString(R.string.invalidValue));
+				focusView = mWeightView;
+				cancel = true;
+			}
+		}
 		if (TextUtils.isEmpty(mBirthdate)) {
 			mBirthdateView.setError(getString(R.string.error_field_required));
 			focusView = mBirthdateView;
 			cancel = true;
+		}
+		else {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			sdf.setLenient(true);
+			try {
+				sdf.parse(mBirthdate);
+			} catch (ParseException e) {
+				mBirthdateView.setError(getString(R.string.invalidDate));
+				focusView = mBirthdateView;
+				cancel = true;
+			}
 		}
 		return cancel;
 	}
@@ -317,7 +357,7 @@ public class RegisterActivity extends Activity {
 					userData.put("new_password", mPassword);
 					userData.put("last_name", mLastName);
 					userData.put("first_name", mFirstName);
-					//TODO add height, weight etc
+					
 					userInfo.put("email", mEmail);
 					userInfo.put("weight", mWeight);
 					userInfo.put("height", mHeight);
@@ -359,12 +399,8 @@ public class RegisterActivity extends Activity {
 							result = true;
 						}
 					}
-					else {
-						// TODO display error message
-					}
 				} catch (Exception e) {
 					e.printStackTrace();
-
 				}
 				if (result) {
 					MainActivity.setLoggedIn(true);
@@ -381,6 +417,9 @@ public class RegisterActivity extends Activity {
 		protected void onPostExecute(final Boolean success) {
 			regButton.setEnabled(true);
 			if (success) {
+				Toast.makeText(RegisterActivity.this,
+						"The user has successfully been registered.",
+						Toast.LENGTH_LONG).show();
 				finish();
 			} else {
 				Toast.makeText(RegisterActivity.this,
