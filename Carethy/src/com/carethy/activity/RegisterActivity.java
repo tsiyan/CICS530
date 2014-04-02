@@ -1,9 +1,11 @@
 package com.carethy.activity;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -11,8 +13,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -23,17 +24,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.carethy.R;
 
@@ -50,6 +52,7 @@ public class RegisterActivity extends Activity {
 	
 	private String mHeight;
 	private String mWeight;
+	private String mBirthdate;
 	
 	private String mRadioSex;
 
@@ -64,9 +67,12 @@ public class RegisterActivity extends Activity {
 	private TextView mTermsTextView;
 	private EditText mHeightView;
 	private EditText mWeightView;	
+	private EditText mBirthdateView;	
 	private RadioGroup mRadioSexView;
 	private RadioButton mRadioSexSelectedView;
 
+	private Button regButton;
+	
 	private int year;
 	private int month;
 	private int day;
@@ -91,14 +97,18 @@ public class RegisterActivity extends Activity {
 		mLastNameView = (EditText) findViewById(R.id.last_name);
 		mHeightView = (EditText) findViewById(R.id.height);
 		mWeightView = (EditText) findViewById(R.id.weight);
+		mBirthdateView = (EditText) findViewById(R.id.birthday);
 		mRadioSexView = (RadioGroup) findViewById(R.id.radioSex);
 		int selectedSex = mRadioSexView.getCheckedRadioButtonId();
 		mRadioSexSelectedView = (RadioButton) findViewById(selectedSex);
 		
-		findViewById(R.id.register_button2).setOnClickListener(
+		regButton = (Button) findViewById(R.id.register_button2);
+		regButton.setOnClickListener(
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
+						//TODO make it visible that button is disabled
+						regButton.setEnabled(false);
 						register();
 					}
 				});
@@ -153,40 +163,6 @@ public class RegisterActivity extends Activity {
 		mRegisterTask = new RegisterTask();
 		mRegisterTask.execute((Void) null);
 	}
-
-	public String createJSON() {
-		String json = null;
-		JSONObject user = new JSONObject();
-		try {
-			user.put("user_name", mEmail);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		try {
-			InputStream is = getAssets().open("sample_data.json");
-			int size = is.available();
-			byte[] buffer = new byte[size];
-			is.read(buffer);
-			is.close();
-			json = new String(buffer, "UTF-8");
-
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-
-		try {
-			JSONArray arr = new JSONArray(json);
-			arr.put(user);
-			json = arr.toString();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		// TODO can't write to assets folder, so can't write the file here;
-		// obsolete anyway when the DB is up
-		return json;
-	}
-
 
 	private void addDatePickerListener() {
 		birthdayEditText = (EditText) findViewById(R.id.birthday);
@@ -248,6 +224,7 @@ public class RegisterActivity extends Activity {
 		mLastName = mLastNameView.getText().toString();
 		mHeight = mHeightView.getText().toString();
 		mWeight = mWeightView.getText().toString();
+		mBirthdate = mBirthdateView.getText().toString();
 		mRadioSex = mRadioSexSelectedView.getText().toString();
 		
 		boolean cancel = false;
@@ -279,10 +256,73 @@ public class RegisterActivity extends Activity {
 			mEmailView.setError(getString(R.string.error_field_required));
 			focusView = mEmailView;
 			cancel = true;
-		} else if (!mEmail.contains("@")) {
+		} else if (!mEmail.contains("@") || !mEmail.contains(".")) {
 			mEmailView.setError(getString(R.string.error_invalid_email));
 			focusView = mEmailView;
 			cancel = true;
+		}
+		
+		if (TextUtils.isEmpty(mFirstName)) {
+			mFirstNameView.setError(getString(R.string.error_field_required));
+			focusView = mFirstNameView;
+			cancel = true;
+		}
+		if (TextUtils.isEmpty(mLastName)) {
+			mLastNameView.setError(getString(R.string.error_field_required));
+			focusView = mLastNameView;
+			cancel = true;
+		}
+		if (TextUtils.isEmpty(mHeight)) {
+			mHeightView.setError(getString(R.string.error_field_required));
+			focusView = mHeightView;
+			cancel = true;
+		}
+		else {
+			try {
+				if (Integer.valueOf(mHeight) < 50 || Integer.valueOf(mHeight) > 280) {
+					mHeightView.setError(getString(R.string.invalidValue));
+					focusView = mHeightView;
+					cancel = true;
+				}
+			} catch(NumberFormatException e) {
+				mHeightView.setError(getString(R.string.invalidValue));
+				focusView = mHeightView;
+				cancel = true;
+			}
+		}
+		if (TextUtils.isEmpty(mWeight)) {
+			mWeightView.setError(getString(R.string.error_field_required));
+			focusView = mWeightView;
+			cancel = true;
+		}
+		else {
+			try {
+				if (Integer.valueOf(mWeight) < 5 || Integer.valueOf(mWeight) > 650) {
+					mWeightView.setError(getString(R.string.invalidValue));
+					focusView = mWeightView;
+					cancel = true;
+				}
+			} catch(NumberFormatException e) {
+				mWeightView.setError(getString(R.string.invalidValue));
+				focusView = mWeightView;
+				cancel = true;
+			}
+		}
+		if (TextUtils.isEmpty(mBirthdate)) {
+			mBirthdateView.setError(getString(R.string.error_field_required));
+			focusView = mBirthdateView;
+			cancel = true;
+		}
+		else {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			sdf.setLenient(true);
+			try {
+				sdf.parse(mBirthdate);
+			} catch (ParseException e) {
+				mBirthdateView.setError(getString(R.string.invalidDate));
+				focusView = mBirthdateView;
+				cancel = true;
+			}
 		}
 		return cancel;
 	}
@@ -299,7 +339,6 @@ public class RegisterActivity extends Activity {
 						focusView.requestFocus();
 					} else {
 						result = true;
-						
 					}
 				}
 			});
@@ -307,46 +346,85 @@ public class RegisterActivity extends Activity {
 				result = false;
 				HttpClient httpClient = new DefaultHttpClient();
 				HttpContext localContext = new BasicHttpContext();
-				String message;
 
 				HttpPost httpPost = new HttpPost(
 						"https://dsp-carethy.cloud.dreamfactory.com/rest/user/register?app_name=carethy");
-				JSONObject object = new JSONObject();
+				JSONObject userData = new JSONObject();
+				JSONObject userInfo = new JSONObject();
 				try {
 
-					object.put("email", mEmail);
-					object.put("new_password", mPassword);
-					object.put("last_name", mLastName);
-					object.put("first_name", mFirstName);
+					userData.put("email", mEmail);
+					userData.put("new_password", mPassword);
+					userData.put("last_name", mLastName);
+					userData.put("first_name", mFirstName);
+					
+					userInfo.put("email", mEmail);
+					userInfo.put("weight", mWeight);
+					userInfo.put("height", mHeight);
+					userInfo.put("birthdate", mBirthdate);
+					userInfo.put("sex", mRadioSex);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
 
 				try {
-					message = object.toString();
-					Log.d("message:>", "" + message);
-
-					httpPost.setEntity(new StringEntity(message, "UTF8"));
+					httpPost.setEntity(new StringEntity(userData.toString(), "UTF8"));
 					httpPost.setHeader("Content-type", "application/json");
-					HttpResponse resp = httpClient.execute(httpPost,
-							localContext);
-					if (resp != null) {
-						Log.d("message:>", "Status Code: "
-								+ resp.getStatusLine().getStatusCode());
-						if (resp.getStatusLine().getStatusCode() == 200)
+					// register the new user
+					HttpResponse resp = httpClient.execute(httpPost, localContext);
+					if (resp != null && resp.getStatusLine().getStatusCode() == 200) {
+						// log the user in
+						resp.getEntity().consumeContent();
+						httpPost = new HttpPost("https://dsp-carethy.cloud.dreamfactory.com/rest/user/session?app_name=carethy");
+						userData = new JSONObject();
+						userData.put("email", mEmail);
+						userData.put("password", mPassword);
+						httpPost.setEntity(new StringEntity(userData.toString(), "UTF8"));
+						httpPost.setHeader("Content-type", "application/json");
+						resp = httpClient.execute(httpPost, localContext);
+						if (resp != null && resp.getStatusLine().getStatusCode() == 200) {
+							HttpEntity entity = resp.getEntity();							
+							JSONObject responseJSON = new JSONObject(EntityUtils.toString(entity, "UTF-8"));
+							MainActivity.setDREAMFACTORYTOKEN(responseJSON.getString("session_id"));
+						}
+						
+						// enter the new users data into the db
+						httpPost = new HttpPost(
+								"https://dsp-carethy.cloud.dreamfactory.com/rest/mongohq/user?app_name=carethy");
+						httpPost.setEntity(new StringEntity(userInfo.toString(), "UTF8"));
+						httpPost.setHeader("Content-type", "application/json");
+						httpPost.setHeader("X-DreamFactory-Session-Token", MainActivity.getDREAMFACTORYTOKEN());
+						resp = httpClient.execute(httpPost, localContext);
+						if (resp != null && resp.getStatusLine().getStatusCode() == 200) {
 							result = true;
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-
 				}
 				if (result) {
+					MainActivity.setLoggedIn(true);
 					return true;
 				} else {
 					return false;
 				}
 			} else {
 				return false;
+			}
+		}
+		
+		@Override
+		protected void onPostExecute(final Boolean success) {
+			regButton.setEnabled(true);
+			if (success) {
+				Toast.makeText(RegisterActivity.this,
+						"The user has successfully been registered.",
+						Toast.LENGTH_LONG).show();
+				finish();
+			} else {
+				Toast.makeText(RegisterActivity.this,
+						"An error occurred during the registration. Please check your input data.",
+						Toast.LENGTH_LONG).show();
 			}
 		}
 	}

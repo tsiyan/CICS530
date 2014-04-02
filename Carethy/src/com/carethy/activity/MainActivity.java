@@ -33,7 +33,24 @@ public class MainActivity extends FragmentActivity implements
 	 **/
 	public final static boolean DEBUG = false;
 
-	private boolean loggedIn = true;
+	public static String DREAMFACTORYTOKEN = null;	
+	public static String getDREAMFACTORYTOKEN() {
+		return DREAMFACTORYTOKEN;
+	}
+
+	public static void setDREAMFACTORYTOKEN(String dREAMFACTORYTOKEN) {
+		DREAMFACTORYTOKEN = dREAMFACTORYTOKEN;
+	}
+
+	public static boolean LOGGEDIN = false;	
+	public static boolean isLoggedIn() {
+		return LOGGEDIN;
+	}
+
+	public static void setLoggedIn(boolean loggedIn) {
+		MainActivity.LOGGEDIN = loggedIn;
+	}
+
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -52,7 +69,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		if (!loggedIn) {
+		if (!LOGGEDIN) {
 			Intent intent = new Intent(this, LoginActivity.class);
 			// Closing all the Activities
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -235,6 +252,6 @@ public class MainActivity extends FragmentActivity implements
 		super.onDestroy();
 		// Toast.makeText(this, "finish() -> onDestory()",
 		// Toast.LENGTH_SHORT).show();
-		loggedIn = false;
+		LOGGEDIN = false;
 	}
 }

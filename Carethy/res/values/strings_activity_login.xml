@@ -27,5 +27,7 @@
     <string name="error_field_required">This field is required</string>
     <string name="radio_male">Male</string>
     <string name="radio_female">Female</string>
+    <string name="invalidValue">Please enter a valid value</string>
+    <string name="invalidDate">Please enter a valid date in the format \'mm-dd-yyyy\'</string>
 
 </resources>
