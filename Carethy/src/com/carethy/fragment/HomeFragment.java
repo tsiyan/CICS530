@@ -141,6 +141,7 @@ public class HomeFragment extends Fragment {
 			String recommendation;
 			int id;
 			URL url;
+			private boolean connEstablished = false;
 
 			@Override
 			protected void onPreExecute() {
@@ -161,8 +162,9 @@ public class HomeFragment extends Fragment {
 					url = new URL("http://health-engine.herokuapp.com/");
 					HttpURLConnection conn = (HttpURLConnection) url
 							.openConnection();
-
 					engineResponse = getResponse(conn);
+					conn.disconnect();
+					connEstablished = true;
 
 					JSONObject jRecom = new JSONObject(engineResponse);
 					id = jRecom.getInt("id");
@@ -177,6 +179,9 @@ public class HomeFragment extends Fragment {
 					e.printStackTrace();
 				} catch (JSONException e) {
 					e.printStackTrace();
+				} catch (Exception e) {
+					System.err.println("Some error");
+					e.printStackTrace();
 				}
 
 				return null;
@@ -186,19 +191,20 @@ public class HomeFragment extends Fragment {
 			protected void onPostExecute(Void result) {
 
 				// if (!Carethy.firstLogin) {
-				int topId = Carethy.datasource.getTopRecommendationId();
-				if (topId != id) {
-					Carethy.datasource.insertIntoTable(id, recommendation);
-					// Change count of new recomms
-					newRecoCount = 1;
+				if (connEstablished) {
+					int topId = Carethy.datasource.getTopRecommendationId();
+					if (topId != id) {
+						Carethy.datasource.insertIntoTable(id, recommendation);
+						// Change count of new recomms
+						newRecoCount = 1;
+					} else {
+						Toast.makeText(getActivity(), "No New Recommendations",
+								Toast.LENGTH_LONG).show();
+					}
 				} else {
-					Toast.makeText(getActivity(), "No New Recommendations",
+					Toast.makeText(getActivity(), "No Connection",
 							Toast.LENGTH_LONG).show();
 				}
-				// } else {
-				// Toast.makeText(getActivity(), "" + Carethy.firstLogin,
-				// Toast.LENGTH_LONG).show();
-				// }
 
 				initView();
 				mProgressDialog.dismiss();
@@ -289,11 +295,11 @@ public class HomeFragment extends Fragment {
 		recomms = Carethy.datasource
 				.getRecommendations(DBRecomHelper.RECOM_LIMIT);
 
-		if (recomms.isEmpty() && firstLogin) {
+		if (recomms.isEmpty()) {
 			TextView tv = getTextView();
 			tv.setText("No Stored Recommendations");
 			this.scrollInnerPanel.addView(tv);
-			firstLogin = false;
+			// firstLogin = false;
 		} else {
 
 			for (final Recommendation recom : recomms) {
