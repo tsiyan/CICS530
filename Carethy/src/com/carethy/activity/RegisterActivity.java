@@ -3,7 +3,6 @@ package com.carethy.activity;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -330,9 +329,11 @@ public class RegisterActivity extends Activity {
 	//new
 	public class RegisterTask extends AsyncTask<Void, Void, Boolean> {
 		private boolean result = false;
+		
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			runOnUiThread(new Runnable() {
+			final Object lock = new Object();
+			Runnable myRunnable = new Runnable() {
 				@Override
 				public void run() {
 					if (inputError()) {
@@ -340,8 +341,21 @@ public class RegisterActivity extends Activity {
 					} else {
 						result = true;
 					}
+					synchronized (lock) {
+						lock.notify();
+					}
 				}
-			});
+			};
+			synchronized( myRunnable ) {
+				runOnUiThread(myRunnable);
+			}
+			try {
+				synchronized (lock) {
+					lock.wait();
+				}
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
 			if (result) {
 				result = false;
 				HttpClient httpClient = new DefaultHttpClient();
