@@ -9,7 +9,7 @@
     <string name="prompt_height">Height (cm)</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_prev_password">Current Password</string>
-    <string name="prompt_password">New Password</string>
+    <string name="prompt_password">Password</string>
     <string name="prompt_password_repeat">Repeat Password</string>
     <string name="prompt_birthday">Birthday</string>
     <string name="action_sign_in">Sign in</string>
