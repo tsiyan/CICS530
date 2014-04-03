@@ -9,11 +9,13 @@ import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
@@ -48,6 +50,12 @@ public class RecommendationsFragment extends Fragment {
 	private void initView() {
 
 		// ALARM STUFF
+		recomAlarmTrigger();
+
+		fillRecommendations();
+	}
+
+	private void recomAlarmTrigger() {
 		alarmMgr = (AlarmManager) getActivity().getSystemService(
 				getActivity().ALARM_SERVICE);
 		Intent intent = new Intent(getActivity(), RecomAlarmReceiver.class);
@@ -63,14 +71,13 @@ public class RecommendationsFragment extends Fragment {
 		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
 				calendar.getTimeInMillis(), 1000 * 60 * 500, alarmIntent);
 		// System.out.println("finished");
-
-		recoLinearLayout = (LinearLayout) rootView
-				.findViewById(R.id.recoLinearLayout);
-		fillRecommendations();
-
 	}
 
 	private void fillRecommendations() {
+
+		recoLinearLayout = (LinearLayout) rootView
+				.findViewById(R.id.recoLinearLayout);
+
 		List<Recommendation> recomms = new ArrayList<Recommendation>();
 
 		recomms = Carethy.datasource.getRecommendations("");
@@ -81,14 +88,41 @@ public class RecommendationsFragment extends Fragment {
 			recoLinearLayout.addView(tv);
 		} else {
 
-			for (Recommendation recom : recomms) {
+			for (final Recommendation recom : recomms) {
 
-				TextView tv = getTextView();
+				final TextView tv = getTextView();
 				if (recom.getRecomId() <= 300) {
 					tv.setTextColor(Color.RED);
 				} else {
 					tv.setTextColor(Color.GREEN);
 				}
+
+				if (!recom.isRead()) {
+					tv.setBackgroundResource(drawable.recommendation_bg_style);
+				} else {
+					tv.setBackgroundResource(drawable.recommendations_style);
+				}
+
+				tv.setOnClickListener(new View.OnClickListener() {
+
+					public void onClick(View v) {
+
+						if (recom.isRead()) {
+							Toast.makeText(getActivity(), "Redirecting to url",
+									Toast.LENGTH_SHORT).show();
+
+							String url = recom.getUrl();
+							Intent i = new Intent(Intent.ACTION_VIEW);
+							i.setData(Uri.parse(url));
+							startActivity(i);
+						} else {
+							Carethy.datasource.setIsReadTrue(recom.getId());
+							recom.setIsRead(true);
+							tv.setBackgroundResource(drawable.recommendations_style);
+						}
+					}
+				});
+
 				tv.setText(recom.getRecom());
 				recoLinearLayout.addView(tv);
 			}
@@ -98,7 +132,6 @@ public class RecommendationsFragment extends Fragment {
 	private TextView getTextView() {
 		TextView tv = new TextView(this.getActivity());
 		tv.setLayoutParams(lparams);
-		tv.setBackgroundResource(drawable.recommendations_style);
 		return tv;
 	}
 }

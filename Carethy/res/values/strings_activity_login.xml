@@ -9,11 +9,11 @@
     <string name="prompt_height">Height (cm)</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_prev_password">Current Password</string>
-    <string name="prompt_password">New Password</string>
+    <string name="prompt_password">Password</string>
     <string name="prompt_password_repeat">Repeat Password</string>
     <string name="prompt_birthday">Birthday</string>
     <string name="action_sign_in">Sign in</string>
-    <string name="action_forget_password">Forget password?</string>
+    <string name="action_forget_password">Forgot Password?</string>
     <string name="action_send_password">Send Password</string>
     <string name="action_register">Register</string>
     <string name="action_register_notice">By signing up, you agree to our</string>

@@ -1,21 +1,23 @@
 package com.carethy.model;
 
 public class Recommendation {
-	
+
 	private long _id;
-	private int recom_id;//level of severity
+	private int recom_id;// level of severity
 	private String recom;
-	
-	public Recommendation(){
-		
+	private boolean isRead;
+	private String url;
+
+	public Recommendation() {
+
 	}
-	
-	public Recommendation(int _id, int recom_id, String recom){
-		this._id=_id;
-		this.recom_id=recom_id;
-		this.recom=recom;
+
+	public Recommendation(int _id, int recom_id, String recom) {
+		this._id = _id;
+		this.recom_id = recom_id;
+		this.recom = recom;
 	}
-	
+
 	public long getId() {
 		return _id;
 	}
@@ -39,8 +41,24 @@ public class Recommendation {
 	public void setRecom(String recom) {
 		this.recom = recom;
 	}
-	
-	public String toString(){
+
+	public boolean isRead() {
+		return isRead;
+	}
+
+	public void setIsRead(boolean isRead) {
+		this.isRead = isRead;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String toString() {
 		return recom_id + " - " + recom;
 	}
 }

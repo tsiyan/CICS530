@@ -3,8 +3,8 @@ package com.carethy.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.carethy.database.DBRecomHelper;
 import com.carethy.model.Recommendation;
-import com.carethy.util.DBRecomHelper;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -15,35 +15,38 @@ import android.database.sqlite.SQLiteDatabase;
 public class RecomDBDataSource {
 
 	private SQLiteDatabase database;
-	private SQLiteDatabase writeDatabase;
 	private DBRecomHelper dbHelper;
 
 	private static long last_id = 0;
 	private static long latest_id = 0;
 
 	private String[] allColumns = { DBRecomHelper.COLUMN_ID,
-			DBRecomHelper.COLUMN_RECOM_ID, DBRecomHelper.COLUMN_RECOM };
+			DBRecomHelper.COLUMN_RECOM_ID, DBRecomHelper.COLUMN_RECOM,
+			DBRecomHelper.COLUMN_ISREAD, DBRecomHelper.COLUMN_URL };
 
 	public RecomDBDataSource(Context context) {
 		dbHelper = new DBRecomHelper(context);
 	}
 
 	public void open() throws SQLException {
-		database = dbHelper.getReadableDatabase();
-		writeDatabase = dbHelper.getWritableDatabase();
+		database = dbHelper.getWritableDatabase();
 	}
 
 	public void close() {
 		dbHelper.close();
 	}
 
-	public Recommendation insertIntoTable(int recom_id, String recom) {
+	public Recommendation insertIntoTable(int recom_id, String recom, String url) {
+
 		ContentValues values = new ContentValues();
+
 		values.put(DBRecomHelper.COLUMN_RECOM_ID, recom_id);
 		values.put(DBRecomHelper.COLUMN_RECOM, recom);
 
-		long insertId = writeDatabase.insert(DBRecomHelper.TABLE_RECOM, null,
-				values);
+		values.put(DBRecomHelper.COLUMN_URL, url);
+
+		long insertId = database
+				.insert(DBRecomHelper.TABLE_RECOM, null, values);
 		Cursor cursor = database.query(DBRecomHelper.TABLE_RECOM, allColumns,
 				DBRecomHelper.COLUMN_ID + " = " + insertId, null, null, null,
 				null);
@@ -60,6 +63,8 @@ public class RecomDBDataSource {
 		recom.setId(cursor.getLong(0));
 		recom.setRecomId(cursor.getInt(1));
 		recom.setRecom(cursor.getString(2));
+		recom.setIsRead(cursor.getInt(3) == 1 ? true : false);
+		recom.setUrl(cursor.getString(4));
 		return recom;
 	}
 
@@ -114,4 +119,14 @@ public class RecomDBDataSource {
 		}
 	}
 
+
+	public void setIsReadTrue(long id) {
+
+		ContentValues values = new ContentValues();
+		values.put(DBRecomHelper.COLUMN_ISREAD, true);
+
+		System.out.println(""
+				+ (database.update(DBRecomHelper.TABLE_RECOM, values,
+						DBRecomHelper.COLUMN_ID + " = " + id, null)));
+	}
 }
