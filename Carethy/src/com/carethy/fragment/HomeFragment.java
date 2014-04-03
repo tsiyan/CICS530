@@ -18,17 +18,20 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -325,26 +328,22 @@ public class HomeFragment extends Fragment {
 						if (!first) {
 							Toast.makeText(getActivity(), "" + recom.getId(),
 									Toast.LENGTH_SHORT).show();
-//							try {
-//								Thread.sleep(500);
-//							} catch (InterruptedException e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							}
-//							String url = "http://www.google.ca";
-//							Intent i = new Intent(Intent.ACTION_VIEW);
-//							i.setData(Uri.parse(url));
-//							startActivity(i);
+							try {
+								Thread.sleep(500);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							String url = "http://www.google.ca";
+							Intent i = new Intent(Intent.ACTION_VIEW);
+							i.setData(Uri.parse(url));
+							startActivity(i);
 						} else {
 							first = !first;
 							tv.setBackgroundResource(drawable.recommendations_style);
 						}
 					}
 				});
-				
-				// let Android takes care of the links
-				Linkify.addLinks(tv, Linkify.WEB_URLS);
-				
 				this.scrollInnerPanel.addView(tv);
 			}
 		}
