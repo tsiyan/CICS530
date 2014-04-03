@@ -1,0 +1,165 @@
+{
+    "userinfo": {
+        "age": 45,
+        "gender": "male",
+        "height": 168,
+        "weight": [
+        {
+            "value": 68.3,
+            "date": "2012-04-24"
+        },
+        {
+            "value": 65.3,
+            "date": "2012-04-23"
+        },
+        {
+            "value": 67.3,
+            "date": "2012-04-22"
+        },
+        {
+            "value": 65.3,
+            "date": "2012-04-21"
+        },
+        {
+            "value": 68.3,
+            "date": "2012-04-20"
+        },
+        {
+            "value": 69.3,
+            "date": "2012-04-19"
+        },
+        {
+            "value": 67.3,
+            "date": "2012-04-18"
+        }
+    ],
+    "hypertension" : true,
+    "diabetes" : true,
+    "insomnia" : true,
+    "cardio" : true
+    },
+    "activities": [
+        {
+            "duration": 30,
+            "date": "2012-04-24"
+        },
+        {
+            "duration": 40,
+            "date": "2012-04-23"
+        },
+        {
+            "duration": 28,
+            "date": "2012-04-22"
+        },
+                {
+            "duration": 30,
+            "date": "2012-04-21"
+        },
+        {
+            "duration": 40,
+            "date": "2012-04-20"
+        },
+        {
+            "duration": 28,
+            "date": "2012-04-19"
+        },
+        {
+            "duration": 28,
+            "date": "2012-04-18"
+        }
+    ],
+    "sleep": [
+        {
+            "minutesAsleep": 453,
+            "date": "2012-04-24"
+        },
+        {
+            "minutesAsleep": 480,
+            "date": "2012-04-23"
+        },
+                {
+            "minutesAsleep": 478,
+            "date": "2012-04-22"
+        },
+        {
+            "minutesAsleep": 420,
+            "date": "2012-04-21"
+        },
+                {
+            "minutesAsleep": 401,
+            "date": "2012-04-20"
+        },
+        {
+            "minutesAsleep": 494,
+            "date": "2012-04-19"
+        },
+        {
+            "minutesAsleep": 501,
+            "date": "2012-04-18"
+        }
+    ],
+    "heartBeats": [
+        {
+            "count": 80,
+            "date": "2012-04-24"
+        },
+        {
+            "count": 91,
+            "date": "2012-04-23"
+        },
+        {
+            "count": 78,
+            "date": "2012-04-22"
+        },
+        {
+            "count": 68,
+            "date": "2012-04-21"
+        },
+        {
+            "count": 72,
+            "date": "2012-04-20"
+        },
+        {
+            "count": 78,
+            "date": "2012-04-19"
+        },
+        {
+            "count": 86,
+            "date": "2012-04-18"
+        }
+    ],
+    "bloodPressures": [
+        {
+            "systolic": 110,
+            "diastolic": 68,
+            "date": "2012-04-24"
+        },
+                {
+            "systolic": 112,
+            "diastolic": 65,
+            "date": "2012-04-23"
+        },
+                {
+            "systolic": 113,
+            "diastolic": 70,
+            "date": "2012-04-22"
+        },
+                {
+            "systolic": 115,
+            "diastolic": 90,
+            "date": "2012-04-21"
+        },        {
+            "systolic": 123,
+            "diastolic": 80,
+            "date": "2012-04-20"
+        },        {
+            "systolic": 126,
+            "diastolic": 70,
+            "date": "2012-04-19"
+        },        {
+            "systolic": 100,
+            "diastolic": 80,
+            "date": "2012-04-18"
+        }
+    ]
+}
