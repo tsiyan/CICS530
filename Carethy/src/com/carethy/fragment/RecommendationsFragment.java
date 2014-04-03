@@ -48,29 +48,7 @@ public class RecommendationsFragment extends Fragment {
 	}
 
 	private void initView() {
-
-		// ALARM STUFF
-		recomAlarmTrigger();
-
 		fillRecommendations();
-	}
-
-	private void recomAlarmTrigger() {
-		alarmMgr = (AlarmManager) getActivity().getSystemService(
-				getActivity().ALARM_SERVICE);
-		Intent intent = new Intent(getActivity(), RecomAlarmReceiver.class);
-		alarmIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
-		// System.out.println("started");
-		// Set the alarm to start at 8:30 a.m.
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(System.currentTimeMillis());
-		calendar.set(Calendar.HOUR_OF_DAY, 13);
-		calendar.set(Calendar.MINUTE, 35);
-		// setRepeating() lets you specify a precise custom interval--in this
-		// case, 20 minutes.
-		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
-				calendar.getTimeInMillis(), 1000 * 60 * 500, alarmIntent);
-		// System.out.println("finished");
 	}
 
 	private void fillRecommendations() {

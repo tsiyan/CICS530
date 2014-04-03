@@ -1,9 +1,14 @@
 package com.carethy.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import android.app.ActionBar;
+import android.app.AlarmManager;
 import android.app.Fragment;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -22,6 +27,7 @@ import com.carethy.R;
 import com.carethy.adapter.NavDrawerListAdapter;
 import com.carethy.fragment.ContentFragmentFactory;
 import com.carethy.model.NavDrawerItem;
+import com.carethy.receiver.RecomAlarmReceiver;
 import com.carethy.service.ServiceDemo;
 
 public class MainActivity extends FragmentActivity implements
@@ -33,7 +39,8 @@ public class MainActivity extends FragmentActivity implements
 	 **/
 	public final static boolean DEBUG = false;
 
-	public static String DREAMFACTORYTOKEN = null;	
+	public static String DREAMFACTORYTOKEN = null;
+
 	public static String getDREAMFACTORYTOKEN() {
 		return DREAMFACTORYTOKEN;
 	}
@@ -42,7 +49,8 @@ public class MainActivity extends FragmentActivity implements
 		DREAMFACTORYTOKEN = dREAMFACTORYTOKEN;
 	}
 
-	public static boolean LOGGEDIN = false;	
+	public static boolean LOGGEDIN = true;
+
 	public static boolean isLoggedIn() {
 		return LOGGEDIN;
 	}
@@ -64,6 +72,15 @@ public class MainActivity extends FragmentActivity implements
 	private NavDrawerListAdapter mNavDrawerListAdapter;
 	private static int mPosition = 0;
 
+	protected void onResume() {
+		super.onResume();
+		// Recommendation notification cancellation
+		String ns = Context.NOTIFICATION_SERVICE;
+		NotificationManager nmgr = (NotificationManager) this
+				.getSystemService(ns);
+		nmgr.cancelAll();
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -78,15 +95,32 @@ public class MainActivity extends FragmentActivity implements
 			startActivity(intent);
 			finish();
 		} else {
-			initView(savedInstanceState);
-			/*
-			 * *******************start the ServiceDomo which pops up
-			 * window***********************************
-			 */
-			startService(new Intent(this, ServiceDemo.class));
+			recomAlarmTrigger();
 
+			initView(savedInstanceState);
 		}
 
+	}
+
+	private void recomAlarmTrigger() {
+		AlarmManager alarmMgr;
+		PendingIntent alarmIntent;
+		alarmMgr = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+		Intent intent = new Intent(this, RecomAlarmReceiver.class);
+		alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+		// System.out.println("started");
+		// Set the alarm to start at 8:30 a.m.
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+
+		calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY));
+		calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE) + 1);
+
+		// setRepeating() lets you specify a precise custom interval--in this
+		// case, 20 minutes.
+		alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
+				calendar.getTimeInMillis(), 1000 * 60 * 10, alarmIntent);
+		// System.out.println("finished");
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
