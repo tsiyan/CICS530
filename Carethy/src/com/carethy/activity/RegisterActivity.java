@@ -3,6 +3,7 @@ package com.carethy.activity;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -37,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carethy.R;
+import com.carethy.application.Carethy;
 
 public class RegisterActivity extends Activity {
 
@@ -48,11 +50,11 @@ public class RegisterActivity extends Activity {
 	private String mPasswordRepeat;
 	private String mFirstName;
 	private String mLastName;
-	
+
 	private String mHeight;
 	private String mWeight;
 	private String mBirthdate;
-	
+
 	private String mRadioSex;
 
 	// UI references.
@@ -65,20 +67,20 @@ public class RegisterActivity extends Activity {
 	private EditText mLastNameView;
 	private TextView mTermsTextView;
 	private EditText mHeightView;
-	private EditText mWeightView;	
-	private EditText mBirthdateView;	
+	private EditText mWeightView;
+	private EditText mBirthdateView;
 	private RadioGroup mRadioSexView;
 	private RadioButton mRadioSexSelectedView;
 
 	private Button regButton;
-	
+
 	private int year;
 	private int month;
 	private int day;
 	static final int DATE_DIALOG_ID = 999;
 
 	private RegisterTask mRegisterTask = null;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -100,17 +102,16 @@ public class RegisterActivity extends Activity {
 		mRadioSexView = (RadioGroup) findViewById(R.id.radioSex);
 		int selectedSex = mRadioSexView.getCheckedRadioButtonId();
 		mRadioSexSelectedView = (RadioButton) findViewById(selectedSex);
-		
+
 		regButton = (Button) findViewById(R.id.register_button2);
-		regButton.setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						//TODO make it visible that button is disabled
-						regButton.setEnabled(false);
-						register();
-					}
-				});
+		regButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				// TODO make it visible that button is disabled
+				regButton.setEnabled(false);
+				register();
+			}
+		});
 
 		mTermsTextView = (TextView) findViewById(R.id.register_terms);
 		mTermsTextView.setOnClickListener(new OnClickListener() {
@@ -166,21 +167,22 @@ public class RegisterActivity extends Activity {
 	private void addDatePickerListener() {
 		birthdayEditText = (EditText) findViewById(R.id.birthday);
 		selectBirthdayImageButton = (ImageButton) findViewById(R.id.birthday_image_button);
-		
+
 		final Calendar c = Calendar.getInstance();
 		year = c.get(Calendar.YEAR);
 		month = c.get(Calendar.MONTH);
 		day = c.get(Calendar.DAY_OF_MONTH);
- 
-		selectBirthdayImageButton.setOnClickListener(new View.OnClickListener() {
 
-			@SuppressWarnings("deprecation")
-			@Override
-			public void onClick(View v) {
-				showDialog(DATE_DIALOG_ID);
+		selectBirthdayImageButton
+				.setOnClickListener(new View.OnClickListener() {
 
-			}
-		});
+					@SuppressWarnings("deprecation")
+					@Override
+					public void onClick(View v) {
+						showDialog(DATE_DIALOG_ID);
+
+					}
+				});
 	}
 
 	@Override
@@ -208,7 +210,7 @@ public class RegisterActivity extends Activity {
 					.append(" "));
 		}
 	};
-	
+
 	private boolean inputError() {
 		// Reset errors.
 		mEmailView.setError(null);
@@ -225,7 +227,7 @@ public class RegisterActivity extends Activity {
 		mWeight = mWeightView.getText().toString();
 		mBirthdate = mBirthdateView.getText().toString();
 		mRadioSex = mRadioSexSelectedView.getText().toString();
-		
+
 		boolean cancel = false;
 
 		// Check for a valid password.
@@ -260,7 +262,7 @@ public class RegisterActivity extends Activity {
 			focusView = mEmailView;
 			cancel = true;
 		}
-		
+
 		if (TextUtils.isEmpty(mFirstName)) {
 			mFirstNameView.setError(getString(R.string.error_field_required));
 			focusView = mFirstNameView;
@@ -275,15 +277,15 @@ public class RegisterActivity extends Activity {
 			mHeightView.setError(getString(R.string.error_field_required));
 			focusView = mHeightView;
 			cancel = true;
-		}
-		else {
+		} else {
 			try {
-				if (Integer.valueOf(mHeight) < 50 || Integer.valueOf(mHeight) > 280) {
+				if (Integer.valueOf(mHeight) < 50
+						|| Integer.valueOf(mHeight) > 280) {
 					mHeightView.setError(getString(R.string.invalidValue));
 					focusView = mHeightView;
 					cancel = true;
 				}
-			} catch(NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				mHeightView.setError(getString(R.string.invalidValue));
 				focusView = mHeightView;
 				cancel = true;
@@ -293,15 +295,15 @@ public class RegisterActivity extends Activity {
 			mWeightView.setError(getString(R.string.error_field_required));
 			focusView = mWeightView;
 			cancel = true;
-		}
-		else {
+		} else {
 			try {
-				if (Integer.valueOf(mWeight) < 5 || Integer.valueOf(mWeight) > 650) {
+				if (Integer.valueOf(mWeight) < 5
+						|| Integer.valueOf(mWeight) > 650) {
 					mWeightView.setError(getString(R.string.invalidValue));
 					focusView = mWeightView;
 					cancel = true;
 				}
-			} catch(NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				mWeightView.setError(getString(R.string.invalidValue));
 				focusView = mWeightView;
 				cancel = true;
@@ -311,9 +313,9 @@ public class RegisterActivity extends Activity {
 			mBirthdateView.setError(getString(R.string.error_field_required));
 			focusView = mBirthdateView;
 			cancel = true;
-		}
-		else {
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		} else {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy",
+					Locale.CANADA);
 			sdf.setLenient(true);
 			try {
 				sdf.parse(mBirthdate);
@@ -325,11 +327,11 @@ public class RegisterActivity extends Activity {
 		}
 		return cancel;
 	}
-	
-	//new
+
+	// new
 	public class RegisterTask extends AsyncTask<Void, Void, Boolean> {
 		private boolean result = false;
-		
+
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			final Object lock = new Object();
@@ -346,7 +348,7 @@ public class RegisterActivity extends Activity {
 					}
 				}
 			};
-			synchronized( myRunnable ) {
+			synchronized (myRunnable) {
 				runOnUiThread(myRunnable);
 			}
 			try {
@@ -371,7 +373,7 @@ public class RegisterActivity extends Activity {
 					userData.put("new_password", mPassword);
 					userData.put("last_name", mLastName);
 					userData.put("first_name", mFirstName);
-					
+
 					userInfo.put("email", mEmail);
 					userInfo.put("weight", mWeight);
 					userInfo.put("height", mHeight);
@@ -382,34 +384,45 @@ public class RegisterActivity extends Activity {
 				}
 
 				try {
-					httpPost.setEntity(new StringEntity(userData.toString(), "UTF8"));
+					httpPost.setEntity(new StringEntity(userData.toString(),
+							"UTF8"));
 					httpPost.setHeader("Content-type", "application/json");
 					// register the new user
-					HttpResponse resp = httpClient.execute(httpPost, localContext);
-					if (resp != null && resp.getStatusLine().getStatusCode() == 200) {
+					HttpResponse resp = httpClient.execute(httpPost,
+							localContext);
+					if (resp != null
+							&& resp.getStatusLine().getStatusCode() == 200) {
 						// log the user in
 						resp.getEntity().consumeContent();
-						httpPost = new HttpPost("https://dsp-carethy.cloud.dreamfactory.com/rest/user/session?app_name=carethy");
+						httpPost = new HttpPost(
+								"https://dsp-carethy.cloud.dreamfactory.com/rest/user/session?app_name=carethy");
 						userData = new JSONObject();
 						userData.put("email", mEmail);
 						userData.put("password", mPassword);
-						httpPost.setEntity(new StringEntity(userData.toString(), "UTF8"));
+						httpPost.setEntity(new StringEntity(
+								userData.toString(), "UTF8"));
 						httpPost.setHeader("Content-type", "application/json");
 						resp = httpClient.execute(httpPost, localContext);
-						if (resp != null && resp.getStatusLine().getStatusCode() == 200) {
-							HttpEntity entity = resp.getEntity();							
-							JSONObject responseJSON = new JSONObject(EntityUtils.toString(entity, "UTF-8"));
-							MainActivity.setDREAMFACTORYTOKEN(responseJSON.getString("session_id"));
+						if (resp != null
+								&& resp.getStatusLine().getStatusCode() == 200) {
+							HttpEntity entity = resp.getEntity();
+							JSONObject responseJSON = new JSONObject(
+									EntityUtils.toString(entity, "UTF-8"));
+							MainActivity.setDREAMFACTORYTOKEN(responseJSON
+									.getString("session_id"));
 						}
-						
+
 						// enter the new users data into the db
 						httpPost = new HttpPost(
 								"https://dsp-carethy.cloud.dreamfactory.com/rest/mongohq/user?app_name=carethy");
-						httpPost.setEntity(new StringEntity(userInfo.toString(), "UTF8"));
+						httpPost.setEntity(new StringEntity(
+								userInfo.toString(), "UTF8"));
 						httpPost.setHeader("Content-type", "application/json");
-						httpPost.setHeader("X-DreamFactory-Session-Token", MainActivity.getDREAMFACTORYTOKEN());
+						httpPost.setHeader("X-DreamFactory-Session-Token",
+								MainActivity.getDREAMFACTORYTOKEN());
 						resp = httpClient.execute(httpPost, localContext);
-						if (resp != null && resp.getStatusLine().getStatusCode() == 200) {
+						if (resp != null
+								&& resp.getStatusLine().getStatusCode() == 200) {
 							result = true;
 						}
 					}
@@ -417,7 +430,8 @@ public class RegisterActivity extends Activity {
 					e.printStackTrace();
 				}
 				if (result) {
-					MainActivity.setLoggedIn(true);
+					Carethy.mSharedPreferences.edit()
+							.putBoolean(Carethy.ISLOGGEDIN, true).commit();
 					return true;
 				} else {
 					return false;
@@ -426,7 +440,7 @@ public class RegisterActivity extends Activity {
 				return false;
 			}
 		}
-		
+
 		@Override
 		protected void onPostExecute(final Boolean success) {
 			regButton.setEnabled(true);
@@ -436,7 +450,8 @@ public class RegisterActivity extends Activity {
 						Toast.LENGTH_LONG).show();
 				finish();
 			} else {
-				Toast.makeText(RegisterActivity.this,
+				Toast.makeText(
+						RegisterActivity.this,
 						"An error occurred during the registration. Please check your input data.",
 						Toast.LENGTH_LONG).show();
 			}

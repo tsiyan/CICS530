@@ -25,10 +25,10 @@ import android.widget.ListView;
 
 import com.carethy.R;
 import com.carethy.adapter.NavDrawerListAdapter;
+import com.carethy.application.Carethy;
 import com.carethy.fragment.ContentFragmentFactory;
 import com.carethy.model.NavDrawerItem;
 import com.carethy.receiver.RecomAlarmReceiver;
-import com.carethy.service.ServiceDemo;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
@@ -47,16 +47,6 @@ public class MainActivity extends FragmentActivity implements
 
 	public static void setDREAMFACTORYTOKEN(String dREAMFACTORYTOKEN) {
 		DREAMFACTORYTOKEN = dREAMFACTORYTOKEN;
-	}
-
-	public static boolean LOGGEDIN = true;
-
-	public static boolean isLoggedIn() {
-		return LOGGEDIN;
-	}
-
-	public static void setLoggedIn(boolean loggedIn) {
-		MainActivity.LOGGEDIN = loggedIn;
 	}
 
 	private DrawerLayout mDrawerLayout;
@@ -85,6 +75,9 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		boolean LOGGEDIN = Carethy.mSharedPreferences.getBoolean(
+				Carethy.ISLOGGEDIN, false);
 
 		if (!LOGGEDIN) {
 			Intent intent = new Intent(this, LoginActivity.class);
@@ -286,6 +279,5 @@ public class MainActivity extends FragmentActivity implements
 		super.onDestroy();
 		// Toast.makeText(this, "finish() -> onDestory()",
 		// Toast.LENGTH_SHORT).show();
-		LOGGEDIN = false;
 	}
 }

@@ -12,6 +12,7 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 
 import com.carethy.R;
+import com.carethy.application.Carethy;
 
 public class SettingsFragment extends PreferenceFragment implements
 		OnSharedPreferenceChangeListener {
@@ -46,7 +47,6 @@ public class SettingsFragment extends PreferenceFragment implements
 			pref_profile_height.setSummary(height + " Cm");// TODO:json
 		}
 
-
 		Preference pref_terms_conditions = findPreference("terms_conditions");
 		pref_terms_conditions
 				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -78,10 +78,21 @@ public class SettingsFragment extends PreferenceFragment implements
 													DialogInterface arg0,
 													int arg1) {
 
+												Carethy.mSharedPreferences
+														.edit()
+														.putBoolean(
+																Carethy.ISLOGGEDIN,
+																false).commit();
 												Intent intent = new Intent(
 														getActivity(),
 														com.carethy.activity.LoginActivity.class);
+												// Closing all the Activities
+												intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+												// Add new Flag to start new
+												// Activity
+												intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 												startActivity(intent);
+
 												getActivity().finish();
 											}
 										}).create().show();

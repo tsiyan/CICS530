@@ -15,7 +15,8 @@ public class Carethy extends Application {
 	public static SharedPreferences mSharedPreferences;
 
 	public static RecomDBDataSource datasource;
-
+	public static String ISLOGGEDIN="isLoggedIn";
+	
 	public enum BodyData {
 		activities, sleep, heartBeats, bloodPressure
 	};

@@ -26,13 +26,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.carethy.R;
+import com.carethy.application.Carethy;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
 public class LoginActivity extends Activity {
-	
+
 	private View focusView = null;
 
 	/**
@@ -79,17 +80,18 @@ public class LoginActivity extends Activity {
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 
-		findViewById(R.id.forget_password).setOnClickListener(new View.OnClickListener(){
+		findViewById(R.id.forget_password).setOnClickListener(
+				new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(getApplication(), PasswordRecoveryActivity.class);
-			    startActivity(intent);
-			}
-			
-			
-		});
-		
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(getApplication(),
+								PasswordRecoveryActivity.class);
+						startActivity(intent);
+					}
+
+				});
+
 		findViewById(R.id.sign_in_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -145,15 +147,15 @@ public class LoginActivity extends Activity {
 			mEmailView.setError(getString(R.string.error_invalid_email));
 			focusView = mEmailView;
 			cancel = true;
-		}	
+		}
 		return cancel;
 	}
-	
+
 	public void register() {
 		Intent intent = new Intent(this, RegisterActivity.class);
-	    startActivity(intent);
+		startActivity(intent);
 	}
-	
+
 	/**
 	 * Attempts to sign in or register the account specified by the login form.
 	 * If there are form errors (invalid email, missing fields, etc.), the
@@ -243,7 +245,6 @@ public class LoginActivity extends Activity {
 				httpPost.setHeader("Content-type", "application/json");
 				HttpResponse resp = httpClient.execute(httpPost, localContext);
 				if (resp != null && resp.getStatusLine().getStatusCode() == 200) {
-					MainActivity.setLoggedIn(true);
 					return true;
 				}
 			} catch (Exception e) {
@@ -258,6 +259,13 @@ public class LoginActivity extends Activity {
 			showProgress(false);
 
 			if (success) {
+
+				Carethy.mSharedPreferences.edit()
+						.putBoolean(Carethy.ISLOGGEDIN, true).commit();
+
+				Intent intent = new Intent(getApplication(), MainActivity.class);
+				startActivity(intent);
+
 				finish();
 			} else {
 				mPasswordView
