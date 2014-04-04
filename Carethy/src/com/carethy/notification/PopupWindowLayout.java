@@ -26,6 +26,7 @@ public class PopupWindowLayout extends LinearLayout {
 		this.wm = wmr;
 		this.setOrientation(1);
 		this.setBackgroundResource(R.color.actionbar_background);
+		this.setMinimumWidth(800);
 		
 		LinearLayout llyt = new LinearLayout(context);
 		llyt.setOrientation(0);
