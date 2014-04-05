@@ -27,56 +27,28 @@ import android.support.v4.app.NotificationCompat;
 import com.carethy.R;
 import com.carethy.activity.MainActivity;
 import com.carethy.application.Carethy;
+import com.carethy.model.Recommendation;
 import com.carethy.notification.PopupWindow;
 
 public class RecomAlarmReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		// String phoneNumberReciver="6045008590";// phone number to which SMS
-		// to be send
-		// String message="Hi I will be there later, See You soon";// message to
-		// send
-		// SmsManager sms = SmsManager.getDefault();
-		// sms.sendTextMessage(phoneNumberReciver, null, message, null, null);
-		// Show the toast like in above screen shot
 
-		// Toast.makeText(context, "Alarm Triggered", Toast.LENGTH_LONG).show();
-		// Vibrator vibrator = (Vibrator) context
-		// .getSystemService(Context.VIBRATOR_SERVICE);
-		// vibrator.vibrate(1500);
+		Recommendation recom = getNewRecommendation(context);
 
-		String recom = getNewRecommendation(context);
+		if (recom.getRecomId() <= 300) {
+			new PopupWindow(context).showPopup(recom.getRecom());
 
-		sendNotification(context, recom);
-		new PopupWindow(context).showPopup(recom);
-		
-//*********************************************************************************
-//		NotificationManager mNM;
-//		mNM = (NotificationManager) context
-//				.getSystemService(context.NOTIFICATION_SERVICE);
-//		// Set the icon, scrolling text and timestamp
-//		Notification notification = new Notification(R.drawable.ic_launcher,
-//				"Check Recommendations", System.currentTimeMillis());
-//
-//		// The PendingIntent to launch our activity if the user selects this
-//		// notification
-//		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-//				new Intent(context, MainActivity.class), 0);
-//		// Set the info for the views that show in the notification panel.
-//		notification.setLatestEventInfo(context, "Carethy says:", recom,
-//				contentIntent);
-//		// Send the notification.
-//		// We use a layout id because it is a unique number. We use it later to
-//		// cancel.
-//		mNM.notify(R.string.hello_world, notification);
-//*********************************************************************************
+		} else {
+			sendNotification(context, recom.getRecom());
+		}
 
 	}
 
-	public String getNewRecommendation(final Context context) {
+	public Recommendation getNewRecommendation(final Context context) {
 
-		AsyncTask<Void, Integer, String> task = new AsyncTask<Void, Integer, String>() {
-			String responseReco = "No New Recommendation";
+		AsyncTask<Void, Integer, Recommendation> task = new AsyncTask<Void, Integer, Recommendation>() {
+			Recommendation responseReco = null;
 			String engineResponse = null;
 			String recommendation;
 			int id;
@@ -90,7 +62,7 @@ public class RecomAlarmReceiver extends BroadcastReceiver {
 			}
 
 			@Override
-			protected String doInBackground(Void... arg0) {
+			protected Recommendation doInBackground(Void... arg0) {
 				try {
 					url = new URL("http://health-engine.herokuapp.com/");
 					HttpURLConnection conn = (HttpURLConnection) url
@@ -116,18 +88,18 @@ public class RecomAlarmReceiver extends BroadcastReceiver {
 				if (connEstablished) {
 					// int topId = Carethy.datasource.getTopRecommendationId();
 					// if (topId != id) {
-					Carethy.datasource.insertIntoTable(id, recommendation,
-							"http://www.google.ca");
-					responseReco = recommendation;
+					responseReco = Carethy.datasource.insertIntoTable(id,
+							recommendation, "http://www.google.ca");
 					// }
-				} else {
-					responseReco = "No Connection";
 				}
+				// else {
+				// responseReco = "No Connection";
+				// }
 				return responseReco;
 			}
 
 			@Override
-			protected void onPostExecute(String result) {
+			protected void onPostExecute(Recommendation result) {
 			}
 
 			private String getResponse(HttpURLConnection conn)
@@ -167,7 +139,7 @@ public class RecomAlarmReceiver extends BroadcastReceiver {
 			}
 		};
 
-		String result = "Something went wrong";
+		Recommendation result = null;
 		task.execute((Void[]) null);
 
 		try {
@@ -183,22 +155,24 @@ public class RecomAlarmReceiver extends BroadcastReceiver {
 		return result;
 	}
 
-	
 	public void sendNotification(Context context, String recommendation) {
 		String notificationTitle = "Carethy";
 		String notificationMessage = recommendation;
 
-		NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+		NotificationManager notificationManager = (NotificationManager) context
+				.getSystemService(context.NOTIFICATION_SERVICE);
 
 		Intent intent = new Intent(context, MainActivity.class);
 
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
 				intent, 0);
-		
+
 		Notification notif = new NotificationCompat.Builder(context)
 				.setContentTitle(notificationTitle)
 				.setContentText(notificationMessage)
-				.setStyle(new NotificationCompat.BigTextStyle().bigText(notificationMessage))
+				.setStyle(
+						new NotificationCompat.BigTextStyle()
+								.bigText(notificationMessage))
 				.setSmallIcon(R.drawable.ic_launcher)
 				.setContentIntent(pendingIntent).setTicker(notificationMessage)
 				.build();
