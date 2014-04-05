@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +55,7 @@ public class RecommendationsFragment extends Fragment {
 	private void fillRecommendations() {
 
 		recoLinearLayout = (LinearLayout) rootView
-				.findViewById(R.id.recoLinearLayout);
+				.findViewById(R.id.scrollRecoInnerPanel);
 
 		List<Recommendation> recomms = new ArrayList<Recommendation>();
 
@@ -66,7 +67,25 @@ public class RecommendationsFragment extends Fragment {
 			recoLinearLayout.addView(tv);
 		} else {
 
+			String datefield = "";
+
 			for (final Recommendation recom : recomms) {
+				String recomdate = recom.getSaveDate();
+
+				if (!datefield.equals(recomdate)) {
+					LayoutParams dvparams = new LayoutParams(
+							LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT);
+					dvparams.gravity = Gravity.CENTER_HORIZONTAL;
+					dvparams.topMargin = 10;
+					TextView dateview = new TextView(this.getActivity());
+					dateview.setBackgroundResource(R.drawable.recom_date_style);
+					dateview.setText(recomdate);
+					dateview.setLayoutParams(dvparams);
+					dateview.setGravity(Gravity.CENTER | Gravity.BOTTOM);
+					recoLinearLayout.addView(dateview);
+					datefield = recomdate;
+				}
 
 				final TextView tv = getTextView();
 				if (recom.getRecomId() <= 300) {

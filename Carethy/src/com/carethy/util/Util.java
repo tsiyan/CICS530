@@ -62,9 +62,15 @@ public class Util {
 		return sdf.format(date);
 	}
 
+	public static String getDate() {
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.CANADA);
+		return sdf.format(date);
+	}
+
 	public static ArrayList<CarethyGraphData> fetchData(BodyData mBodyData) {
 		int count = 10;
-		long now =new Date().getTime();
+		long now = new Date().getTime();
 		ArrayList<CarethyGraphData> result = new ArrayList<CarethyGraphData>();
 
 		GraphViewData[] timeSeries = new GraphViewData[count];

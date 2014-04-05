@@ -7,6 +7,7 @@ public class Recommendation {
 	private String recom;
 	private boolean isRead;
 	private String url;
+	private String sdate;
 
 	public Recommendation() {
 
@@ -60,5 +61,13 @@ public class Recommendation {
 
 	public String toString() {
 		return recom_id + " - " + recom;
+	}
+
+	public String getSaveDate() {
+		return sdate;
+	}
+
+	public void setSavedate(String sdate) {
+		this.sdate = sdate;
 	}
 }

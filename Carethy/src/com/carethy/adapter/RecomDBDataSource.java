@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.carethy.database.DBRecomHelper;
 import com.carethy.model.Recommendation;
+import com.carethy.util.Util;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -22,7 +23,8 @@ public class RecomDBDataSource {
 
 	private String[] allColumns = { DBRecomHelper.COLUMN_ID,
 			DBRecomHelper.COLUMN_RECOM_ID, DBRecomHelper.COLUMN_RECOM,
-			DBRecomHelper.COLUMN_ISREAD, DBRecomHelper.COLUMN_URL };
+			DBRecomHelper.COLUMN_ISREAD, DBRecomHelper.COLUMN_URL,
+			DBRecomHelper.COLUMN_DATE };
 
 	public RecomDBDataSource(Context context) {
 		dbHelper = new DBRecomHelper(context);
@@ -44,6 +46,7 @@ public class RecomDBDataSource {
 		values.put(DBRecomHelper.COLUMN_RECOM, recom);
 
 		values.put(DBRecomHelper.COLUMN_URL, url);
+		values.put(DBRecomHelper.COLUMN_DATE, Util.getDate());
 
 		long insertId = database
 				.insert(DBRecomHelper.TABLE_RECOM, null, values);
@@ -65,6 +68,7 @@ public class RecomDBDataSource {
 		recom.setRecom(cursor.getString(2));
 		recom.setIsRead(cursor.getInt(3) == 1 ? true : false);
 		recom.setUrl(cursor.getString(4));
+		recom.setSavedate(cursor.getString(5));
 		return recom;
 	}
 
@@ -118,7 +122,6 @@ public class RecomDBDataSource {
 			return 0;
 		}
 	}
-
 
 	public void setIsReadTrue(long id) {
 

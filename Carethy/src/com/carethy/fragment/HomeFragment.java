@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -296,7 +297,25 @@ public class HomeFragment extends Fragment {
 			// firstLogin = false;
 		} else {
 
+			String datefield = "";
+
 			for (final Recommendation recom : recomms) {
+				String recomdate = recom.getSaveDate();
+
+				if (!datefield.equals(recomdate)) {
+					LayoutParams dvparams = new LayoutParams(
+							LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT);
+					dvparams.gravity = Gravity.CENTER_HORIZONTAL;
+					dvparams.topMargin = 10;
+					TextView dateview = new TextView(this.getActivity());
+					dateview.setBackgroundResource(R.drawable.recom_date_style);
+					dateview.setText(recomdate);
+					dateview.setLayoutParams(dvparams);
+					dateview.setGravity(Gravity.CENTER | Gravity.BOTTOM);
+					this.scrollInnerPanel.addView(dateview);
+					datefield = recomdate;
+				}
 
 				final TextView tv = getTextView();
 
