@@ -1,5 +1,6 @@
 package com.carethy.notification;
 
+import android.app.KeyguardManager.KeyguardLock;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,10 +21,12 @@ public class PopupWindowLayout extends LinearLayout {
 	private Button btn_dismiss;
 	private Button btn_open;
 	private WindowManager wm; 
+	private KeyguardLock kl;
 
-	public PopupWindowLayout(Context context, String str, WindowManager wmr) {
+	public PopupWindowLayout(Context context, String str, WindowManager wmr, KeyguardLock kl) {
 		super(context);
 		this.wm = wmr;
+		this.kl = kl;
 		this.setOrientation(1);
 		this.setBackgroundResource(R.color.actionbar_background);
 		this.setMinimumWidth(800);
@@ -97,5 +100,6 @@ public class PopupWindowLayout extends LinearLayout {
 
 	public void removePopup() {
 		this.wm.removeView(this);
+		this.kl.reenableKeyguard();
 	}
 }

@@ -19,19 +19,19 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class AlarmScreen extends Activity {
-	
+
 	public final String TAG = this.getClass().getSimpleName();
 
 	private WakeLock mWakeLock;
 	private MediaPlayer mPlayer;
 
 	private static final int WAKELOCK_TIMEOUT = 60 * 1000;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		
+
 		//Setup layout
 		this.setContentView(R.layout.activity_alarm_screen);
 
@@ -39,20 +39,25 @@ public class AlarmScreen extends Activity {
 		int timeHour = getIntent().getIntExtra(AlarmManagerHelper.TIME_HOUR, 0);
 		int timeMinute = getIntent().getIntExtra(AlarmManagerHelper.TIME_MINUTE, 0);
 		String tone = getIntent().getStringExtra(AlarmManagerHelper.TONE);
-		
+
 		TextView tvName = (TextView) findViewById(R.id.alarm_screen_name);
 		tvName.setText(name);
-		
+
 		TextView tvTime = (TextView) findViewById(R.id.alarm_screen_time);
 		tvTime.setText(String.format("%02d : %02d", timeHour, timeMinute));
-		
+
 		Button dismissButton = (Button) findViewById(R.id.alarm_screen_button);
 		dismissButton.setOnClickListener(new OnClickListener() {
-			
 			@Override
-			public void onClick(View view) {
-				mPlayer.stop();
-				finish();
+			public void onClick(View view) 
+			{
+				if (mPlayer != null) 
+				{
+					mPlayer.stop();
+					mPlayer.release();
+					mPlayer = null;
+				}
+				AlarmScreen.this.finish();
 			}
 		});
 
@@ -72,7 +77,7 @@ public class AlarmScreen extends Activity {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		//Ensure wakelock release
 		Runnable releaseWakelock = new Runnable() {
 
@@ -91,7 +96,7 @@ public class AlarmScreen extends Activity {
 
 		new Handler().postDelayed(releaseWakelock, WAKELOCK_TIMEOUT);
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onResume() {

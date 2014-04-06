@@ -48,7 +48,7 @@ public class MainActivity extends FragmentActivity implements
 	public static void setDREAMFACTORYTOKEN(String dREAMFACTORYTOKEN) {
 		DREAMFACTORYTOKEN = dREAMFACTORYTOKEN;
 	}
-
+	
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -64,6 +64,7 @@ public class MainActivity extends FragmentActivity implements
 
 	protected void onResume() {
 		super.onResume();
+		
 		// Recommendation notification cancellation
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager nmgr = (NotificationManager) this
@@ -74,6 +75,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_main);
 
 		boolean LOGGEDIN = Carethy.mSharedPreferences.getBoolean(
@@ -256,6 +258,11 @@ public class MainActivity extends FragmentActivity implements
 		getActionBar().setTitle(mTitle);
 	}
 
+	@Override
+	protected void onPause(){
+	    super.onPause();
+	}	
+	
 	/**
 	 * When using the ActionBarDrawerToggle, you must call it during
 	 * onPostCreate() and onConfigurationChanged()...

@@ -36,13 +36,14 @@ public class RecomAlarmReceiver extends BroadcastReceiver {
 
 		Recommendation recom = getNewRecommendation(context);
 
-		if (recom.getRecomId() <= 300) {
+		if (recom.getRecomId() <= 300) 
+		{
 			new PopupWindow(context).showPopup(recom.getRecom());
-
-		} else {
+		} 
+		else 
+		{
 			sendNotification(context, recom.getRecom());
 		}
-
 	}
 
 	public Recommendation getNewRecommendation(final Context context) {
