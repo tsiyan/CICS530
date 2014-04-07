@@ -90,9 +90,11 @@ public class RecommendationsFragment extends Fragment {
 				final TextView tv = getTextView();
 				
 				// Siyan
-				if (recom.getSeverity() > 3) {
+				if (recom.getSeverity() < 3) {
 					tv.setTextColor(Color.RED);
-				} else {
+				} else if (recom.getSeverity() == 3) {
+					tv.setTextColor(Color.YELLOW);
+				}else {
 					tv.setTextColor(Color.GREEN);
 				}
 
