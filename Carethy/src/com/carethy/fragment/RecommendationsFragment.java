@@ -29,7 +29,7 @@ import com.carethy.receiver.RecomAlarmReceiver;
 public class RecommendationsFragment extends Fragment {
 
 	private View rootView;
-	private LinearLayout recoLinearLayout;
+	private LinearLayout innerLayeout;
 	private LayoutParams lparams = new LayoutParams(LayoutParams.MATCH_PARENT,
 			LayoutParams.WRAP_CONTENT);
 
@@ -54,7 +54,7 @@ public class RecommendationsFragment extends Fragment {
 
 	private void fillRecommendations() {
 
-		recoLinearLayout = (LinearLayout) rootView
+		innerLayeout = (LinearLayout) rootView
 				.findViewById(R.id.scrollRecoInnerPanel);
 
 		List<Recommendation> recomms = new ArrayList<Recommendation>();
@@ -64,7 +64,7 @@ public class RecommendationsFragment extends Fragment {
 		if (recomms.isEmpty()) {
 			TextView tv = getTextView();
 			tv.setText("No Stored Recommendations");
-			recoLinearLayout.addView(tv);
+			innerLayeout.addView(tv);
 		} else {
 
 			String datefield = "";
@@ -83,14 +83,18 @@ public class RecommendationsFragment extends Fragment {
 					dateview.setText(recomdate);
 					dateview.setLayoutParams(dvparams);
 					dateview.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-					recoLinearLayout.addView(dateview);
+					innerLayeout.addView(dateview);
 					datefield = recomdate;
 				}
 
 				final TextView tv = getTextView();
-				if (recom.getRecomId() <= 300) {
+				
+				// Siyan
+				if (recom.getSeverity() < 3) {
 					tv.setTextColor(Color.RED);
-				} else {
+				} else if (recom.getSeverity() == 3) {
+					tv.setTextColor(Color.YELLOW);
+				}else {
 					tv.setTextColor(Color.GREEN);
 				}
 
@@ -109,6 +113,10 @@ public class RecommendationsFragment extends Fragment {
 									Toast.LENGTH_SHORT).show();
 
 							String url = recom.getUrl();
+							if (!url.startsWith("http")) {
+								url = "http://" + url;
+							}
+
 							Intent i = new Intent(Intent.ACTION_VIEW);
 							i.setData(Uri.parse(url));
 							startActivity(i);
@@ -121,7 +129,7 @@ public class RecommendationsFragment extends Fragment {
 				});
 
 				tv.setText(recom.getRecom());
-				recoLinearLayout.addView(tv);
+				innerLayeout.addView(tv);
 			}
 		}
 	}

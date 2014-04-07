@@ -15,6 +15,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,6 +67,7 @@ public class HomeFragment extends Fragment {
 	private LayoutParams lparams = new LayoutParams(LayoutParams.MATCH_PARENT,
 			LayoutParams.WRAP_CONTENT);
 	private static boolean firstLogin = true;
+	private boolean isDataFileChanged = false;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -134,10 +136,12 @@ public class HomeFragment extends Fragment {
 		AsyncTask<Void, Integer, Void> task = new AsyncTask<Void, Integer, Void>() {
 
 			String engineResponse = null;
+			private boolean connEstablished = false;
+
 			String recommendation;
 			int id;
-			URL url;
-			private boolean connEstablished = false;
+			String recoUrl;
+			int severity;
 
 			@Override
 			protected void onPreExecute() {
@@ -154,29 +158,44 @@ public class HomeFragment extends Fragment {
 					heartBeatsData = Util.getHeartBeatsData();
 					bloodPressuresData = Util.getBloodPressuresData();
 
-					// if (!Carethy.firstLogin) {
-					url = new URL("http://health-engine.herokuapp.com/");
-					HttpURLConnection conn = (HttpURLConnection) url
-							.openConnection();
-					engineResponse = getResponse(conn);
-					conn.disconnect();
-					connEstablished = true;
+					if (Util.hasDataFileChanged()) {
+						isDataFileChanged = true;
+						try {
+							URL url = new URL(
+									"http://health-engine.herokuapp.com/");
+							HttpURLConnection conn = (HttpURLConnection) url
+									.openConnection();
+							engineResponse = getResponse(conn);
 
-					JSONObject jRecom = new JSONObject(engineResponse);
-					id = jRecom.getInt("id");
-					recommendation = jRecom.getString("recommendation");
-					// }
+							System.out.println(engineResponse);
 
+							engineResponse = "{\"JOBJS\":" + engineResponse
+									+ "}";
+							conn.disconnect();
+							connEstablished = true;
+
+							JSONObject responseObject = new JSONObject(
+									engineResponse);
+							JSONArray jRecomObjects = responseObject
+									.getJSONArray("JOBJS");
+
+							// HACK TO SHOW DIFF RECOS - change to 0
+							JSONObject jRecom = jRecomObjects
+									.getJSONObject(Carethy.currentDataFileId);
+							id = jRecom.getInt("id");
+							recommendation = jRecom.getString("recommendation");
+							recoUrl = jRecom.getString("url");
+							severity = jRecom.getInt("severity");
+
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
 				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (JSONException e) {
-					e.printStackTrace();
-				} catch (Exception e) {
-					System.err.println("Some error");
 					e.printStackTrace();
 				}
 
@@ -185,20 +204,18 @@ public class HomeFragment extends Fragment {
 
 			@Override
 			protected void onPostExecute(Void result) {
-
-				// if (!Carethy.firstLogin) {
-				if (connEstablished) {
-					int topId = Carethy.datasource.getTopRecommendationId();
-					if (topId != id) {
+				if (isDataFileChanged) {
+					if (connEstablished) {
 						Carethy.datasource.insertIntoTable(id, recommendation,
-								"http://www.google.ca");
+								recoUrl, severity);
 					} else {
-						Toast.makeText(getActivity(), "No New Recommendations",
+						Toast.makeText(getActivity(), "No Connection",
 								Toast.LENGTH_SHORT).show();
 					}
+					isDataFileChanged = false;
 				} else {
-					Toast.makeText(getActivity(), "No Connection",
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(getActivity(), "No change in Data",
+							Toast.LENGTH_SHORT).show();
 				}
 
 				initView();
@@ -220,8 +237,12 @@ public class HomeFragment extends Fragment {
 				String httpResponse;
 				String tmpJson;
 
-				InputStream is = getActivity().getAssets()
-						.open("jrequest.json");
+				String[] sample_data_files = getActivity().getResources()
+						.getStringArray(R.array.sample_data_files);
+				String use_data_file = sample_data_files[Carethy.currentDataFileId];
+				System.out.println(use_data_file);
+
+				InputStream is = getActivity().getAssets().open(use_data_file);
 				int size = is.available();
 				byte[] buffer = new byte[size];
 				is.read(buffer);
@@ -246,7 +267,10 @@ public class HomeFragment extends Fragment {
 				// TODO: Get the null removed from the engine team
 				// or find its significance
 				if (engineResponse.startsWith("null"))
-					engineResponse = engineResponse.substring(5);
+					engineResponse = engineResponse.substring(4);
+
+				Carethy.currentDataFileId = Carethy.nextDataFileId;
+
 				return engineResponse;
 			}
 		};
@@ -319,9 +343,12 @@ public class HomeFragment extends Fragment {
 
 				final TextView tv = getTextView();
 
-				if (recom.getRecomId() <= 300) {
+				// Siyan
+				if (recom.getSeverity() < 3) {
 					tv.setTextColor(Color.RED);
-				} else {
+				} else if (recom.getSeverity() == 3) {
+					tv.setTextColor(Color.YELLOW);
+				}else {
 					tv.setTextColor(Color.GREEN);
 				}
 
@@ -342,6 +369,10 @@ public class HomeFragment extends Fragment {
 									Toast.LENGTH_SHORT).show();
 
 							String url = recom.getUrl();
+							if (!url.startsWith("http")) {
+								url = "http://" + url;
+							}
+
 							Intent i = new Intent(Intent.ACTION_VIEW);
 							i.setData(Uri.parse(url));
 							startActivity(i);

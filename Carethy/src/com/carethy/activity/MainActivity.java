@@ -165,6 +165,8 @@ public class MainActivity extends FragmentActivity implements
 				.getResourceId(6, -1)));
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[7], navMenuIcons
 				.getResourceId(7, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[8], navMenuIcons
+				.getResourceId(8, -1)));
 
 		// recycle the typed array
 		navMenuIcons.recycle();
