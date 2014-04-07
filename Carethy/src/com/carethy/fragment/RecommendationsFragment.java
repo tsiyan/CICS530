@@ -88,7 +88,9 @@ public class RecommendationsFragment extends Fragment {
 				}
 
 				final TextView tv = getTextView();
-				if (recom.getRecomId() <= 300) {
+				
+				// Siyan
+				if (recom.getSeverity() > 3) {
 					tv.setTextColor(Color.RED);
 				} else {
 					tv.setTextColor(Color.GREEN);
@@ -109,6 +111,10 @@ public class RecommendationsFragment extends Fragment {
 									Toast.LENGTH_SHORT).show();
 
 							String url = recom.getUrl();
+							if (!url.startsWith("http")) {
+								url = "http://" + url;
+							}
+
 							Intent i = new Intent(Intent.ACTION_VIEW);
 							i.setData(Uri.parse(url));
 							startActivity(i);

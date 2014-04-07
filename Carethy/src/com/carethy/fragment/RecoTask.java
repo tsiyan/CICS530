@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import com.carethy.R;
 import com.carethy.application.Carethy;
+import com.carethy.database.DBRecomHelper;
 import com.carethy.model.Recommendation;
 
 import android.app.ProgressDialog;
@@ -26,13 +27,15 @@ public class RecoTask extends AsyncTask<Object, Integer, Recommendation> {
 
 	Recommendation responseReco = null;
 	String engineResponse = null;
-	String recommendation;
-	int id;
-	URL url;
 	private boolean connEstablished = false;
 	Context context;
 	static ProgressDialog mProgressDialog;
 	private boolean isHomeFragment;
+
+	String recommendation;
+	int id;
+	String recoUrl;
+	int severity;
 
 	public RecoTask(Context context, Boolean isHomeFragment) {
 		this.context = context;
@@ -51,7 +54,7 @@ public class RecoTask extends AsyncTask<Object, Integer, Recommendation> {
 	protected Recommendation doInBackground(Object... params) {
 
 		try {
-			url = new URL("http://health-engine.herokuapp.com/");
+			URL url = new URL("http://health-engine.herokuapp.com/");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			engineResponse = getResponse(conn);
 
@@ -63,9 +66,16 @@ public class RecoTask extends AsyncTask<Object, Integer, Recommendation> {
 
 			JSONObject responseObject = new JSONObject(engineResponse);
 			JSONArray jRecomObjects = responseObject.getJSONArray("JOBJS");
-			JSONObject jRecom = jRecomObjects.getJSONObject(0);
+			// JSONObject jRecom = jRecomObjects.getJSONObject(0);
+
+			// HACK TO SHOW DIFF RECOS - change to 0
+			JSONObject jRecom = jRecomObjects
+					.getJSONObject(Carethy.currentDataFileId);
 			id = jRecom.getInt("id");
 			recommendation = jRecom.getString("recommendation");
+			recoUrl = jRecom.getString("url");
+			severity = jRecom.getInt("severity");
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -79,7 +89,7 @@ public class RecoTask extends AsyncTask<Object, Integer, Recommendation> {
 
 		if (connEstablished) {
 			responseReco = Carethy.datasource.insertIntoTable(id,
-					recommendation, "http://www.google.ca");
+					recommendation, recoUrl, severity);
 		}
 		return responseReco;
 	}

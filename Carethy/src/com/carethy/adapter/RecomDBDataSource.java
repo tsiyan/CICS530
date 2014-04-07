@@ -24,7 +24,7 @@ public class RecomDBDataSource {
 	private String[] allColumns = { DBRecomHelper.COLUMN_ID,
 			DBRecomHelper.COLUMN_RECOM_ID, DBRecomHelper.COLUMN_RECOM,
 			DBRecomHelper.COLUMN_ISREAD, DBRecomHelper.COLUMN_URL,
-			DBRecomHelper.COLUMN_DATE };
+			DBRecomHelper.COLUMN_DATE, DBRecomHelper.COLUMN_SEVERITY };
 
 	public RecomDBDataSource(Context context) {
 		dbHelper = new DBRecomHelper(context);
@@ -38,7 +38,8 @@ public class RecomDBDataSource {
 		dbHelper.close();
 	}
 
-	public Recommendation insertIntoTable(int recom_id, String recom, String url) {
+	public Recommendation insertIntoTable(int recom_id, String recom,
+			String url, int severity) {
 
 		ContentValues values = new ContentValues();
 
@@ -47,6 +48,7 @@ public class RecomDBDataSource {
 
 		values.put(DBRecomHelper.COLUMN_URL, url);
 		values.put(DBRecomHelper.COLUMN_DATE, Util.getDate());
+		values.put(DBRecomHelper.COLUMN_SEVERITY, severity);
 
 		long insertId = database
 				.insert(DBRecomHelper.TABLE_RECOM, null, values);
@@ -69,6 +71,7 @@ public class RecomDBDataSource {
 		recom.setIsRead(cursor.getInt(3) == 1 ? true : false);
 		recom.setUrl(cursor.getString(4));
 		recom.setSavedate(cursor.getString(5));
+		recom.setSeverity(cursor.getInt(6));
 		return recom;
 	}
 

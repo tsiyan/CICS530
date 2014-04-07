@@ -21,19 +21,14 @@ import com.carethy.util.Util;
 public class RecomAlarmReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		System.out.println("nothings changed");
 		if (Util.hasDataFileChanged()) {
-			System.out.println("somethings changed");
 			Recommendation recom = getNewRecommendation(context);
-			System.out.println("Reco created");
 
 			if (!recom.equals(null))
-				if (recom.getRecomId() <= 300) {
-					System.out.println("Reco created <= 300");
+				if (recom.getSeverity() > 3) {
 					new PopupWindow(context).showPopup(recom.getRecom());
 
 				} else {
-					System.out.println("Reco created > 300");
 					sendNotification(context, recom.getRecom());
 				}
 		}
@@ -41,9 +36,10 @@ public class RecomAlarmReceiver extends BroadcastReceiver {
 
 	public Recommendation getNewRecommendation(Context context) {
 
-		AsyncTask<Object, Integer, Recommendation> task = new RecoTask(context,false);
+		AsyncTask<Object, Integer, Recommendation> task = new RecoTask(context,
+				false);
 		Recommendation result = null;
-		
+
 		task.execute(context);
 
 		try {

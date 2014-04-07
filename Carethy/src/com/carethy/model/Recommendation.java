@@ -8,6 +8,7 @@ public class Recommendation {
 	private boolean isRead;
 	private String url;
 	private String sdate;
+	private int severity;
 
 	public Recommendation() {
 
@@ -69,5 +70,13 @@ public class Recommendation {
 
 	public void setSavedate(String sdate) {
 		this.sdate = sdate;
+	}
+
+	public int getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(int severity) {
+		this.severity = severity;
 	}
 }
