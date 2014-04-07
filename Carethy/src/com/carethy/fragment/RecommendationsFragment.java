@@ -29,7 +29,7 @@ import com.carethy.receiver.RecomAlarmReceiver;
 public class RecommendationsFragment extends Fragment {
 
 	private View rootView;
-	private LinearLayout recoLinearLayout;
+	private LinearLayout innerLayeout;
 	private LayoutParams lparams = new LayoutParams(LayoutParams.MATCH_PARENT,
 			LayoutParams.WRAP_CONTENT);
 
@@ -54,7 +54,7 @@ public class RecommendationsFragment extends Fragment {
 
 	private void fillRecommendations() {
 
-		recoLinearLayout = (LinearLayout) rootView
+		innerLayeout = (LinearLayout) rootView
 				.findViewById(R.id.scrollRecoInnerPanel);
 
 		List<Recommendation> recomms = new ArrayList<Recommendation>();
@@ -64,7 +64,7 @@ public class RecommendationsFragment extends Fragment {
 		if (recomms.isEmpty()) {
 			TextView tv = getTextView();
 			tv.setText("No Stored Recommendations");
-			recoLinearLayout.addView(tv);
+			innerLayeout.addView(tv);
 		} else {
 
 			String datefield = "";
@@ -83,7 +83,7 @@ public class RecommendationsFragment extends Fragment {
 					dateview.setText(recomdate);
 					dateview.setLayoutParams(dvparams);
 					dateview.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-					recoLinearLayout.addView(dateview);
+					innerLayeout.addView(dateview);
 					datefield = recomdate;
 				}
 
@@ -121,7 +121,7 @@ public class RecommendationsFragment extends Fragment {
 				});
 
 				tv.setText(recom.getRecom());
-				recoLinearLayout.addView(tv);
+				innerLayeout.addView(tv);
 			}
 		}
 	}

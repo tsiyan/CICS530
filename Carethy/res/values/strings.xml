@@ -53,12 +53,17 @@
         <item>Recommendations</item>
         <item>Medication</item>
         <item>Settings</item>
+        <item>Change Data</item>
     </string-array>
     <string-array name="notification_times">
         <item>6AM</item>
         <item>12PM</item>
         <item>6PM</item>
         <item>12AM</item>
+    </string-array>
+    <string-array name="sample_data_files">
+        <item>jrequest.json</item>
+        <item>sample_data3.json</item>
     </string-array>
     <string-array name="notification_times_value">
         <item>0</item>
@@ -89,6 +94,7 @@
         <item>@drawable/ic_blood_pressure</item>
         <item>@drawable/ic_recommendations</item>
         <item>@drawable/ic_medication</item>
+        <item>@drawable/ic_settings</item>
         <item>@drawable/ic_settings</item>
     </array>
 

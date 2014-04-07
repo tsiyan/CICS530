@@ -1,19 +1,6 @@
 package com.carethy.receiver;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.util.concurrent.ExecutionException;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -26,129 +13,44 @@ import android.support.v4.app.NotificationCompat;
 
 import com.carethy.R;
 import com.carethy.activity.MainActivity;
-import com.carethy.application.Carethy;
+import com.carethy.fragment.RecoTask;
 import com.carethy.model.Recommendation;
 import com.carethy.notification.PopupWindow;
+import com.carethy.util.Util;
 
 public class RecomAlarmReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		System.out.println("nothings changed");
+		if (Util.hasDataFileChanged()) {
+			System.out.println("somethings changed");
+			Recommendation recom = getNewRecommendation(context);
+			System.out.println("Reco created");
 
-		Recommendation recom = getNewRecommendation(context);
+			if (!recom.equals(null))
+				if (recom.getRecomId() <= 300) {
+					System.out.println("Reco created <= 300");
+					new PopupWindow(context).showPopup(recom.getRecom());
 
-		if (recom.getRecomId() <= 300) {
-			new PopupWindow(context).showPopup(recom.getRecom());
-
-		} else {
-			sendNotification(context, recom.getRecom());
+				} else {
+					System.out.println("Reco created > 300");
+					sendNotification(context, recom.getRecom());
+				}
 		}
-
 	}
 
-	public Recommendation getNewRecommendation(final Context context) {
+	public Recommendation getNewRecommendation(Context context) {
 
-		AsyncTask<Void, Integer, Recommendation> task = new AsyncTask<Void, Integer, Recommendation>() {
-			Recommendation responseReco = null;
-			String engineResponse = null;
-			String recommendation;
-			int id;
-			URL url;
-			private boolean connEstablished = false;
-
-			// @Override
-			protected void onPreExecute() {
-				// mProgressDialog = ProgressDialog.show(getActivity(),
-				// "Loading data...", "Please be patient.", true);
-			}
-
-			@Override
-			protected Recommendation doInBackground(Void... arg0) {
-				try {
-					url = new URL("http://health-engine.herokuapp.com/");
-					HttpURLConnection conn = (HttpURLConnection) url
-							.openConnection();
-					engineResponse = getResponse(conn);
-					conn.disconnect();
-					connEstablished = true;
-
-					JSONObject jRecom = new JSONObject(engineResponse);
-					id = jRecom.getInt("id");
-					recommendation = jRecom.getString("recommendation");
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (JSONException e) {
-					e.printStackTrace();
-				} catch (Exception e) {
-					System.err.println("Some error");
-					e.printStackTrace();
-				}
-
-				if (connEstablished) {
-					// int topId = Carethy.datasource.getTopRecommendationId();
-					// if (topId != id) {
-					responseReco = Carethy.datasource.insertIntoTable(id,
-							recommendation, "http://www.google.ca");
-					// }
-				}
-				// else {
-				// responseReco = "No Connection";
-				// }
-				return responseReco;
-			}
-
-			@Override
-			protected void onPostExecute(Recommendation result) {
-			}
-
-			private String getResponse(HttpURLConnection conn)
-					throws IOException, UnsupportedEncodingException,
-					ProtocolException {
-
-				String httpResponse;
-				String tmpJson;
-
-				InputStream is = context.getAssets().open("jrequest.json");
-				int size = is.available();
-				byte[] buffer = new byte[size];
-				is.read(buffer);
-				is.close();
-				tmpJson = new String(buffer, "UTF-8");
-
-				conn.setRequestMethod("POST");
-				conn.setRequestProperty("Content-Type", "application/json");
-				DataOutputStream wr = new DataOutputStream(
-						conn.getOutputStream());
-				wr.writeBytes(tmpJson);
-				wr.flush();
-				wr.close();
-
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						conn.getInputStream()));
-				while ((httpResponse = in.readLine()) != null)
-					engineResponse += httpResponse;
-				in.close();
-				conn.disconnect();
-
-				// TODO: Get the null removed from the engine team
-				// or find its significance
-				if (engineResponse.startsWith("null"))
-					engineResponse = engineResponse.substring(5);
-				return engineResponse;
-			}
-		};
-
+		AsyncTask<Object, Integer, Recommendation> task = new RecoTask(context,false);
 		Recommendation result = null;
-		task.execute((Void[]) null);
+		
+		task.execute(context);
 
 		try {
 			result = task.get();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

@@ -14,6 +14,7 @@ public class ContentFragmentFactory {
 		Fragment medicationFragment=new AlarmListFragment();
 //		Fragment medicationFragment=new MedicationFragment();
 		Fragment settingsFragment=new SettingsFragment();
+		Fragment changeDataFragment=new ChangeDataFragment();
 		
 		switch (position) {
 		case 0:// "Home"
@@ -32,6 +33,8 @@ public class ContentFragmentFactory {
 			return medicationFragment;
 		case 7:// "Settings"
 			return settingsFragment;
+		case 8:// "Settings"
+			return changeDataFragment;
 		default:
 			break;
 		}

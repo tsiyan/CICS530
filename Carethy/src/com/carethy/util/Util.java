@@ -16,6 +16,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.os.Environment;
 import android.util.Log;
 
+import com.carethy.application.Carethy;
 import com.carethy.application.Carethy.BodyData;
 import com.carethy.model.CarethyGraphData;
 import com.carethy.model.Recommendation;
@@ -143,6 +144,14 @@ public class Util {
 		list.add(r5);
 
 		return list;
+	}
+
+	// returns if the user data file has changed
+	public static boolean hasDataFileChanged() {
+		if (Carethy.currentDataFileId == Carethy.nextDataFileId) {
+			return false;
+		}
+		return true;
 	}
 
 }
