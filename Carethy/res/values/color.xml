@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="actionbar_text">#FFFFFF</color>
-    <color name="actionbar_background">#5E869F</color>
+    <color name="actionbar_text">#2c3e50</color>
+    <color name="actionbar_background">#ecf0f1</color>
     <color name="nav_drawer_background">#FFFFFF</color>
-    <color name="nav_drawer_background_pressed">#5E869F</color>
+    <color name="nav_drawer_background_pressed">#1aa083</color>
     <color name="nav_drawer_counter_text">#FFFFFF</color>
-    <color name="nav_drawer_counter_background">#990000</color>
+    <color name="nav_drawer_counter_background">#c1392b</color>
     <color name="button">#003366</color>
     
 </resources>

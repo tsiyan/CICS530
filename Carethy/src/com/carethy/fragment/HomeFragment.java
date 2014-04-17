@@ -283,23 +283,23 @@ public class HomeFragment extends Fragment {
 		activities = (TextView) rootView.findViewById(R.id.activity);
 		activities.setText(activitiesData + "\nmins");
 		((GradientDrawable) activities.getBackground()).setColor(Color
-				.parseColor("#ff5900"));
-
-		sleep = (TextView) rootView.findViewById(R.id.sleep);
-		sleep.setText(df.format(sleepData) + "\nmins");
-		((GradientDrawable) sleep.getBackground()).setColor(Color
-				.parseColor("#ff9a00"));
-
-		heartBeats = (TextView) rootView.findViewById(R.id.heart_rate);
-		heartBeats.setText(heartBeatsData + "\ncount");
-		((GradientDrawable) heartBeats.getBackground()).setColor(Color
-				.parseColor("#0d56a6"));
+				.parseColor("#1aa083"));
 
 		bloodPressures = (TextView) rootView.findViewById(R.id.blood_pressure);
 		bloodPressures.setText(bloodPressuresData[0] + "\n"
 				+ bloodPressuresData[1]);
 		((GradientDrawable) bloodPressures.getBackground()).setColor(Color
-				.parseColor("#00a876"));
+				.parseColor("#fcb150"));
+		
+		heartBeats = (TextView) rootView.findViewById(R.id.heart_rate);
+		heartBeats.setText(heartBeatsData + "\ncount");
+		((GradientDrawable) heartBeats.getBackground()).setColor(Color
+				.parseColor("#cc324b"));
+		
+		sleep = (TextView) rootView.findViewById(R.id.sleep);
+		sleep.setText(df.format(sleepData) + "\nmins");
+		((GradientDrawable) sleep.getBackground()).setColor(Color
+				.parseColor("#2c3e50"));
 
 		// get recommendations and fill
 		scrollInnerPanel = (LinearLayout) rootView

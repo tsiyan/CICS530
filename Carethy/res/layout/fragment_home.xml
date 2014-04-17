@@ -10,7 +10,7 @@
         android:id="@+id/panel"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dip"
+        android:layout_margin="0dip"
         android:orientation="horizontal" >
 
         <TextView
@@ -21,15 +21,16 @@
             android:layout_weight="1"
             android:background="@drawable/home_panel_bg_style"
             android:drawableTop="@drawable/ic_activity" />
-
+        
         <TextView
-            android:id="@+id/sleep"
+            android:id="@+id/blood_pressure"
             style="@style/homePanel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/home_panel_bg_style"
-            android:drawableTop="@drawable/ic_sleep" />
+            android:drawableTop="@drawable/ic_blood_pressure" />
+
 
         <TextView
             android:id="@+id/heart_rate"
@@ -39,15 +40,17 @@
             android:layout_weight="1"
             android:background="@drawable/home_panel_bg_style"
             android:drawableTop="@drawable/ic_heart_rate" />
-
+        
         <TextView
-            android:id="@+id/blood_pressure"
+            android:id="@+id/sleep"
             style="@style/homePanel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/home_panel_bg_style"
-            android:drawableTop="@drawable/ic_blood_pressure" />
+            android:drawableTop="@drawable/ic_sleep" />
+
+        
     </LinearLayout>
 
     <!-- scrolling ListView bottom pane -->
