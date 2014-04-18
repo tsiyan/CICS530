@@ -64,12 +64,9 @@ public class RecommendationListAdapter extends ArrayAdapter<Recommendation> {
 
 		mImageView.setImageDrawable(drawable);
 
-		TextView recommendationTitle = (TextView) rowView
-				.findViewById(R.id.recommendation_title);
 		TextView recommendationContent = (TextView) rowView
 				.findViewById(R.id.recommendation_content);
 
-		recommendationTitle.setText(list.get(position).getRecom());
 		recommendationContent.setText(list.get(position).getRecom());
 		return rowView;
 	}
