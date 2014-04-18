@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import android.app.Fragment;
@@ -28,6 +29,7 @@ import com.carethy.application.Carethy.BodyData;
 import com.carethy.model.CarethyGraphData;
 import com.carethy.util.Util;
 import com.jjoe64.graphview.CustomLabelFormatter;
+import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.LegendAlign;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
@@ -39,12 +41,14 @@ import com.jjoe64.graphview.LineGraphView;
  */
 
 public abstract class GraphBaseFragment extends Fragment {
-	private LinearLayout linearLayout;
+	public LinearLayout linearLayout;
 	private LineGraphView graphView;
+	private GraphViewSeriesStyle mGraphViewSeriesStyle;
+
 	protected View rootView;
 	private ProgressDialog mProgressDialog = null;
-	private ArrayList<CarethyGraphData> values = null;
 	protected BodyData mBodyData;
+	protected HashMap<BodyData, ArrayList<CarethyGraphData>> map = new HashMap<BodyData, ArrayList<CarethyGraphData>>();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,7 +76,7 @@ public abstract class GraphBaseFragment extends Fragment {
 
 		switch (item.getItemId()) {
 		case R.id.action_share:
-			shareData();
+			shareData(linearLayout);
 			return true;
 		case R.id.action_refresh:
 			loadData();
@@ -82,7 +86,7 @@ public abstract class GraphBaseFragment extends Fragment {
 		}
 	}
 
-	public void shareData() {
+	public void shareData(LinearLayout linearLayout) {
 		linearLayout.setDrawingCacheEnabled(true);// enable cache
 		linearLayout.buildDrawingCache(true);
 
@@ -115,7 +119,7 @@ public abstract class GraphBaseFragment extends Fragment {
 			protected Void doInBackground(Void... arg0) {
 				try {
 					Thread.sleep(500);
-					values = Util.fetchData(mBodyData);
+					map.put(mBodyData, Util.fetchData(mBodyData));
 
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -135,17 +139,25 @@ public abstract class GraphBaseFragment extends Fragment {
 	}
 
 	public void initView() {
-		int count = 0;
+		linearLayout = (LinearLayout) rootView.findViewById(R.id.graph);
+		graph(graphView, linearLayout, mBodyData, R.id.graph);
+	}
+
+	public void graph(GraphView graphView, LinearLayout linearLayout,
+			BodyData mBodyData, int id) {
+
 		graphView = new LineGraphView(getActivity(), "");
 
-		for (CarethyGraphData value : values) {
+		for (final CarethyGraphData value : map.get(mBodyData)) {
+
+			mGraphViewSeriesStyle = new GraphViewSeriesStyle(
+					value.getUnit() == "Diastolic" ? Color.rgb(229, 99, 51)
+							: Color.rgb(51, 181, 229), 5);
+			
 			GraphViewSeries series = new GraphViewSeries(value.getUnit(),
-					new GraphViewSeriesStyle(((count == 0) ? Color.rgb(51, 181,
-							229) : Color.rgb(229, 99, 51)), 5),
-					value.getTimeSeries());
+					mGraphViewSeriesStyle, value.getTimeSeries());
 
 			graphView.addSeries(series);
-			count++;
 		}
 
 		final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d",
@@ -164,7 +176,6 @@ public abstract class GraphBaseFragment extends Fragment {
 		// set styles
 		graphView.getGraphViewStyle().setNumHorizontalLabels(0);
 		graphView.getGraphViewStyle().setNumVerticalLabels(0);
-//		graphView.setDrawBackground(true);
 		graphView.setScalable(true);
 
 		graphView.setShowLegend(true);
@@ -172,15 +183,11 @@ public abstract class GraphBaseFragment extends Fragment {
 		graphView.getGraphViewStyle().setLegendBorder(20);
 		graphView.getGraphViewStyle().setLegendSpacing(30);
 		graphView.getGraphViewStyle().setLegendWidth(200);
-		graphView.setDrawDataPoints(true);
-		graphView.setDataPointsRadius(10f);
+		((LineGraphView) graphView).setDrawDataPoints(true);
+		((LineGraphView) graphView).setDataPointsRadius(10f);
 
 		// add GraphView to LinearLayout
-		linearLayout = (LinearLayout) rootView.findViewById(R.id.graph);
 		linearLayout.removeAllViews();
 		linearLayout.addView(graphView);
-
-		
-
 	}
 }

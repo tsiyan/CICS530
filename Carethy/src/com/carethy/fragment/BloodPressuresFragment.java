@@ -12,7 +12,7 @@ public class BloodPressuresFragment extends GraphBaseFragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		rootView = super.onCreateView(inflater, container, savedInstanceState);
-		mBodyData = BodyData.bloodPressure;
+		mBodyData = BodyData.bloodPressures;
 
 		return rootView;
 	}

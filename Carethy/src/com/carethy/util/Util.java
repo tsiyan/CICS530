@@ -85,7 +85,7 @@ public class Util {
 			result.add(new CarethyGraphData("Duration", timeSeries));
 			break;
 
-		case bloodPressure:
+		case bloodPressures:
 			result.add(new CarethyGraphData("Systolic", timeSeries));
 
 			GraphViewData[] mGraphViewData1 = new GraphViewData[count];

@@ -20,7 +20,7 @@ public class Carethy extends Application {
 	public static int currentDataFileId = 0;
 
 	public enum BodyData {
-		activities, sleep, heartBeats, bloodPressure
+		activities, sleep, heartBeats, bloodPressures
 	};
 
 	@Override

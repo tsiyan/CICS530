@@ -160,13 +160,15 @@ public class MainActivity extends FragmentActivity implements
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[4], navMenuIcons
 				.getResourceId(4, -1)));
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[5], navMenuIcons
-				.getResourceId(5, -1), true, "1"));
+				.getResourceId(5, -1)));
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[6], navMenuIcons
-				.getResourceId(6, -1)));
+				.getResourceId(6, -1), true, "1"));
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[7], navMenuIcons
 				.getResourceId(7, -1)));
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[8], navMenuIcons
 				.getResourceId(8, -1)));
+		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[9], navMenuIcons
+				.getResourceId(9, -1)));
 
 		// recycle the typed array
 		navMenuIcons.recycle();

@@ -10,9 +10,9 @@ public class ContentFragmentFactory {
 		Fragment sleepFragment=new SleepFragment();
 		Fragment heartBeatsFragment=new HeartBeatsFragment();
 		Fragment bloodPressuresFragment=new BloodPressuresFragment();
+		Fragment trendsFragment=new TrendsFragment();
 		Fragment recommendationsFragment=new RecommendationsFragment();
 		Fragment medicationFragment=new AlarmListFragment();
-//		Fragment medicationFragment=new MedicationFragment();
 		Fragment settingsFragment=new SettingsFragment();
 		Fragment changeDataFragment=new ChangeDataFragment();
 		
@@ -27,13 +27,15 @@ public class ContentFragmentFactory {
 			return heartBeatsFragment;
 		case 4:// "Blood Pressure"
 			return bloodPressuresFragment;
-		case 5:// "Recommendations"
+		case 5:// "Trends"
+			return trendsFragment;
+		case 6:// "Recommendations"
 			return recommendationsFragment;
-		case 6:// "Medication"
+		case 7:// "Medication"
 			return medicationFragment;
-		case 7:// "Settings"
-			return settingsFragment;
 		case 8:// "Settings"
+			return settingsFragment;
+		case 9:// "Settings"
 			return changeDataFragment;
 		default:
 			break;

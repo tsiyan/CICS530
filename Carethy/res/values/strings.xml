@@ -50,6 +50,7 @@
         <item>Sleep</item>
         <item>Heart Beats</item>
         <item>Blood Pressures</item>
+        <item>Trends</item>
         <item>Recommendations</item>
         <item>Medication</item>
         <item>Settings</item>
@@ -92,6 +93,7 @@
         <item>@drawable/ic_sleep2</item>
         <item>@drawable/ic_heart_rate2</item>
         <item>@drawable/ic_blood_pressure2</item>
+        <item>@drawable/ic_trends</item>
         <item>@drawable/ic_recommendations</item>
         <item>@drawable/ic_medication</item>
         <item>@drawable/ic_settings</item>
