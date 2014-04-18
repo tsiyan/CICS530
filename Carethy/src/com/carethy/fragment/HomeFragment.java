@@ -13,7 +13,6 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +28,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,12 +35,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TableRow.LayoutParams;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carethy.R;
-import com.carethy.R.drawable;
+import com.carethy.adapter.RecommendationListAdapter;
 import com.carethy.application.Carethy;
 import com.carethy.database.DBRecomHelper;
 import com.carethy.model.Recommendation;
@@ -56,6 +54,7 @@ public class HomeFragment extends Fragment {
 	private TextView sleep;
 	private TextView heartBeats;
 	private TextView bloodPressures;
+	private ListView mListView;
 	private ProgressDialog mProgressDialog = null;
 	private int activitiesData;
 	private int sleepData;
@@ -63,10 +62,6 @@ public class HomeFragment extends Fragment {
 	private int[] bloodPressuresData;
 	public static DecimalFormat df = new DecimalFormat("#.#");
 
-	private LinearLayout scrollInnerPanel;
-	private LayoutParams lparams = new LayoutParams(LayoutParams.MATCH_PARENT,
-			LayoutParams.WRAP_CONTENT);
-	private static boolean firstLogin = true;
 	private boolean isDataFileChanged = false;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -290,107 +285,34 @@ public class HomeFragment extends Fragment {
 				+ bloodPressuresData[1]);
 		((GradientDrawable) bloodPressures.getBackground()).setColor(Color
 				.parseColor("#fcb150"));
-		
+
 		heartBeats = (TextView) rootView.findViewById(R.id.heart_rate);
 		heartBeats.setText(heartBeatsData + "\ncount");
 		((GradientDrawable) heartBeats.getBackground()).setColor(Color
 				.parseColor("#cc324b"));
-		
+
 		sleep = (TextView) rootView.findViewById(R.id.sleep);
 		sleep.setText(df.format(sleepData) + "\nmins");
 		((GradientDrawable) sleep.getBackground()).setColor(Color
 				.parseColor("#2c3e50"));
 
 		// get recommendations and fill
-		scrollInnerPanel = (LinearLayout) rootView
-				.findViewById(R.id.scrollInnerPanel);
-		scrollInnerPanel.removeAllViews();
+		mListView = (ListView) rootView.findViewById(R.id.home_listview);
+
 		fillRecommendations();
 	}
 
 	private void fillRecommendations() {
-		List<Recommendation> recomms = new ArrayList<Recommendation>();
-
-		recomms = Carethy.datasource
+		ArrayList<Recommendation> recomms = Carethy.datasource
 				.getRecommendations(DBRecomHelper.RECOM_LIMIT);
 
 		if (recomms.isEmpty()) {
-			TextView tv = getTextView();
-			tv.setText("No Stored Recommendations");
-			this.scrollInnerPanel.addView(tv);
-			// firstLogin = false;
+			Toast.makeText(getActivity(), "No recommendation yet.",
+					Toast.LENGTH_LONG).show();
 		} else {
-
-			String datefield = "";
-
-			for (final Recommendation recom : recomms) {
-				String recomdate = recom.getSaveDate();
-
-				if (!datefield.equals(recomdate)) {
-					LayoutParams dvparams = new LayoutParams(
-							LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT);
-					dvparams.gravity = Gravity.CENTER_HORIZONTAL;
-					dvparams.topMargin = 10;
-					TextView dateview = new TextView(this.getActivity());
-					dateview.setBackgroundResource(R.drawable.recom_date_style);
-					dateview.setText(recomdate);
-					dateview.setLayoutParams(dvparams);
-					dateview.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-					this.scrollInnerPanel.addView(dateview);
-					datefield = recomdate;
-				}
-
-				final TextView tv = getTextView();
-
-				// Siyan
-				if (recom.getSeverity() < 3) {
-					tv.setTextColor(Color.RED);
-				} else if (recom.getSeverity() == 3) {
-					tv.setTextColor(Color.YELLOW);
-				}else {
-					tv.setTextColor(Color.GREEN);
-				}
-
-				tv.setText(recom.getRecom());
-
-				if (!recom.isRead()) {
-					tv.setBackgroundResource(drawable.recommendation_bg_style);
-				} else {
-					tv.setBackgroundResource(drawable.recommendations_style);
-				}
-
-				tv.setOnClickListener(new View.OnClickListener() {
-
-					public void onClick(View v) {
-
-						if (recom.isRead()) {
-							Toast.makeText(getActivity(), "Redirecting to url",
-									Toast.LENGTH_SHORT).show();
-
-							String url = recom.getUrl();
-							if (!url.startsWith("http")) {
-								url = "http://" + url;
-							}
-
-							Intent i = new Intent(Intent.ACTION_VIEW);
-							i.setData(Uri.parse(url));
-							startActivity(i);
-						} else {
-							Carethy.datasource.setIsReadTrue(recom.getId());
-							recom.setIsRead(true);
-							tv.setBackgroundResource(drawable.recommendations_style);
-						}
-					}
-				});
-				this.scrollInnerPanel.addView(tv);
-			}
+			RecommendationListAdapter adapter = new RecommendationListAdapter(
+					getActivity(), R.layout.rowlayout_recommendation, recomms);
+			mListView.setAdapter(adapter);
 		}
-	}
-
-	private TextView getTextView() {
-		TextView tv = new TextView(this.getActivity());
-		tv.setLayoutParams(lparams);
-		return tv;
 	}
 }

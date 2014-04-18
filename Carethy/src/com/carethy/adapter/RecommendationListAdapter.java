@@ -3,15 +3,19 @@ package com.carethy.adapter;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.carethy.R;
+import com.carethy.application.Carethy;
 import com.carethy.model.Recommendation;
 
 public class RecommendationListAdapter extends ArrayAdapter<Recommendation> {
@@ -32,42 +36,62 @@ public class RecommendationListAdapter extends ArrayAdapter<Recommendation> {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.rowlayout_recommendation,
 				parent, false);
-		ImageView mImageView = (ImageView) rowView
-				.findViewById(R.id.recommendation_level);
-
-		Drawable drawable = null;
-		switch (list.get(position).getRecomId() % 2) {
-		case 0:
-			drawable = mContext.getResources().getDrawable(
-					R.drawable.ic_settings);
-			break;
-		case 1:
-			drawable = mContext.getResources().getDrawable(
-					R.drawable.ic_action_email);
-			break;
-//		case 2:
+//		ImageView mImageView = (ImageView) rowView
+//				.findViewById(R.id.recommendation_level);
+//
+//		Drawable drawable = null;
+//		switch (list.get(position).getRecomId() % 2) {
+//		case 0:
 //			drawable = mContext.getResources().getDrawable(
-//					R.drawable.ic_action_password);
+//					R.drawable.ic_settings);
 //			break;
-//		case 3:
-//			drawable = mContext.getResources().getDrawable(R.drawable.ic_home);
-//			break;
-//		case 4:
+//		case 1:
 //			drawable = mContext.getResources().getDrawable(
-//					R.drawable.ic_action_time);
+//					R.drawable.ic_action_email);
 //			break;
-//		case 5:
-//			drawable = mContext.getResources().getDrawable(
-//					R.drawable.ic_activity);
-//			break;
+//		}
+//
+//		mImageView.setImageDrawable(drawable);
+		final RelativeLayout row=(RelativeLayout) rowView.findViewById(R.id.recommendation_row);
+		final TextView recomTextView = (TextView) rowView
+				.findViewById(R.id.recommendation_content);
+		final Recommendation recom=list.get(position);
+		recomTextView.setText(recom.getRecom()+"\n"+recom.getSaveDate());
+		
+		if (recom.getSeverity() < 3) {
+			recomTextView.setTextColor(Color.RED);
+		} else if (recom.getSeverity() == 3) {
+			recomTextView.setTextColor(Color.YELLOW);
+		} else {
+			recomTextView.setTextColor(Color.GREEN);
 		}
 
-		mImageView.setImageDrawable(drawable);
+		if (!recom.isRead()) {
+			recomTextView.setTextAppearance(mContext, R.style.boldText);
+			row.setBackgroundColor(Color.WHITE);
+		} 
+		recomTextView.setOnClickListener(new OnClickListener(){
+			
+			@Override
+			public void onClick(View v) {
+				if (recom.isRead()) {
+					String url = recom.getUrl();
+					if (!url.startsWith("http")) {
+						url = "http://" + url;
+					}
 
-		TextView recommendationContent = (TextView) rowView
-				.findViewById(R.id.recommendation_content);
-
-		recommendationContent.setText(list.get(position).getRecom());
+					Intent i = new Intent(Intent.ACTION_VIEW);
+					i.setData(Uri.parse(url));
+					mContext.startActivity(i);
+				} else {
+					Carethy.datasource.setIsReadTrue(recom.getId());
+					recom.setIsRead(true);
+					recomTextView.setTextAppearance(mContext,R.style.TextViewStyle);
+					row.setBackgroundColor(Color.TRANSPARENT);
+				}
+			}
+			
+		});
 		return rowView;
 	}
 }

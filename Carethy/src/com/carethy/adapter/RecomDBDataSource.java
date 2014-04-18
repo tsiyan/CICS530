@@ -75,8 +75,8 @@ public class RecomDBDataSource {
 		return recom;
 	}
 
-	public List<Recommendation> getRecommendations(String limit) {
-		List<Recommendation> recommendations = new ArrayList<Recommendation>();
+	public ArrayList<Recommendation> getRecommendations(String limit) {
+		ArrayList<Recommendation> recommendations = new ArrayList<Recommendation>();
 
 		Cursor cursor;
 
