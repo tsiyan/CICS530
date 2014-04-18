@@ -16,6 +16,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,11 +26,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.carethy.R;
 import com.carethy.application.Carethy.BodyData;
 import com.carethy.model.CarethyGraphData;
 import com.carethy.util.Util;
+import com.jjoe64.graphview.BarGraphView;
 import com.jjoe64.graphview.CustomLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.LegendAlign;
@@ -41,8 +46,15 @@ import com.jjoe64.graphview.LineGraphView;
  */
 
 public abstract class GraphBaseFragment extends Fragment {
-	public LinearLayout linearLayout;
-	private LineGraphView graphView;
+	public LinearLayout lineLinearLayout;
+	public LinearLayout barLinearLayout;
+
+	private LineGraphView mLineGraphView;
+	private BarGraphView mBarGraphView;
+	private TextView statsAvg;
+	private TextView statsHigh;
+	private TextView statsLow;
+
 	private GraphViewSeriesStyle mGraphViewSeriesStyle;
 
 	protected View rootView;
@@ -76,7 +88,7 @@ public abstract class GraphBaseFragment extends Fragment {
 
 		switch (item.getItemId()) {
 		case R.id.action_share:
-			shareData(linearLayout);
+			shareData(lineLinearLayout);
 			return true;
 		case R.id.action_refresh:
 			loadData();
@@ -139,21 +151,69 @@ public abstract class GraphBaseFragment extends Fragment {
 	}
 
 	public void initView() {
-		linearLayout = (LinearLayout) rootView.findViewById(R.id.graph);
-		graph(graphView, linearLayout, mBodyData, R.id.graph);
+		lineLinearLayout = (LinearLayout) rootView
+				.findViewById(R.id.graph_line);
+		barLinearLayout = (LinearLayout) rootView.findViewById(R.id.graph_bar);
+		graph(mLineGraphView, lineLinearLayout, mBodyData, R.id.graph_line,
+				"line");
+		graph(mBarGraphView, barLinearLayout, mBodyData, R.id.graph_bar, "bar");
+
+		String number = Double.toString(map.get(mBodyData).get(0).getAvg());
+		SpannableString ss = new SpannableString(number + "\n Average");
+		ss.setSpan(new RelativeSizeSpan(2f), 0, number.length(), 0);
+		ss.setSpan(new ForegroundColorSpan(Color.RED), 0, number.length(), 0);
+		statsAvg = (TextView) rootView.findViewById(R.id.stats_avg);
+		statsAvg.setText(ss);
+
+		number = Double.toString(map.get(mBodyData).get(0).getHigh());
+		ss = new SpannableString(number + "\n High");
+		ss.setSpan(new RelativeSizeSpan(2f), 0, number.length(), 0);
+		ss.setSpan(new ForegroundColorSpan(Color.RED), 0, number.length(), 0);
+		statsHigh = (TextView) rootView.findViewById(R.id.stats_high);
+		statsHigh.setText(ss);
+
+		number = Double.toString(map.get(mBodyData).get(0).getAvg());
+		ss = new SpannableString(number + "\n Low");
+		ss.setSpan(new RelativeSizeSpan(2f), 0, number.length(), 0);
+		ss.setSpan(new ForegroundColorSpan(Color.RED), 0, number.length(), 0);
+		statsLow = (TextView) rootView.findViewById(R.id.stats_low);
+		statsLow.setText(ss);
 	}
 
 	public void graph(GraphView graphView, LinearLayout linearLayout,
-			BodyData mBodyData, int id) {
+			BodyData mBodyData, int id, String type) {
 
-		graphView = new LineGraphView(getActivity(), "");
+		if (type.equals("line")) {
+			graphView = new LineGraphView(getActivity(), "");
+
+		} else {
+			graphView = new BarGraphView(getActivity(), "");
+		}
 
 		for (final CarethyGraphData value : map.get(mBodyData)) {
 
 			mGraphViewSeriesStyle = new GraphViewSeriesStyle(
 					value.getUnit() == "Diastolic" ? Color.rgb(229, 99, 51)
 							: Color.rgb(51, 181, 229), 5);
-			
+
+			// if(type.equals("bar")&&(!value.getUnit().equals("Diastolic")&&!value.getUnit().equals("Systolic"))){
+			// mGraphViewSeriesStyle.setValueDependentColor(new
+			// ValueDependentColor(){
+			//
+			// @Override
+			// public int get(GraphViewDataInterface data) {
+			//
+			// if (data.getY()==value.getLow()){
+			// return Color.RED;
+			// }else if(data.getY()==value.getHigh()){
+			// return Color.RED;
+			// }else{
+			// return Color.BLUE;
+			// }
+			// }
+			//
+			// });
+			// }
 			GraphViewSeries series = new GraphViewSeries(value.getUnit(),
 					mGraphViewSeriesStyle, value.getTimeSeries());
 
@@ -177,14 +237,17 @@ public abstract class GraphBaseFragment extends Fragment {
 		graphView.getGraphViewStyle().setNumHorizontalLabels(0);
 		graphView.getGraphViewStyle().setNumVerticalLabels(0);
 		graphView.setScalable(true);
-
 		graphView.setShowLegend(true);
 		graphView.setLegendAlign(LegendAlign.BOTTOM);
 		graphView.getGraphViewStyle().setLegendBorder(20);
 		graphView.getGraphViewStyle().setLegendSpacing(30);
 		graphView.getGraphViewStyle().setLegendWidth(200);
-		((LineGraphView) graphView).setDrawDataPoints(true);
-		((LineGraphView) graphView).setDataPointsRadius(10f);
+		if (type.equals("line")) {
+			((LineGraphView) graphView).setDrawDataPoints(true);
+			((LineGraphView) graphView).setDataPointsRadius(10f);
+		} else {
+
+		}
 
 		// add GraphView to LinearLayout
 		linearLayout.removeAllViews();
