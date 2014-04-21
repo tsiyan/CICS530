@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,14 +23,13 @@ import com.carethy.model.Recommendation;
 public class RecommendationListAdapter extends ArrayAdapter<Recommendation> {
 	private Context mContext;
 	private ArrayList<Recommendation> list;
-	
+
 	public RecommendationListAdapter(Context context, int resource,
 			ArrayList<Recommendation> objects) {
 		super(context, resource, objects);
-		mContext=context;
-		list=objects;
+		mContext = context;
+		list = objects;
 	}
-
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -36,42 +37,38 @@ public class RecommendationListAdapter extends ArrayAdapter<Recommendation> {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.rowlayout_recommendation,
 				parent, false);
-//		ImageView mImageView = (ImageView) rowView
-//				.findViewById(R.id.recommendation_level);
-//
-//		Drawable drawable = null;
-//		switch (list.get(position).getRecomId() % 2) {
-//		case 0:
-//			drawable = mContext.getResources().getDrawable(
-//					R.drawable.ic_settings);
-//			break;
-//		case 1:
-//			drawable = mContext.getResources().getDrawable(
-//					R.drawable.ic_action_email);
-//			break;
-//		}
-//
-//		mImageView.setImageDrawable(drawable);
-		final RelativeLayout row=(RelativeLayout) rowView.findViewById(R.id.recommendation_row);
+
+		final RelativeLayout row = (RelativeLayout) rowView
+				.findViewById(R.id.recommendation_row);
 		final TextView recomTextView = (TextView) rowView
 				.findViewById(R.id.recommendation_content);
-		final Recommendation recom=list.get(position);
-		recomTextView.setText(recom.getRecom()+"\n"+recom.getSaveDate());
-		
+		final Recommendation recom = list.get(position);
+		recomTextView.setText(recom.getRecom() + "\n" + recom.getSaveDate());
+
+		ImageView mImageView = (ImageView) rowView
+				.findViewById(R.id.recommendation_level);
+		Drawable drawable = null;
 		if (recom.getSeverity() < 3) {
-			recomTextView.setTextColor(Color.RED);
+			// recomTextView.setTextColor(Color.RED);
+			drawable = mContext.getResources().getDrawable(
+					R.drawable.ic_alert);
 		} else if (recom.getSeverity() == 3) {
-			recomTextView.setTextColor(Color.YELLOW);
+			// recomTextView.setTextColor(Color.YELLOW);
+			drawable = mContext.getResources().getDrawable(
+					R.drawable.ic_alert_orange);
 		} else {
-			recomTextView.setTextColor(Color.GREEN);
+			// recomTextView.setTextColor(Color.GREEN);
+			drawable = mContext.getResources().getDrawable(
+					R.drawable.ic_alert_green);
 		}
+		mImageView.setImageDrawable(drawable);
 
 		if (!recom.isRead()) {
 			recomTextView.setTextAppearance(mContext, R.style.boldText);
 			row.setBackgroundColor(Color.WHITE);
-		} 
-		recomTextView.setOnClickListener(new OnClickListener(){
-			
+		}
+		recomTextView.setOnClickListener(new OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
 				if (recom.isRead()) {
@@ -86,11 +83,12 @@ public class RecommendationListAdapter extends ArrayAdapter<Recommendation> {
 				} else {
 					Carethy.datasource.setIsReadTrue(recom.getId());
 					recom.setIsRead(true);
-					recomTextView.setTextAppearance(mContext,R.style.TextViewStyle);
+					recomTextView.setTextAppearance(mContext,
+							R.style.TextViewStyle);
 					row.setBackgroundColor(Color.TRANSPARENT);
 				}
 			}
-			
+
 		});
 		return rowView;
 	}
