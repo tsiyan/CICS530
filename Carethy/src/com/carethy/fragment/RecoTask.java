@@ -10,14 +10,24 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.carethy.R;
+import com.carethy.activity.MainActivity;
 import com.carethy.application.Carethy;
 import com.carethy.database.DBRecomHelper;
 import com.carethy.model.Recommendation;
+import com.carethy.util.Util;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -32,10 +42,7 @@ public class RecoTask extends AsyncTask<Object, Integer, Recommendation> {
 	static ProgressDialog mProgressDialog;
 	private boolean isHomeFragment;
 
-	String recommendation;
-	int id;
-	String recoUrl;
-	int severity;
+	JSONArray jRecomObjects;
 
 	public RecoTask(Context context, Boolean isHomeFragment) {
 		this.context = context;
@@ -65,16 +72,11 @@ public class RecoTask extends AsyncTask<Object, Integer, Recommendation> {
 			connEstablished = true;
 
 			JSONObject responseObject = new JSONObject(engineResponse);
-			JSONArray jRecomObjects = responseObject.getJSONArray("JOBJS");
+			jRecomObjects = responseObject.getJSONArray("JOBJS");
 			// JSONObject jRecom = jRecomObjects.getJSONObject(0);
-
-			// HACK TO SHOW DIFF RECOS - change to 0
-			JSONObject jRecom = jRecomObjects
-					.getJSONObject(Carethy.currentDataFileId);
-			id = jRecom.getInt("id");
-			recommendation = jRecom.getString("recommendation");
-			recoUrl = jRecom.getString("url");
-			severity = jRecom.getInt("severity");
+			
+			// SAVE TO CLOUD // SAVE MULTIPLE RECOS
+			saveToCloud();
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -88,10 +90,65 @@ public class RecoTask extends AsyncTask<Object, Integer, Recommendation> {
 		}
 
 		if (connEstablished) {
-			responseReco = Carethy.datasource.insertIntoTable(id,
-					recommendation, recoUrl, severity);
+			String recommendation = null;
+			int id = 0;
+			String recoUrl = null;
+			int severity = 0;
+
+			for (int i = 0; i < jRecomObjects.length(); i++) {
+				JSONObject recom = null;
+				try {
+					recom = jRecomObjects.getJSONObject(i);
+
+					id = recom.getInt("id");
+					recommendation = recom.getString("recommendation");
+					recoUrl = recom.getString("url");
+					severity = recom.getInt("severity");
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+				responseReco = Carethy.datasource.insertIntoTable(id,
+						recommendation, recoUrl, severity);
+			}
 		}
 		return responseReco;
+	}
+
+	private void saveToCloud() throws JSONException {
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpContext localContext = new BasicHttpContext();
+
+		for (int i = 0; i < jRecomObjects.length(); i++) {
+			JSONObject recom = jRecomObjects.getJSONObject(i);
+			JSONObject recoData = new JSONObject();
+
+			try {
+				recoData.put("recom_id", recom.getInt("id"));
+				recoData.put("recom", recom.getString("recommendation"));
+				recoData.put("url", recom.getString("url"));
+				recoData.put("severity", recom.getInt("severity"));
+				recoData.put("savedate", Util.getTimestamp());
+
+				// enter the reco data into the db
+				HttpPost httpPost = new HttpPost(
+						"https://dsp-carethy.cloud.dreamfactory.com/rest/mongohq/recommendations?app_name=carethy");
+				httpPost.setEntity(new StringEntity(recoData.toString(), "UTF8"));
+				httpPost.setHeader("Content-type", "application/json");
+				httpPost.setHeader("X-DreamFactory-Session-Token",
+						MainActivity.getDREAMFACTORYTOKEN());
+				HttpResponse resp = httpClient.execute(httpPost, localContext);
+
+				if (resp != null && resp.getStatusLine().getStatusCode() == 200) {
+					resp.getEntity().consumeContent();
+				} else {
+					throw new Exception(
+							"Something went wrong while saving to cloud");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private String getResponse(HttpURLConnection conn) throws IOException,

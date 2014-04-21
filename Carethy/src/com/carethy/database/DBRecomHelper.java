@@ -25,7 +25,7 @@ public class DBRecomHelper extends SQLiteOpenHelper {
 			+ "(" + COLUMN_ID + " integer primary key autoincrement, "
 			+ COLUMN_RECOM_ID + " integer not null," + COLUMN_RECOM
 			+ " text not null," + COLUMN_ISREAD
-			+ " integer not null default false," + COLUMN_URL + " text,"
+			+ " integer not null default false," + COLUMN_URL + " text default null,"
 			+ COLUMN_DATE + " text not null," + COLUMN_SEVERITY
 			+ " integer not null" + ");";
 

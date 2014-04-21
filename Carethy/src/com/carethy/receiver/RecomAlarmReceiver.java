@@ -25,7 +25,7 @@ public class RecomAlarmReceiver extends BroadcastReceiver {
 			Recommendation recom = getNewRecommendation(context);
 
 			if (!recom.equals(null))
-				if (recom.getSeverity() > 3) {
+				if (recom.getSeverity() >= 3) {
 					new PopupWindow(context).showPopup(recom.getRecom());
 
 				} else {
