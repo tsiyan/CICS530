@@ -416,6 +416,8 @@ public class RegisterActivity extends Activity {
 						resp = httpClient.execute(httpPost, localContext);
 						if (resp != null
 								&& resp.getStatusLine().getStatusCode() == 200) {
+							Carethy.userDatasource.insertIntoTable(Integer.parseInt(mHeight),
+									Integer.parseInt(mWeight), mBirthdate, mRadioSex);
 							result = true;
 						}
 					}
