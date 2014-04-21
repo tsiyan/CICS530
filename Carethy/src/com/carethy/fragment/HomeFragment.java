@@ -14,6 +14,15 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +49,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carethy.R;
+import com.carethy.activity.MainActivity;
 import com.carethy.adapter.RecommendationListAdapter;
 import com.carethy.application.Carethy;
 import com.carethy.database.DBRecomHelper;
@@ -181,6 +191,61 @@ public class HomeFragment extends Fragment {
 							recommendation = jRecom.getString("recommendation");
 							recoUrl = jRecom.getString("url");
 							severity = jRecom.getInt("severity");
+							
+							
+							
+							
+							HttpClient httpClient = new DefaultHttpClient();
+							HttpContext localContext = new BasicHttpContext();
+
+							JSONObject recoData = new JSONObject();
+							try {
+
+								recoData.put("recom_id", id);
+								recoData.put("recom", recommendation);
+								recoData.put("url", recoUrl);
+								recoData.put("severity", severity);
+								recoData.put("savedate", Util.getDate());
+
+							} catch (Exception ex) {
+								ex.printStackTrace();
+							}
+
+							try {
+								// enter the reco data into the db
+								HttpPost httpPost = new HttpPost(
+										"https://dsp-carethy.cloud.dreamfactory.com/rest/mongohq/recommendations?app_name=carethy");
+								httpPost.setEntity(new StringEntity(recoData
+										.toString(), "UTF8"));
+								httpPost.setHeader("Content-type",
+										"application/json");
+								httpPost.setHeader("X-DreamFactory-Session-Token",
+										MainActivity.getDREAMFACTORYTOKEN());
+								HttpResponse resp = httpClient.execute(httpPost,
+										localContext);
+								
+								HttpEntity entity = resp.getEntity();
+								
+								
+								System.out.println(EntityUtils.toString(entity, "UTF-8"));
+								if (resp != null
+										&& resp.getStatusLine().getStatusCode() == 200) {
+
+									// success
+
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+							
+							
+							
+							
+							
+							
+							
+							
 
 						} catch (MalformedURLException e) {
 							e.printStackTrace();
@@ -203,6 +268,14 @@ public class HomeFragment extends Fragment {
 					if (connEstablished) {
 						Carethy.datasource.insertIntoTable(id, recommendation,
 								recoUrl, severity);
+
+						//
+						//
+
+
+						//
+						//
+
 					} else {
 						Toast.makeText(getActivity(), "No Connection",
 								Toast.LENGTH_SHORT).show();
