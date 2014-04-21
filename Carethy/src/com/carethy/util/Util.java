@@ -8,22 +8,34 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Environment;
 import android.util.Log;
+import android.util.Pair;
 
+import com.carethy.R;
 import com.carethy.application.Carethy;
 import com.carethy.application.Carethy.BodyData;
 import com.carethy.model.CarethyGraphData;
 import com.carethy.model.Recommendation;
 import com.jjoe64.graphview.GraphView.GraphViewData;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 
 public class Util {
 	public static Random rand = new Random();
+	public static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
 
 	public static boolean saveImage(Bitmap imageData, String filename) {
 		// get path to external storage (SD card)
@@ -69,40 +81,71 @@ public class Util {
 		return sdf.format(date);
 	}
 
-	public static ArrayList<CarethyGraphData> fetchData(BodyData mBodyData) {
+	public static ArrayList<CarethyGraphData> fetchData(BodyData mBodyData) 
+	{
 		int count = 10;
+		int data_size = 0;
 		long now = new Date().getTime();
 		ArrayList<CarethyGraphData> result = new ArrayList<CarethyGraphData>();
 
 		GraphViewData[] timeSeries = new GraphViewData[count];
 		for (int i = 0; i < count; i++) {
 			timeSeries[i] = new GraphViewData(now + (i * 60 * 60 * 24 * 1000),
-					rand.nextInt(20));
+					10);
+					//rand.nextInt(20));
 		}
 
-		switch (mBodyData) {
+		switch (mBodyData) 
+		{
 		case activities:
-			result.add(new CarethyGraphData("Duration", timeSeries));
+			List<Pair<Long,Integer>> activitiesList = getActivities();
+			data_size = activitiesList.size() > count ? count : activitiesList.size();
+			GraphViewData[] activitySeries = new GraphViewData[data_size];
+			for (int i = 0; (i < data_size); i++) 
+			{
+				activitySeries[i] = new GraphViewData(activitiesList.get(i).first, activitiesList.get(i).second);
+			}
+			result.add(new CarethyGraphData("Duration", activitySeries));
 			break;
 
 		case bloodPressures:
-			result.add(new CarethyGraphData("Systolic", timeSeries));
-
-			GraphViewData[] mGraphViewData1 = new GraphViewData[count];
-			for (int i = 0; i < count; i++) {
-				mGraphViewData1[i] = new GraphViewData(now
-						+ (i * 60 * 60 * 24 * 1000), rand.nextInt(20));
-
+			List<Pair<Long,Pair<Integer,Integer>>> bpList = getBloodPressures();
+			data_size = bpList.size() > count ? count : bpList.size();
+			GraphViewData[] systolicSeries = new GraphViewData[data_size];
+			for (int i = 0; (i < data_size); i++) 
+			{
+				systolicSeries[i] = new GraphViewData(bpList.get(i).first, bpList.get(i).second.first);
 			}
-			result.add(new CarethyGraphData("Diastolic", mGraphViewData1));
+			result.add(new CarethyGraphData("Systolic", systolicSeries));
+
+			GraphViewData[] diastolicSeries = new GraphViewData[bpList.size()];
+			for (int i = 0; (i < bpList.size()); i++) 
+			{
+				diastolicSeries[i] = new GraphViewData(bpList.get(i).first, bpList.get(i).second.second);
+			}
+			result.add(new CarethyGraphData("Diastolic", diastolicSeries));
 			break;
 
 		case heartBeats:
-			result.add(new CarethyGraphData("Counts", timeSeries));
+			List<Pair<Long,Integer>> hbList = getActivities();
+			data_size = hbList.size() > count ? count : hbList.size();
+			GraphViewData[] heartbeatSeries = new GraphViewData[data_size];
+			for (int i = 0; (i < data_size); i++) 
+			{
+				heartbeatSeries[i] = new GraphViewData(hbList.get(i).first, hbList.get(i).second);
+			}
+			result.add(new CarethyGraphData("Counts", heartbeatSeries));
 			break;
 
 		case sleep:
-			result.add(new CarethyGraphData("minutesAsleep", timeSeries));
+			List<Pair<Long,Integer>> sleepList = getSleep();
+			data_size = sleepList.size() > count ? count : sleepList.size();
+			GraphViewData[] sleepSeries = new GraphViewData[data_size];
+			for (int i = 0; (i < data_size); i++) 
+			{
+				sleepSeries[i] = new GraphViewData(sleepList.get(i).first, sleepList.get(i).second);
+			}
+			result.add(new CarethyGraphData("minutesAsleep", sleepSeries));
 			break;
 
 		default:
@@ -112,23 +155,205 @@ public class Util {
 		return result;
 	}
 
+	public static List<Pair<Long,Integer>> getActivities() 
+	{
+		List<Pair<Long,Integer>> result = new ArrayList<Pair<Long,Integer>>();
+		JSONParser parser = new JSONParser();
+		long json_date = 0;
+		int json_duration = 0;
+		if(Carethy.user_data.length() > 0)
+		{
+			try 
+			{
+				JSONObject jsonObject  = (JSONObject) parser.parse(Carethy.user_data);
+				JSONArray msg = (JSONArray) jsonObject.get("activities");
+				Iterator iterator = msg.iterator();
+				while (iterator.hasNext())
+				{
+					JSONObject innerObj = (JSONObject) iterator.next();
+					try 
+					{
+						Date date = formatter.parse((String) innerObj.get("date"));
+						json_date = date.getTime();                             
+					} catch (java.text.ParseException e) 
+					{
+						e.printStackTrace();
+					}
+					json_duration =  (innerObj.get("duration")) != null ? ((Long) innerObj.get("duration")).intValue() : 0;
+					result.add(new Pair<Long,Integer>(json_date,json_duration));
+				}
+			}
+			catch (ParseException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	public static List<Pair<Long,Pair<Integer,Integer>>> getBloodPressures() 
+	{
+		List<Pair<Long,Pair<Integer,Integer>>> result = new ArrayList<Pair<Long,Pair<Integer,Integer>>>();
+		JSONParser parser = new JSONParser();
+		long json_date = 0;
+		int json_systolic = 0;
+		int json_diastolic = 0;
+		if(Carethy.user_data.length() > 0)
+		{
+			try 
+			{
+				JSONObject jsonObject  = (JSONObject) parser.parse(Carethy.user_data);
+				JSONArray msg = (JSONArray) jsonObject.get("bloodPressures");
+				Iterator iterator = msg.iterator();
+				while (iterator.hasNext())
+				{
+					JSONObject innerObj = (JSONObject) iterator.next();
+					try 
+					{
+						Date date = formatter.parse((String) innerObj.get("date"));
+						json_date = date.getTime();                             
+					} catch (java.text.ParseException e) 
+					{
+						e.printStackTrace();
+					}
+					json_systolic =  (innerObj.get("systolic")) != null ? ((Long) innerObj.get("systolic")).intValue() : 0;
+					json_diastolic =  (innerObj.get("diastolic")) != null ? ((Long) innerObj.get("diastolic")).intValue() : 0;
+					result.add(new Pair<Long,Pair<Integer,Integer>>(json_date,new Pair<Integer,Integer>(json_systolic, json_diastolic)));
+				}
+			}
+			catch (ParseException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	public static List<Pair<Long,Integer>> getHeartBeats() 
+	{
+		List<Pair<Long,Integer>> result = new ArrayList<Pair<Long,Integer>>();
+		JSONParser parser = new JSONParser();
+		long json_date = 0;
+		int json_duration = 0;
+		if(Carethy.user_data.length() > 0)
+		{
+			try 
+			{
+				JSONObject jsonObject  = (JSONObject) parser.parse(Carethy.user_data);
+				JSONArray msg = (JSONArray) jsonObject.get("heartBeats");
+				Iterator iterator = msg.iterator();
+				while (iterator.hasNext())
+				{
+					JSONObject innerObj = (JSONObject) iterator.next();
+					try 
+					{
+						Date date = formatter.parse((String) innerObj.get("date"));
+						json_date = date.getTime();                             
+					} catch (java.text.ParseException e) 
+					{
+						e.printStackTrace();
+					}
+					json_duration =  (innerObj.get("count")) != null ? ((Long) innerObj.get("count")).intValue() : 0;
+					result.add(new Pair<Long,Integer>(json_date,json_duration));
+				}
+			}
+			catch (ParseException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	public static List<Pair<Long,Integer>> getSleep() 
+	{
+		List<Pair<Long,Integer>> result = new ArrayList<Pair<Long,Integer>>();
+		JSONParser parser = new JSONParser();
+		long json_date = 0;
+		int json_duration = 0;
+		if(Carethy.user_data.length() > 0)
+		{
+			try 
+			{
+				JSONObject jsonObject  = (JSONObject) parser.parse(Carethy.user_data);
+				JSONArray msg = (JSONArray) jsonObject.get("sleep");
+				Iterator iterator = msg.iterator();
+				while (iterator.hasNext())
+				{
+					JSONObject innerObj = (JSONObject) iterator.next();
+					try 
+					{
+						Date date = formatter.parse((String) innerObj.get("date"));
+						json_date = date.getTime();                             
+					} catch (java.text.ParseException e) 
+					{
+						e.printStackTrace();
+					}
+					json_duration =  (innerObj.get("minutesAsleep")) != null ? ((Long) innerObj.get("minutesAsleep")).intValue() : 0;
+					result.add(new Pair<Long,Integer>(json_date,json_duration));
+				}
+			}
+			catch (ParseException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
 	public static int getActivitiesData() {
+		List<Pair<Long,Integer>> list = getActivities();
+		if(list.size() > 0)
+		{
+			return list.get(0).second;
+		}
+		else
+		{  //in case we somehow cannot get data from json file
 		return Math.abs(rand.nextInt(100));
+		}
 	}
 
-	public static int getSleepData() {
-		return Math.abs(rand.nextInt(500));
+	public static int getSleepData() 
+	{
+		List<Pair<Long,Integer>> list = getSleep();
+		if(list.size() > 0)
+		{
+			return list.get(0).second;
+		}
+		else
+		{  //in case we somehow cannot get data from json file
+			return Math.abs(rand.nextInt(500));
+		}
 	}
 
-	public static int getHeartBeatsData() {
-		return Math.abs(rand.nextInt(150));
+	public static int getHeartBeatsData() 
+	{
+		List<Pair<Long,Integer>> list = getHeartBeats();
+		if(list.size() > 0)
+		{
+			return list.get(0).second;
+		}
+		else
+		{  //in case we somehow cannot get data from json file
+			return Math.abs(rand.nextInt(150));
+		}
 	}
 
-	public static int[] getBloodPressuresData() {
-		return new int[] { rand.nextInt(200), rand.nextInt(100) };
+	public static int[] getBloodPressuresData() 
+	{ 
+		List<Pair<Long,Pair<Integer,Integer>>> list = getBloodPressures(); 
+			if(list.size() > 0)
+			{
+				return new int[] { list.get(0).second.first, list.get(0).second.second };
+			}
+			else
+			{  //in case we somehow cannot get data from json file
+				return new int[] { rand.nextInt(200), rand.nextInt(100) };
+			}
 	}
 
-	public static ArrayList<Recommendation> getRecommendation() {
+	public static ArrayList<Recommendation> getRecommendation() 
+	{
 		ArrayList<Recommendation> list = new ArrayList<Recommendation>();
 		Recommendation r0 = new Recommendation(0, 0, "recom0");
 		Recommendation r1 = new Recommendation(1, 1, "recom1");

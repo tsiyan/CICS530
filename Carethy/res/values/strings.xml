@@ -66,6 +66,14 @@
         <item>jrequest.json</item>
         <item>sample_data3.json</item>
     </string-array>
+    <!-- sample_data_files and user_data_files should have the same number of items because both are indexed by the same two variables
+         currentDataFileId and nextDataFileId.
+         Eventually, we should only have one sample_data_files
+     -->
+    <string-array name="user_data_files">
+        <item>test_data_0.json</item>
+        <item>test_data_1.json</item>
+    </string-array>
     <string-array name="notification_times_value">
         <item>0</item>
         <item>1</item>
