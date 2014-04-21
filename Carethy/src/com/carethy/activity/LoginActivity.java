@@ -1,5 +1,6 @@
 package com.carethy.activity;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -7,6 +8,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import android.animation.Animator;
@@ -238,6 +240,11 @@ public class LoginActivity extends Activity {
 				httpPost.setHeader("Content-type", "application/json");
 				HttpResponse resp = httpClient.execute(httpPost, localContext);
 				if (resp != null && resp.getStatusLine().getStatusCode() == 200) {
+					HttpEntity entity = resp.getEntity();
+					JSONObject responseJSON = new JSONObject(
+							EntityUtils.toString(entity, "UTF-8"));
+					MainActivity.setDREAMFACTORYTOKEN(responseJSON
+							.getString("session_id"));
 					return true;
 				}
 			} catch (Exception e) {
