@@ -1,7 +1,10 @@
 package com.carethy.adapter;
 
-
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +12,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckedTextView;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.carethy.R;
+import com.carethy.application.Carethy;
 import com.carethy.model.Group;
 import com.carethy.model.Recommendation;
 
@@ -41,20 +46,69 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 	@Override
 	public View getChildView(int groupPosition, final int childPosition,
 			boolean isLastChild, View convertView, ViewGroup parent) {
-		final String children = ((Recommendation) getChild(groupPosition, childPosition)).getRecom();
-		TextView text = null;
+
+		final Recommendation recom = (Recommendation) getChild(groupPosition,
+				childPosition);
+		final String children = recom.getRecom();
 
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.expandablelistrow_details, null);
+			convertView = inflater.inflate(R.layout.rowlayout_recommendation,
+					null);
 		}
-		text = (TextView) convertView.findViewById(R.id.textView1);
+		
+		final RelativeLayout row = (RelativeLayout) convertView
+				.findViewById(R.id.recommendation_row);
+		ImageView mImageView = (ImageView) convertView
+				.findViewById(R.id.recommendation_level);
+		Drawable drawable = null;
+		if (recom.getSeverity() < 3) {
+			drawable = activity.getResources().getDrawable(
+					R.drawable.ic_alert_green);
+		} else if (recom.getSeverity() == 3) {
+			drawable = activity.getResources().getDrawable(
+					R.drawable.ic_alert_orange);
+		} else {
+			drawable = activity.getResources().getDrawable(R.drawable.ic_alert);
+		}
+		mImageView.setImageDrawable(drawable);
+
+		final TextView text = (TextView) convertView
+				.findViewById(R.id.recommendation_content);
 		text.setText(children);
-		convertView.setOnClickListener(new OnClickListener() {
+		// convertView.setOnClickListener(new OnClickListener() {
+		// @Override
+		// public void onClick(View v) {
+		// Toast.makeText(activity, children, Toast.LENGTH_SHORT).show();
+		// }
+		// });
+
+		if (!recom.isRead()) {
+			text.setTextAppearance(activity, R.style.boldText);
+			row.setBackgroundColor(Color.WHITE);
+		}
+		text.setOnClickListener(new OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(activity, children, Toast.LENGTH_SHORT).show();
+				if (recom.isRead()) {
+					String url = recom.getUrl();
+					if (!url.startsWith("http")) {
+						url = "http://" + url;
+					}
+
+					Intent i = new Intent(Intent.ACTION_VIEW);
+					i.setData(Uri.parse(url));
+					activity.startActivity(i);
+				} else {
+					Carethy.datasource.setIsReadTrue(recom.getId());
+					recom.setIsRead(true);
+					text.setTextAppearance(activity, R.style.TextViewStyle);
+					row.setBackgroundColor(Color.TRANSPARENT);
+				}
 			}
+
 		});
+
 		return convertView;
 	}
 
@@ -92,7 +146,8 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 	public View getGroupView(int groupPosition, boolean isExpanded,
 			View convertView, ViewGroup parent) {
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.expandablelistrow_group, null);
+			convertView = inflater.inflate(R.layout.expandablelistrow_group,
+					null);
 		}
 		Group group = (Group) getGroup(groupPosition);
 
