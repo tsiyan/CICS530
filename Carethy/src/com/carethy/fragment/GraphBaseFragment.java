@@ -35,10 +35,13 @@ import com.carethy.util.Util;
 import com.jjoe64.graphview.BarGraphView;
 import com.jjoe64.graphview.CustomLabelFormatter;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.LegendAlign;
+import com.jjoe64.graphview.GraphViewDataInterface;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
 import com.jjoe64.graphview.LineGraphView;
+import com.jjoe64.graphview.ValueDependentColor;
 
 /**
  * Abstract Fragment that appears in the "content_frame". ContentFragmentFactory
@@ -151,33 +154,49 @@ public abstract class GraphBaseFragment extends Fragment {
 	}
 
 	public void initView() {
+		// Line Graph
 		lineLinearLayout = (LinearLayout) rootView
 				.findViewById(R.id.graph_line);
-		barLinearLayout = (LinearLayout) rootView.findViewById(R.id.graph_bar);
 		graph(mLineGraphView, lineLinearLayout, mBodyData, R.id.graph_line,
 				"line");
-		graph(mBarGraphView, barLinearLayout, mBodyData, R.id.graph_bar, "bar");
 
-		String number = Double.toString(map.get(mBodyData).get(0).getAvg());
-		SpannableString ss = new SpannableString(number + "\n Average");
+		// Stats
+		String number = Double.toString(map.get(mBodyData).get(0).getLow());
+		if (map.get(mBodyData).size() > 1) {
+			number += "\n"
+					+ Double.toString(map.get(mBodyData).get(1).getLow());
+		}
+		SpannableString ss = new SpannableString(number + "\n Low");
+		ss.setSpan(new RelativeSizeSpan(2f), 0, number.length(), 0);
+		ss.setSpan(new ForegroundColorSpan(Color.RED), 0, number.length(), 0);
+		statsLow = (TextView) rootView.findViewById(R.id.stats_low);
+		statsLow.setText(ss);
+
+		number = Double.toString(map.get(mBodyData).get(0).getAvg());
+		if (map.get(mBodyData).size() > 1) {
+			number += "\n"
+					+ Double.toString(map.get(mBodyData).get(1).getAvg());
+		}
+		ss = new SpannableString(number + "\n Average");
 		ss.setSpan(new RelativeSizeSpan(2f), 0, number.length(), 0);
 		ss.setSpan(new ForegroundColorSpan(Color.RED), 0, number.length(), 0);
 		statsAvg = (TextView) rootView.findViewById(R.id.stats_avg);
 		statsAvg.setText(ss);
 
 		number = Double.toString(map.get(mBodyData).get(0).getHigh());
+		if (map.get(mBodyData).size() > 1) {
+			number += "\n"
+					+ Double.toString(map.get(mBodyData).get(1).getHigh());
+		}
 		ss = new SpannableString(number + "\n High");
 		ss.setSpan(new RelativeSizeSpan(2f), 0, number.length(), 0);
 		ss.setSpan(new ForegroundColorSpan(Color.RED), 0, number.length(), 0);
 		statsHigh = (TextView) rootView.findViewById(R.id.stats_high);
 		statsHigh.setText(ss);
 
-		number = Double.toString(map.get(mBodyData).get(0).getAvg());
-		ss = new SpannableString(number + "\n Low");
-		ss.setSpan(new RelativeSizeSpan(2f), 0, number.length(), 0);
-		ss.setSpan(new ForegroundColorSpan(Color.RED), 0, number.length(), 0);
-		statsLow = (TextView) rootView.findViewById(R.id.stats_low);
-		statsLow.setText(ss);
+		// Bar Graph
+		barLinearLayout = (LinearLayout) rootView.findViewById(R.id.graph_bar);
+		graph(mBarGraphView, barLinearLayout, mBodyData, R.id.graph_bar, "bar");
 	}
 
 	public void graph(GraphView graphView, LinearLayout linearLayout,
@@ -191,45 +210,59 @@ public abstract class GraphBaseFragment extends Fragment {
 		}
 
 		for (final CarethyGraphData value : map.get(mBodyData)) {
-
 			mGraphViewSeriesStyle = new GraphViewSeriesStyle(
 					value.getUnit() == "Diastolic" ? Color.rgb(229, 99, 51)
 							: Color.rgb(51, 181, 229), 5);
 
-			// if(type.equals("bar")&&(!value.getUnit().equals("Diastolic")&&!value.getUnit().equals("Systolic"))){
-			// mGraphViewSeriesStyle.setValueDependentColor(new
-			// ValueDependentColor(){
-			//
-			// @Override
-			// public int get(GraphViewDataInterface data) {
-			//
-			// if (data.getY()==value.getLow()){
-			// return Color.RED;
-			// }else if(data.getY()==value.getHigh()){
-			// return Color.RED;
-			// }else{
-			// return Color.BLUE;
-			// }
-			// }
-			//
-			// });
-			// }
+//			if (type.equals("bar")
+//					&& (!value.getUnit().equals("Diastolic") && !value
+//							.getUnit().equals("Systolic"))) {
+//				mGraphViewSeriesStyle
+//						.setValueDependentColor(new ValueDependentColor() {
+//
+//							@Override
+//							public int get(GraphViewDataInterface data) {
+//
+//								if (data.getY() == value.getLow()) {
+//									return Color.RED;
+//								} else if (data.getY() == value.getHigh()) {
+//									return Color.RED;
+//								} else {
+//									return Color.BLUE;
+//								}
+//							}
+//
+//						});
+//			}
+
+			GraphViewData[] array = new GraphViewData[value.getTimeSeries().length];
+			for (int i = 0; i < array.length; i++) {
+				array[i] = value.getTimeSeries()[i];
+			}
+
+			// reverse input since date was reversed
+			for (int i = 0; i < array.length / 2; i++) {
+				GraphViewData tmp = array[i];
+				array[i] = array[array.length - 1 - i];
+				array[array.length - 1 - i] = tmp;
+			}
+
 			GraphViewSeries series = new GraphViewSeries(value.getUnit(),
-					mGraphViewSeriesStyle, value.getTimeSeries());
+					mGraphViewSeriesStyle, array);
 
 			graphView.addSeries(series);
 		}
 
-		final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d",
-				Locale.CANADA);
 		graphView.setCustomLabelFormatter(new CustomLabelFormatter() {
 			@Override
 			public String formatLabel(double value, boolean isValueX) {
 				if (isValueX) {
 					Date d = new Date((long) value);
-					return dateFormat.format(d);
+
+					return new SimpleDateFormat("MMMM dd", Locale.CANADA)
+							.format(d).toString();
 				}
-				return null; // let graphview generate Y-axis label for us
+				return null;
 			}
 		});
 
@@ -242,6 +275,7 @@ public abstract class GraphBaseFragment extends Fragment {
 		graphView.getGraphViewStyle().setLegendBorder(20);
 		graphView.getGraphViewStyle().setLegendSpacing(30);
 		graphView.getGraphViewStyle().setLegendWidth(200);
+		graphView.getGraphViewStyle().setVerticalLabelsWidth(100);
 		if (type.equals("line")) {
 			((LineGraphView) graphView).setDrawDataPoints(true);
 			((LineGraphView) graphView).setDataPointsRadius(10f);

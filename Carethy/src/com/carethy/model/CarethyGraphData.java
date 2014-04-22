@@ -6,8 +6,8 @@ public class CarethyGraphData {
 	private String unit;
 	private GraphViewData[] timeSeries;
 	private double avg;
-	private double high;
-	private double low;
+	private double high=Integer.MIN_VALUE;
+	private double low=Integer.MAX_VALUE;
 
 	public CarethyGraphData(String unit, GraphViewData[] timeSeries) {
 		this.unit = unit;

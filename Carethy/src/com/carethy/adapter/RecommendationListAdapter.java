@@ -49,17 +49,14 @@ public class RecommendationListAdapter extends ArrayAdapter<Recommendation> {
 				.findViewById(R.id.recommendation_level);
 		Drawable drawable = null;
 		if (recom.getSeverity() < 3) {
-			// recomTextView.setTextColor(Color.RED);
 			drawable = mContext.getResources().getDrawable(
-					R.drawable.ic_alert);
+					R.drawable.ic_alert_green);
 		} else if (recom.getSeverity() == 3) {
-			// recomTextView.setTextColor(Color.YELLOW);
 			drawable = mContext.getResources().getDrawable(
 					R.drawable.ic_alert_orange);
 		} else {
-			// recomTextView.setTextColor(Color.GREEN);
 			drawable = mContext.getResources().getDrawable(
-					R.drawable.ic_alert_green);
+					R.drawable.ic_alert);
 		}
 		mImageView.setImageDrawable(drawable);
 
