@@ -2,6 +2,10 @@ package com.carethy.receiver;
 
 import java.util.concurrent.ExecutionException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -14,7 +18,6 @@ import android.support.v4.app.NotificationCompat;
 import com.carethy.R;
 import com.carethy.activity.MainActivity;
 import com.carethy.fragment.RecoTask;
-import com.carethy.model.Recommendation;
 import com.carethy.notification.PopupWindow;
 import com.carethy.util.Util;
 
@@ -22,23 +25,53 @@ public class RecomAlarmReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (Util.hasDataFileChanged()) {
-			Recommendation recom = getNewRecommendation(context);
+			try {
+				JSONArray responseObjects = getNewRecommendation(context);
+				JSONObject recom;
+				int recomLength = responseObjects.length();
 
-			if (!recom.equals(null))
-				if (recom.getSeverity() >= 3) {
-					new PopupWindow(context).showPopup(recom.getRecom());
+				if (recomLength > 1) {
+					boolean severe = false;
+					for (int i = 0; i < recomLength; i++) {
+						if (responseObjects.getJSONObject(i).getInt("severity") > 3) {
+							severe = true;
+							break;
+						}
+					}
+
+					if (severe) {
+						new PopupWindow(context)
+								.showPopup("You have multiple high severity recommendations");
+
+					} else {
+						sendNotification(context, "You have " + recomLength
+								+ " recommendations");
+					}
 
 				} else {
-					sendNotification(context, recom.getRecom());
+					recom = responseObjects.getJSONObject(0);
+
+					if (!recom.equals(null))
+						if (recom.getInt("severity") > 3) {
+							new PopupWindow(context).showPopup(recom
+									.getString("recommendation"));
+
+						} else {
+							sendNotification(context,
+									recom.getString("recommendation"));
+						}
 				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
-	public Recommendation getNewRecommendation(Context context) {
+	public JSONArray getNewRecommendation(Context context) {
 
-		AsyncTask<Object, Integer, Recommendation> task = new RecoTask(context,
+		AsyncTask<Object, Integer, JSONArray> task = new RecoTask(context,
 				false);
-		Recommendation result = null;
+		JSONArray result = null;
 
 		task.execute(context);
 

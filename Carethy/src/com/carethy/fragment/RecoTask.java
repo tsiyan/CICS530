@@ -22,18 +22,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.carethy.R;
-import com.carethy.activity.MainActivity;
-import com.carethy.application.Carethy;
-import com.carethy.database.DBRecomHelper;
-import com.carethy.model.Recommendation;
-import com.carethy.util.Util;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-public class RecoTask extends AsyncTask<Object, Integer, Recommendation> {
+import com.carethy.R;
+import com.carethy.activity.MainActivity;
+import com.carethy.application.Carethy;
+import com.carethy.model.Recommendation;
+import com.carethy.util.Util;
+
+public class RecoTask extends AsyncTask<Object, Integer, JSONArray> {
 
 	Recommendation responseReco = null;
 	String engineResponse = null;
@@ -58,7 +57,7 @@ public class RecoTask extends AsyncTask<Object, Integer, Recommendation> {
 	}
 
 	@Override
-	protected Recommendation doInBackground(Object... params) {
+	protected JSONArray doInBackground(Object... params) {
 
 		try {
 			URL url = new URL("http://health-engine.herokuapp.com/");
@@ -112,7 +111,7 @@ public class RecoTask extends AsyncTask<Object, Integer, Recommendation> {
 						recommendation, recoUrl, severity);
 			}
 		}
-		return responseReco;
+		return jRecomObjects;
 	}
 
 	private void saveToCloud() throws JSONException {
