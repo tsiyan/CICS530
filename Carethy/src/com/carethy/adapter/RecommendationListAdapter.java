@@ -55,14 +55,14 @@ public class RecommendationListAdapter extends ArrayAdapter<Recommendation> {
 			drawable = mContext.getResources().getDrawable(
 					R.drawable.ic_alert_orange);
 		} else {
-			drawable = mContext.getResources().getDrawable(
-					R.drawable.ic_alert);
+			drawable = mContext.getResources().getDrawable(R.drawable.ic_alert);
 		}
 		mImageView.setImageDrawable(drawable);
 
 		if (!recom.isRead()) {
 			recomTextView.setTextAppearance(mContext, R.style.boldText);
 			row.setBackgroundColor(Color.WHITE);
+			recomTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
 		recomTextView.setOnClickListener(new OnClickListener() {
 
@@ -83,6 +83,8 @@ public class RecommendationListAdapter extends ArrayAdapter<Recommendation> {
 					recomTextView.setTextAppearance(mContext,
 							R.style.TextViewStyle);
 					row.setBackgroundColor(Color.TRANSPARENT);
+					recomTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0,
+							R.drawable.ic_arrow, 0);
 				}
 			}
 

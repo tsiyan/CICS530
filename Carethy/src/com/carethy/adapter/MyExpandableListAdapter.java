@@ -55,7 +55,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 			convertView = inflater.inflate(R.layout.rowlayout_recommendation,
 					null);
 		}
-		
+
 		final RelativeLayout row = (RelativeLayout) convertView
 				.findViewById(R.id.recommendation_row);
 		ImageView mImageView = (ImageView) convertView
@@ -79,6 +79,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 		if (!recom.isRead()) {
 			text.setTextAppearance(activity, R.style.boldText);
 			row.setBackgroundColor(Color.WHITE);
+			text.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
 		text.setOnClickListener(new OnClickListener() {
 
@@ -98,6 +99,9 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 					recom.setIsRead(true);
 					text.setTextAppearance(activity, R.style.TextViewStyle);
 					row.setBackgroundColor(Color.TRANSPARENT);
+					text.setCompoundDrawablesWithIntrinsicBounds(0, 0,
+							R.drawable.ic_arrow, 0);
+
 				}
 			}
 
