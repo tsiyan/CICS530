@@ -118,13 +118,12 @@ public class TrendsFragment extends GraphBaseFragment {
 				.findViewById(R.id.trend_blood_pressures);
 
 		graph(graphView_activities, linearLayout_activities,
-				BodyData.activities, R.id.trend_activities,"line");
+				BodyData.activities, R.id.trend_activities,"line",true);
 		graph(graphView_sleep, linearLayout_sleep, BodyData.sleep,
-				R.id.trend_sleep,"line");
+				R.id.trend_sleep,"line",true);
 		graph(graphView_heartBeats, linearLayout_heartBeats,
-				BodyData.heartBeats, R.id.trend_heart_beats,"line");
+				BodyData.heartBeats, R.id.trend_heart_beats,"line",true);
 		graph(graphView_bloodPressures, linearLayout_bloodPressures,
-				BodyData.bloodPressures, R.id.trend_blood_pressures,"line");
+				BodyData.bloodPressures, R.id.trend_blood_pressures,"line",true);
 	}
-
 }
