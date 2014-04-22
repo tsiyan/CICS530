@@ -75,12 +75,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 		final TextView text = (TextView) convertView
 				.findViewById(R.id.recommendation_content);
 		text.setText(children);
-		// convertView.setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// Toast.makeText(activity, children, Toast.LENGTH_SHORT).show();
-		// }
-		// });
 
 		if (!recom.isRead()) {
 			text.setTextAppearance(activity, R.style.boldText);

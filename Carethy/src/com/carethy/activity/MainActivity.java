@@ -58,7 +58,7 @@ public class MainActivity extends FragmentActivity implements
 	private CharSequence mDrawerTitle;
 	private String[] navMenuItemTitles;
 	private TypedArray navMenuIcons;
-	private ArrayList<NavDrawerItem> navDrawerItems;
+	public static ArrayList<NavDrawerItem> navDrawerItems;
 	private NavDrawerListAdapter mNavDrawerListAdapter;
 	private static int mPosition = 0;
 
@@ -162,7 +162,7 @@ public class MainActivity extends FragmentActivity implements
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[5], navMenuIcons
 				.getResourceId(5, -1)));
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[6], navMenuIcons
-				.getResourceId(6, -1), true, "1"));
+				.getResourceId(6, -1)));
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[7], navMenuIcons
 				.getResourceId(7, -1)));
 		navDrawerItems.add(new NavDrawerItem(navMenuItemTitles[8], navMenuIcons

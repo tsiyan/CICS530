@@ -37,11 +37,9 @@ import com.jjoe64.graphview.CustomLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.LegendAlign;
-import com.jjoe64.graphview.GraphViewDataInterface;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
 import com.jjoe64.graphview.LineGraphView;
-import com.jjoe64.graphview.ValueDependentColor;
 
 /**
  * Abstract Fragment that appears in the "content_frame". ContentFragmentFactory
@@ -51,7 +49,7 @@ import com.jjoe64.graphview.ValueDependentColor;
 public abstract class GraphBaseFragment extends Fragment {
 	public LinearLayout lineLinearLayout;
 	public LinearLayout barLinearLayout;
-
+	public LinearLayout summary;
 	private LineGraphView mLineGraphView;
 	private BarGraphView mBarGraphView;
 	private TextView statsAvg;
@@ -91,7 +89,7 @@ public abstract class GraphBaseFragment extends Fragment {
 
 		switch (item.getItemId()) {
 		case R.id.action_share:
-			shareData(lineLinearLayout);
+			shareData(summary);
 			return true;
 		case R.id.action_refresh:
 			loadData();
@@ -154,6 +152,8 @@ public abstract class GraphBaseFragment extends Fragment {
 	}
 
 	public void initView() {
+		summary=(LinearLayout) rootView.findViewById(R.id.summary);
+		
 		// Line Graph
 		lineLinearLayout = (LinearLayout) rootView
 				.findViewById(R.id.graph_line);
@@ -203,10 +203,10 @@ public abstract class GraphBaseFragment extends Fragment {
 			BodyData mBodyData, int id, String type) {
 
 		if (type.equals("line")) {
-			graphView = new LineGraphView(getActivity(), "");
+			graphView = new LineGraphView(getActivity(), mBodyData.name().toUpperCase());
 
 		} else {
-			graphView = new BarGraphView(getActivity(), "");
+			graphView = new BarGraphView(getActivity(), mBodyData.name().toUpperCase());
 		}
 
 		for (final CarethyGraphData value : map.get(mBodyData)) {
