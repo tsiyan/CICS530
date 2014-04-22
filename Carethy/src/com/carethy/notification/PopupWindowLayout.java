@@ -26,7 +26,7 @@ public class PopupWindowLayout extends LinearLayout {
 		this.wm = wmr;
 		this.setOrientation(1);
 		this.setBackgroundResource(R.color.actionbar_background);
-		this.setMinimumWidth(800);
+		this.setMinimumWidth(400);
 		
 		LinearLayout llyt = new LinearLayout(context);
 		llyt.setOrientation(0);
@@ -62,6 +62,7 @@ public class PopupWindowLayout extends LinearLayout {
 		
 		btn_dismiss = new Button(context);
 		btn_dismiss.setText("Dismiss");
+		btn_dismiss.setTextColor(Color.parseColor("#2C3E50"));
 		btn_dismiss.setOnClickListener(new OnClickListener(){
 	        @Override 
 	        public void onClick(View v)  {
@@ -69,13 +70,15 @@ public class PopupWindowLayout extends LinearLayout {
 	        }
 		});
 		btn_dismiss.setLayoutParams(new LinearLayout.LayoutParams(-1, -1, (float) 1.0));
-		btn_dismiss.setBackgroundResource(R.color.button);
+		btn_dismiss.setBackgroundColor(Color.parseColor("#ecf0f1"));
+		//btn_dismiss.setBackgroundResource(R.color.button);
 		btn_dismiss.setScaleX((float)0.995);
 		btn_dismiss.setPadding(0, 0, 5, 0);
 		lly.addView(btn_dismiss);
 		
 		btn_open = new Button(context);
 		btn_open.setText("Open");
+		btn_open.setTextColor(Color.parseColor("#2C3E50"));
 		btn_open.setOnClickListener(new OnClickListener(){
 	        @Override 
 	        public void onClick(View v)  {
@@ -87,7 +90,8 @@ public class PopupWindowLayout extends LinearLayout {
 		});
 		btn_open.setLayoutParams(new LinearLayout.LayoutParams(-1, -1, (float) 1.0));
 		btn_open.setScaleX((float)0.995);
-		btn_open.setBackgroundColor(getResources().getColor(R.color.button));
+		//btn_open.setBackgroundColor(getResources().getColor(R.color.button));
+		btn_open.setBackgroundColor(Color.parseColor("#ecf0f1"));
 		
 		lly.addView(btn_open);
 		
