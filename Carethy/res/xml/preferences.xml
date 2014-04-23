@@ -44,8 +44,8 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="uploadSettings"
-            android:summary="Upload all settings to cloud."
-            android:title="Upload Settings" />
+            android:summary="Save your data to our server."
+            android:title="Upload to Cloud" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_legal" >
         <Preference

@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.carethy.R;
 import com.carethy.adapter.MyExpandableListAdapter;
 import com.carethy.application.Carethy;
-import com.carethy.database.DBRecomHelper;
 import com.carethy.model.Group;
 import com.carethy.model.Recommendation;
 
@@ -45,7 +44,7 @@ public class RecommendationsFragment extends Fragment {
 	private void fillRecommendations() {
 
 		ArrayList<Recommendation> recomms = Carethy.datasource
-				.getRecommendations(DBRecomHelper.RECOM_LIMIT);
+				.getRecommendations("");
 
 		if (recomms.isEmpty()) {
 			Toast.makeText(getActivity(), "No recommendation yet.",
