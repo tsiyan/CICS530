@@ -69,6 +69,8 @@ public class MainActivity extends FragmentActivity implements
 		NotificationManager nmgr = (NotificationManager) this
 				.getSystemService(ns);
 		nmgr.cancelAll();
+		
+		recomAlarmTrigger();
 	}
 
 	@Override
@@ -88,7 +90,7 @@ public class MainActivity extends FragmentActivity implements
 			startActivity(intent);
 			finish();
 		} else {
-			recomAlarmTrigger();
+//			recomAlarmTrigger();
 
 			initView(savedInstanceState);
 		}
