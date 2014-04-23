@@ -37,11 +37,9 @@ import com.jjoe64.graphview.CustomLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.LegendAlign;
-import com.jjoe64.graphview.GraphViewDataInterface;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
 import com.jjoe64.graphview.LineGraphView;
-import com.jjoe64.graphview.ValueDependentColor;
 
 /**
  * Abstract Fragment that appears in the "content_frame". ContentFragmentFactory
@@ -242,21 +240,6 @@ public abstract class GraphBaseFragment extends Fragment {
 						value.getUnit() == "Diastolic" ? Color.rgb(229, 99, 51)
 								: Color.rgb(51, 181, 229), 5);
 
-//				mGraphViewSeriesStyle
-//						.setValueDependentColor(new ValueDependentColor() {
-//
-//							@Override
-//							public int get(GraphViewDataInterface data) {
-//								return Color.rgb(
-//										(int) (229 + data.getY() - value
-//												.getAvg()), (int) (99 + data
-//												.getY() - value.getAvg()),
-//										(int) (51 + data.getY() - value
-//												.getAvg()));
-//							}
-//
-//						});
-
 				GraphViewData[] array = new GraphViewData[value.getTimeSeries().length];
 				for (int i = 0; i < array.length; i++) {
 					array[i] = value.getTimeSeries()[i];
@@ -269,6 +252,7 @@ public abstract class GraphBaseFragment extends Fragment {
 					array[array.length - 1 - i] = tmp;
 				}
 
+				// calculate the diff from prev day
 				GraphViewData[] newArray = new GraphViewData[array.length];
 				for (int i = 0; i < newArray.length; i++) {
 					if (i == 0) {
@@ -310,18 +294,35 @@ public abstract class GraphBaseFragment extends Fragment {
 		graphView.getGraphViewStyle().setLegendBorder(20);
 		graphView.getGraphViewStyle().setLegendSpacing(30);
 		graphView.getGraphViewStyle().setLegendWidth(200);
+
+		if (type.equals("line")) {
+			if (mBodyData.equals(BodyData.activities)) {
+				graphView.setManualYAxisBounds(60, 10);
+			}
+
+			if (mBodyData.equals(BodyData.sleep)) {
+				graphView.setManualYAxisBounds(490, 280);
+			}
+
+			if (mBodyData.equals(BodyData.heartBeats)) {
+				graphView.setManualYAxisBounds(95, 60);
+			}
+
+			if (mBodyData.equals(BodyData.bloodPressures)) {
+				graphView.setManualYAxisBounds(175, 75);
+			}
+		}
+
 		if (isTrends) {
 			graphView.getGraphViewStyle().setVerticalLabelsColor(Color.WHITE);
 			graphView.getGraphViewStyle().setVerticalLabelsWidth(1);
 			graphView.getGraphViewStyle().setGridColor(Color.WHITE);
-
 		} else {
-			graphView.getGraphViewStyle().setVerticalLabelsWidth(100);
-
 			if (type.equals("line")) {
 				((LineGraphView) graphView).setDrawDataPoints(true);
 				((LineGraphView) graphView).setDataPointsRadius(10f);
 			} else {
+				graphView.getGraphViewStyle().setVerticalLabelsWidth(100);
 
 			}
 		}
