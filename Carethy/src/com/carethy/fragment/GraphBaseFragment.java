@@ -242,20 +242,20 @@ public abstract class GraphBaseFragment extends Fragment {
 						value.getUnit() == "Diastolic" ? Color.rgb(229, 99, 51)
 								: Color.rgb(51, 181, 229), 5);
 
-				mGraphViewSeriesStyle
-						.setValueDependentColor(new ValueDependentColor() {
-
-							@Override
-							public int get(GraphViewDataInterface data) {
-								return Color.rgb(
-										(int) (229 + data.getY() - value
-												.getAvg()), (int) (99 + data
-												.getY() - value.getAvg()),
-										(int) (51 + data.getY() - value
-												.getAvg()));
-							}
-
-						});
+//				mGraphViewSeriesStyle
+//						.setValueDependentColor(new ValueDependentColor() {
+//
+//							@Override
+//							public int get(GraphViewDataInterface data) {
+//								return Color.rgb(
+//										(int) (229 + data.getY() - value
+//												.getAvg()), (int) (99 + data
+//												.getY() - value.getAvg()),
+//										(int) (51 + data.getY() - value
+//												.getAvg()));
+//							}
+//
+//						});
 
 				GraphViewData[] array = new GraphViewData[value.getTimeSeries().length];
 				for (int i = 0; i < array.length; i++) {
@@ -275,7 +275,7 @@ public abstract class GraphBaseFragment extends Fragment {
 						newArray[i] = new GraphViewData(array[i].valueX, 0);
 					} else {
 						newArray[i] = new GraphViewData(array[i].valueX,
-								array[i].valueY - array[i - 1].valueY + i * 10);
+								array[i].valueY - array[i - 1].valueY);
 					}
 				}
 

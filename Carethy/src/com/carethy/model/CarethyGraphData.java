@@ -1,13 +1,15 @@
 package com.carethy.model;
 
+import java.math.BigDecimal;
+
 import com.jjoe64.graphview.GraphView.GraphViewData;
 
 public class CarethyGraphData {
 	private String unit;
 	private GraphViewData[] timeSeries;
 	private double avg;
-	private double high=Integer.MIN_VALUE;
-	private double low=Integer.MAX_VALUE;
+	private double high = Integer.MIN_VALUE;
+	private double low = Integer.MAX_VALUE;
 
 	public CarethyGraphData(String unit, GraphViewData[] timeSeries) {
 		this.unit = unit;
@@ -37,6 +39,9 @@ public class CarethyGraphData {
 		}
 		int len = timeSeries.length;
 		avg = sum / len;
+
+		BigDecimal b = new BigDecimal(avg);
+		avg = b.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 		return avg;
 	}
 

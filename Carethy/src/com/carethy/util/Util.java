@@ -80,7 +80,7 @@ public class Util {
 	}
 
 	public static ArrayList<CarethyGraphData> fetchData(BodyData mBodyData) {
-		int count = 10;
+		int count = 30;
 		int data_size = 0;
 		ArrayList<CarethyGraphData> result = new ArrayList<CarethyGraphData>();
 
