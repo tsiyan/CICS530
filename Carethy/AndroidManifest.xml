@@ -94,7 +94,7 @@
             android:exported="false" >
         </provider>
 
-        <receiver android:name="AlarmInitReceiver">
+        <receiver android:name="com.carethy.alarmclock.AlarmInitReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.TIME_SET" />

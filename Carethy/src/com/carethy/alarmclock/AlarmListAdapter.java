@@ -89,7 +89,7 @@ public class AlarmListAdapter extends BaseAdapter {
 			
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				Fragment ft = ((MainActivity) mContext).getFragmentManager().findFragmentByTag("fragment_id_6");
+				Fragment ft = ((MainActivity) mContext).getFragmentManager().findFragmentByTag("fragment_id_7");
 				((AlarmListFragment) ft).setAlarmEnabled(((Long) buttonView.getTag()).longValue(), isChecked);
 				
 			}
@@ -100,7 +100,7 @@ public class AlarmListAdapter extends BaseAdapter {
 			
 			@Override
 			public void onClick(View view) {
-				Fragment ft = ((MainActivity) mContext).getFragmentManager().findFragmentByTag("fragment_id_6");
+				Fragment ft = ((MainActivity) mContext).getFragmentManager().findFragmentByTag("fragment_id_7");
 				((AlarmListFragment) ft).startAlarmDetailsActivity(((Long) view.getTag()).longValue());
 			}
 		});
@@ -109,7 +109,7 @@ public class AlarmListAdapter extends BaseAdapter {
 			
 			@Override
 			public boolean onLongClick(View view) {
-				Fragment ft = ((MainActivity) mContext).getFragmentManager().findFragmentByTag("fragment_id_6");
+				Fragment ft = ((MainActivity) mContext).getFragmentManager().findFragmentByTag("fragment_id_7");
 				((AlarmListFragment) ft).deleteAlarm(((Long) view.getTag()).longValue());
 				return true;
 			}
