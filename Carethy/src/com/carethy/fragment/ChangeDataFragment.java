@@ -52,7 +52,7 @@ public class ChangeDataFragment extends Fragment {
 
 		//get user data
 		String[] sample_data_files = getResources().getStringArray(R.array.user_data_files);
-		String use_data_file = sample_data_files[Carethy.nextDataFileId];
+		String use_data_file = sample_data_files[Carethy.currentDataFileId];
 		try 
 		{
 			InputStream is = getActivity().getAssets().open(use_data_file);
